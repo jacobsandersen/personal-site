@@ -8,7 +8,7 @@ export function Fieldset({ className, ...props }: { className?: string } & Omit<
   return (
     <Headless.Fieldset
       {...props}
-      className={clsx(className, '[&>*+[data-slot=control]]:mt-6 [&>[data-slot=text]]:mt-1')}
+      className={clsx(className, '[&>*+[data-slot=control]]:mt-6 *:data-[slot=text]:mt-1')}
     />
   )
 }
@@ -20,7 +20,7 @@ export function Legend({ className, ...props }: { className?: string } & Omit<He
       {...props}
       className={clsx(
         className,
-        'text-base/6 font-semibold text-zinc-950 data-[disabled]:opacity-50 sm:text-sm/6 dark:text-white'
+        'text-base/6 font-semibold text-zinc-950 data-disabled:opacity-50 sm:text-sm/6 dark:text-white'
       )}
     />
   )
@@ -41,7 +41,7 @@ export function Field({ className, ...props }: { className?: string } & Omit<Hea
         '[&>[data-slot=description]+[data-slot=control]]:mt-3',
         '[&>[data-slot=control]+[data-slot=description]]:mt-3',
         '[&>[data-slot=control]+[data-slot=error]]:mt-3',
-        '[&>[data-slot=label]]:font-medium'
+        '*:data-[slot=label]:font-medium'
       )}
     />
   )
@@ -54,7 +54,7 @@ export function Label({ className, ...props }: { className?: string } & Omit<Hea
       {...props}
       className={clsx(
         className,
-        'select-none text-base/6 text-zinc-950 data-[disabled]:opacity-50 sm:text-sm/6 dark:text-white'
+        'select-none text-base/6 text-zinc-950 data-disabled:opacity-50 sm:text-sm/6 dark:text-white'
       )}
     />
   )
@@ -70,7 +70,7 @@ export function Description({
       {...props}
       className={clsx(
         className,
-        'text-base/6 text-zinc-500 data-[disabled]:opacity-50 sm:text-sm/6 dark:text-zinc-400'
+        'text-base/6 text-zinc-500 data-disabled:opacity-50 sm:text-sm/6 dark:text-zinc-400'
       )}
     />
   )
@@ -84,7 +84,7 @@ export function ErrorMessage({
     <Headless.Description
       data-slot="error"
       {...props}
-      className={clsx(className, 'text-base/6 text-red-600 data-[disabled]:opacity-50 sm:text-sm/6 dark:text-red-500')}
+      className={clsx(className, 'text-base/6 text-red-600 data-disabled:opacity-50 sm:text-sm/6 dark:text-red-500')}
     />
   )
 }
