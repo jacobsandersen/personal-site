@@ -2,10 +2,7 @@ import { type Metadata } from 'next'
 
 import { Card } from '@/components/Card'
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { getAllArticles } from '@/lib/articles'
 import { formatDateToISO, formatDateToHuman } from '@/lib/formatDate'
-
-export const runtime = 'edge'
 
 function Article({ article }: { article: Article }) {
   return (
@@ -42,8 +39,8 @@ export const metadata: Metadata = {
     'All of my long-form thoughts on life in the Philippines (especially for expats), software engineering, travel, and more, collected in chronological order.',
 }
 
-export default async function ArticlesIndex() {
-  let articles = await getAllArticles()
+export default function ArticlesIndex() {
+  let articles: Article[] = []
 
   return (
     <SimpleLayout

@@ -6,20 +6,16 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint .",
-    "create-article": "bun ./tools/create-article.ts",
-    "list-articles": "bun ./tools/list-articles.ts",
-    "delete-article": "bun ./tools/delete-article.ts",
-    "update-article": "bun ./tools/update-article.ts"
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "lint": "eslint ."
   },
   "browserslist": "defaults, not ie <= 11",
   "dependencies": {
     "@headlessui/react": "^2.1.2",
     "@heroicons/react": "^2.1.5",
-    "@mapbox/rehype-prism": "^0.9.0",
-    "@mdx-js/loader": "^3.0.0",
-    "@mdx-js/react": "^3.0.0",
-    "@next/mdx": "16.1.1",
     "@opennextjs/cloudflare": "^1.14.7",
     "@tailwindcss/typography": "^0.5.4",
     "autoprefixer": "^10.4.12",
@@ -35,7 +31,6 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "readline-sync": "^1.4.10",
-    "remark-gfm": "^4.0.0",
     "rss": "^1.2.2",
     "slugify": "^1.6.6",
     "tailwindcss": "^3.4.4",
@@ -54,6 +49,7 @@
     "eslint-config-next": "^16.1.1",
     "prettier": "^3.3.2",
     "prettier-plugin-tailwindcss": "^0.6.5",
-    "sharp": "0.33.1"
+    "sharp": "0.33.1",
+    "wrangler": "^4.54.0"
   }
 }
