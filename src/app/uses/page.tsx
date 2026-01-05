@@ -2,8 +2,6 @@ import { Card } from '@/components/Card'
 import { Section } from '@/components/Section'
 import { SimpleLayout } from '@/components/SimpleLayout'
 
-export const runtime = 'edge'
-
 function ToolsSection({
   children,
   ...props

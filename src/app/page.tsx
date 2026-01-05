@@ -21,8 +21,6 @@ import image4 from '@/images/photos/image-4.jpg'
 import image5 from '@/images/photos/image-5.jpg'
 import { formatDateToISO, formatDateToHuman } from '@/lib/formatDate'
 
-export const runtime = 'edge'
-
 function MailIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
     <svg

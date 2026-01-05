@@ -12,8 +12,6 @@ import {
 } from '@/components/SocialIcons'
 import portraitImage from '@/images/portrait.jpg'
 
-export const runtime = 'edge'
-
 function SocialLink({
   className,
   href,
