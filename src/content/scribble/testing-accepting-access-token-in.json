@@ -1,0 +1,13 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "Testing accepting access token in post body"
+    ],
+    "slug": [
+      "testing-accepting-access-token-in"
+    ]
+  }
+}
