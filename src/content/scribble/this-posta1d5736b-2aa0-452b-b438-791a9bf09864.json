@@ -1,0 +1,15 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      {
+        "html": "\u003cp\u003eThis post has \u003cb\u003ebold\u003c/b\u003e and \u003ci\u003eitalic\u003c/i\u003e text.\u003c/p\u003e"
+      }
+    ],
+    "slug": [
+      "this-posta1d5736b-2aa0-452b-b438-791a9bf09864"
+    ]
+  }
+}
