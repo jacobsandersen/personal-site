@@ -7,7 +7,7 @@ export async function getStaticPaths() {
     return content.map(doc => {
         return {
             params: {
-                slug: doc.data.properties['mp-slug'][0]
+                slug: doc.data.properties['slug'][0]
             },
             props: {
                 ...doc.data
