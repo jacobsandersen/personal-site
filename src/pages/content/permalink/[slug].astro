@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import type { Mf2Document } from "../../../types/mf2-document";
+import RenderValue from "../../../components/RenderValue.astro";
 
 export async function getStaticPaths() {
     const content = await getCollection("scribble")
@@ -23,30 +24,6 @@ const content = doc.properties.content ?? []
 const otherProperties = Object.entries(doc.properties).filter(
   ([key]) => key !== 'name' && key !== 'content'
 )
-
-const renderValue = (value: unknown): any => {
-  if (Array.isArray(value)) {
-    return (
-      <ul style="margin: 0 0 0 1em; padding: 0;">
-        {value.map((v, i) => (
-          <li style="list-style: disc inside;">{renderValue(v)}</li>
-        ))}
-      </ul>
-    )
-  }
-  if (typeof value === 'object' && value !== null) {
-    return (
-      <ul style="margin: 0 0 0 1em; padding: 0;">
-        {Object.entries(value).map(([k, v]) => (
-          <li style="list-style: circle inside;">
-            <strong>{k}:</strong> {renderValue(v)}
-          </li>
-        ))}
-      </ul>
-    )
-  }
-  return <span>{String(value)}</span>
-}
 ---
 
 <h1>{title}</h1>
@@ -55,7 +32,8 @@ const renderValue = (value: unknown): any => {
   <div>
     {otherProperties.map(([key, value]) => (
       <div style="margin-bottom: 0.5em;">
-        <strong>{key}:</strong> {renderValue(value)}
+        <strong>{key}:</strong>
+        <RenderValue value={value} />
       </div>
     ))}
   </div>
