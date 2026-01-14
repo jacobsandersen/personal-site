@@ -23,6 +23,30 @@ const content = doc.properties.content ?? []
 const otherProperties = Object.entries(doc.properties).filter(
   ([key]) => key !== 'name' && key !== 'content'
 )
+
+const renderValue = (value: unknown): any => {
+  if (Array.isArray(value)) {
+    return (
+      <ul style="margin: 0 0 0 1em; padding: 0;">
+        {value.map((v, i) => (
+          <li style="list-style: disc inside;">{renderValue(v)}</li>
+        ))}
+      </ul>
+    )
+  }
+  if (typeof value === 'object' && value !== null) {
+    return (
+      <ul style="margin: 0 0 0 1em; padding: 0;">
+        {Object.entries(value).map(([k, v]) => (
+          <li style="list-style: circle inside;">
+            <strong>{k}:</strong> {renderValue(v)}
+          </li>
+        ))}
+      </ul>
+    )
+  }
+  return <span>{String(value)}</span>
+}
 ---
 
 <h1>{title}</h1>
@@ -30,10 +54,9 @@ const otherProperties = Object.entries(doc.properties).filter(
 {otherProperties.length > 0 && (
   <div>
     {otherProperties.map(([key, value]) => (
-      <p>
-        <strong>{key}:</strong>{' '}
-        {Array.isArray(value) ? value.join(', ') : value}
-      </p>
+      <div style="margin-bottom: 0.5em;">
+        <strong>{key}:</strong> {renderValue(value)}
+      </div>
     ))}
   </div>
 )}
