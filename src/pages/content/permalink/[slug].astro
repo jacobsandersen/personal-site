@@ -1,0 +1,22 @@
+---
+import { getCollection } from "astro:content";
+import type { Mp2Document } from "../../../types/mp2-document";
+
+export async function getStaticPaths() {
+    const content = await getCollection("scribble")
+    return content.map(doc => {
+        return {
+            params: {
+                slug: doc.data.properties['mp-slug'][0]
+            },
+            props: {
+                ...doc.data
+            }
+        }
+    })
+}
+
+const doc = Astro.props as Mp2Document
+---
+
+<p>{JSON.stringify(doc)}</p>
