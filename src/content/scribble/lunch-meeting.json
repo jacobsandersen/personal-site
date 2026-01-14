@@ -1,0 +1,52 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "checkin": [
+      {
+        "properties": {
+          "country-name": [
+            "United States"
+          ],
+          "latitude": [
+            45.524330801154
+          ],
+          "locality": [
+            "Portland"
+          ],
+          "longitude": [
+            -122.68068808051
+          ],
+          "name": [
+            "Los Gorditos"
+          ],
+          "postal-code": [
+            "97209"
+          ],
+          "region": [
+            "OR"
+          ],
+          "street-address": [
+            "922 NW Davis St"
+          ],
+          "url": [
+            "https://foursquare.com/v/502c4bbde4b06e61e06d1ebf"
+          ]
+        },
+        "type": [
+          "h-card"
+        ]
+      }
+    ],
+    "content": [
+      "Lunch meeting"
+    ],
+    "published": [
+      "2017-05-31T12:03:36-07:00"
+    ],
+    "slug": [
+      "lunch-meeting"
+    ]
+  }
+}
