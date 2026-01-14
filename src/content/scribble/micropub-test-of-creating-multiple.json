@@ -1,0 +1,17 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "Micropub test of creating multiple photos referenced by URL. This post should include a photo of a city at night."
+    ],
+    "photo": [
+      "https://micropub.rocks/media/sunset.jpg",
+      "https://micropub.rocks/media/city-at-night.jpg"
+    ],
+    "slug": [
+      "micropub-test-of-creating-multiple"
+    ]
+  }
+}
