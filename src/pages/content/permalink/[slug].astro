@@ -1,6 +1,6 @@
 ---
 import { getCollection } from "astro:content";
-import type { Mp2Document } from "../../../types/mp2-document";
+import type { Mf2Document } from "../../../types/mf2-document";
 
 export async function getStaticPaths() {
     const content = await getCollection("scribble")
@@ -16,7 +16,13 @@ export async function getStaticPaths() {
     })
 }
 
-const doc = Astro.props as Mp2Document
+const doc = Astro.props as Mf2Document
+
+const title = doc.properties.name?.[0] ?? "no title"
+const content = doc.properties.content ?? []
+const otherProperties = Object.entries(doc.properties).filter(
+  ([key]) => key !== 'name' && key !== 'content'
+)
 ---
 
 <p>{JSON.stringify(doc)}</p>
