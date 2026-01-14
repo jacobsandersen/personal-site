@@ -25,4 +25,24 @@ const otherProperties = Object.entries(doc.properties).filter(
 )
 ---
 
-<p>{JSON.stringify(doc)}</p>
+<h1>{title}</h1>
+
+{otherProperties.length > 0 && (
+  <div>
+    {otherProperties.map(([key, value]) => (
+      <p>
+        <strong>{key}:</strong>{' '}
+        {Array.isArray(value) ? value.join(', ') : value}
+      </p>
+    ))}
+  </div>
+)}
+
+{content.map((item) => {
+  if (typeof item === 'string') {
+    return <p>{item}</p>
+  }
+  if (typeof item === 'object' && item !== null && 'html' in item) {
+    return <div set:html={item.html} />
+  }
+})}
