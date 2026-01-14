@@ -1,0 +1,21 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "category": [
+      "testing",
+      "access_token",
+      "hmm"
+    ],
+    "content": [
+      "This is a simple note post. Quill uses form body here, so I expect access token in the payload. Scribble should scrub it out."
+    ],
+    "location": [
+      "geo:14.26725,121.12733;u=57.666666666666664"
+    ],
+    "slug": [
+      "this-is"
+    ]
+  }
+}
