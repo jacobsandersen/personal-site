@@ -1,13 +1,14 @@
 ---
 import { getCollection } from "astro:content";
 import type { Mf2Document } from "../../../types/mf2-document";
+import RenderValue from "../../../components/RenderValue.astro";
 
 export async function getStaticPaths() {
     const content = await getCollection("scribble")
     return content.map(doc => {
         return {
             params: {
-                slug: doc.data.properties['mp-slug'][0]
+                slug: doc.data.properties['slug'][0]
             },
             props: {
                 ...doc.data
@@ -30,10 +31,10 @@ const otherProperties = Object.entries(doc.properties).filter(
 {otherProperties.length > 0 && (
   <div>
     {otherProperties.map(([key, value]) => (
-      <p>
-        <strong>{key}:</strong>{' '}
-        {Array.isArray(value) ? value.join(', ') : value}
-      </p>
+      <div style="margin-bottom: 0.5em;">
+        <strong>{key}:</strong>
+        <RenderValue value={value} />
+      </div>
     ))}
   </div>
 )}
