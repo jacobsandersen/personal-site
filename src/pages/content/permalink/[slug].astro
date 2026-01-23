@@ -1,23 +1,25 @@
 ---
-import { getCollection } from "astro:content";
 import type { Mf2Document } from "../../../types/mf2-document";
 import RenderValue from "../../../components/RenderValue.astro";
+import { drizzle } from "drizzle-orm/d1";
+import { eq } from "drizzle-orm";
+import * as schema from "../../../db/schema";
 
-export async function getStaticPaths() {
-    const content = await getCollection("scribble")
-    return content.map(doc => {
-        return {
-            params: {
-                slug: doc.data.properties['slug'][0]
-            },
-            props: {
-                ...doc.data
-            }
-        }
-    })
+export const prerender = false
+
+const { slug } = Astro.params
+if (!slug) {
+  return new Response(null, { status: 400 })
 }
 
-const doc = Astro.props as Mf2Document
+const db = drizzle(Astro.locals.runtime.env.scribble_db, { schema })
+const results = await db.select().from(schema.scribbleContent).where(eq(schema.scribbleContent.slug, slug)).limit(1)
+if (results.length === 0) {
+  return new Response(null, { status: 404})
+}
+
+const entry = results[0]
+const doc = JSON.parse(entry.doc) as Mf2Document
 
 const title = doc.properties.name?.[0] ?? "no title"
 const content = doc.properties.content ?? []

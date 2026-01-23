@@ -16,6 +16,11 @@ pnpm-debug.log*
 # environment variables
 .env
 .env.production
+.dev.vars
+.drizzle.env
+
+# drizzle introspect output
+drizzle
 
 # macOS-specific files
 .DS_Store
