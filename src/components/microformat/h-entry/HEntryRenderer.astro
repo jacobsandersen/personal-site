@@ -15,6 +15,16 @@ export interface Props {
 
 const { props } = Astro.props
 
+let Renderer:
+  | typeof RSVPRenderer
+  | typeof RepostRenderer
+  | typeof LikeRenderer
+  | typeof ReplyRenderer
+  | typeof VideoRenderer
+  | typeof PhotoRenderer
+  | typeof ArticleRenderer
+  | typeof NoteRenderer;
+
 function isValidRsvp(props: Mf2Properties): boolean {
     const rsvpValues = props.rsvp
     if (!rsvpValues || rsvpValues.length === 0) {
@@ -42,40 +52,39 @@ function hasPropWithValidUrl(props: Mf2Properties, propName: string): boolean {
     return typeof propValue === 'string' && isValidUrl(propValue)
 }
 
-function discoverAndRender() {
-    if (isValidRsvp(props)) {
-        return (<RSVPRenderer props={props} />)
-    } else if (hasPropWithValidUrl(props, 'repost-of')) {
-        return (<RepostRenderer props={props} />)
-    } else if (hasPropWithValidUrl(props, 'like-of')) {
-        return (<LikeRenderer props={props} />)
-    } else if (hasPropWithValidUrl(props, 'in-reply-to')) {
-        return (<ReplyRenderer props={props} />)
-    } else if (hasPropWithValidUrl(props, 'video')) {
-        return (<VideoRenderer props={props} />)
-    } else if (hasPropWithValidUrl(props, 'photo')) {
-        return (<PhotoRenderer props={props} />)
-    } else {
-        let postContent = ""
-
-        if (props.content && props.content.length > 0) {
-            for (let item of props.content) {
-                if (typeof item === 'string' && item.length > 0) {
-                    postContent = item
-                    break
-                }
+if (isValidRsvp(props)) {
+    Renderer = RSVPRenderer
+} else if (hasPropWithValidUrl(props, 'repost-of')) {
+    Renderer = RepostRenderer
+} else if (hasPropWithValidUrl(props, 'like-of')) {
+    Renderer = LikeRenderer
+} else if (hasPropWithValidUrl(props, 'in-reply-to')) {
+    Renderer = ReplyRenderer
+} else if (hasPropWithValidUrl(props, 'video')) {
+    Renderer = VideoRenderer
+} else if (hasPropWithValidUrl(props, 'photo')) {
+    Renderer = PhotoRenderer
+} else {
+    let postContent = ""
+    if (props.content && props.content.length > 0) {
+        for (let item of props.content) {
+            if (typeof item === 'string' && item.length > 0) {
+                postContent = item
+                break
             }
-        } else if (props.summary && props.summary.length > 0) {
-            for (let item of props.summary) {
-                if (typeof item === 'string' && item.length > 0) {
-                    postContent = item
-                    break
-                }
-            }
-        } else {
-            return (<NoteRenderer props={props} />)
         }
+    } else if (props.summary && props.summary.length > 0) {
+        for (let item of props.summary) {
+            if (typeof item === 'string' && item.length > 0) {
+                postContent = item
+                break
+            }
+        }
+    }
 
+    if (!postContent) {
+        Renderer = NoteRenderer
+    } else {
         let name = ""
         if (props.name) {
             for (let item of props.name) {
@@ -87,18 +96,18 @@ function discoverAndRender() {
         }
 
         if (!name) {
-            return (<NoteRenderer props={props} />)
+            Renderer = NoteRenderer
         } else {
             name = name.trim().replaceAll(/\s+/g, ' ')
             postContent = postContent.trim().replaceAll(/\s+/g, ' ')
             if (!postContent.startsWith(name)) {
-                return (<ArticleRenderer props={props} />)
+                Renderer = ArticleRenderer
             } else {
-                return (<NoteRenderer props={props} />)
+                Renderer = NoteRenderer
             }
         }
     }
 }
 ---
 
-{discoverAndRender()}
+<Renderer props={props} />
