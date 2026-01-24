@@ -1,0 +1,12 @@
+---
+import { Mf2Properties } from '../../../../types/mf2-document'
+
+export interface Props {
+    props: Mf2Properties
+}
+
+const { props } = Astro.props
+---
+
+<p>This is a reply</p>
+<p>{JSON.stringify(props)}</p>

@@ -1,9 +1,9 @@
 ---
 import type { Mf2Document } from "../../../types/mf2-document";
-import RenderValue from "../../../components/RenderValue.astro";
 import { drizzle } from "drizzle-orm/d1";
 import { eq } from "drizzle-orm";
 import * as schema from "../../../db/schema";
+import MicroformatRenderer from "../../../components/microformat/MicroformatRenderer.astro";
 
 export const prerender = false
 
@@ -13,6 +13,7 @@ if (!slug) {
 }
 
 const db = drizzle(Astro.locals.runtime.env.scribble_db, { schema })
+
 const results = await db.select().from(schema.scribbleContent).where(eq(schema.scribbleContent.slug, slug)).limit(1)
 if (results.length === 0) {
   return new Response(null, { status: 404})
@@ -20,32 +21,6 @@ if (results.length === 0) {
 
 const entry = results[0]
 const doc = JSON.parse(entry.doc) as Mf2Document
-
-const title = doc.properties.name?.[0] ?? "no title"
-const content = doc.properties.content ?? []
-const otherProperties = Object.entries(doc.properties).filter(
-  ([key]) => key !== 'name' && key !== 'content'
-)
 ---
 
-<h1>{title}</h1>
-
-{otherProperties.length > 0 && (
-  <div>
-    {otherProperties.map(([key, value]) => (
-      <div style="margin-bottom: 0.5em;">
-        <strong>{key}:</strong>
-        <RenderValue value={value} />
-      </div>
-    ))}
-  </div>
-)}
-
-{content.map((item) => {
-  if (typeof item === 'string') {
-    return <p>{item}</p>
-  }
-  if (typeof item === 'object' && item !== null && 'html' in item) {
-    return <div set:html={item.html} />
-  }
-})}
+<MicroformatRenderer doc={doc} />

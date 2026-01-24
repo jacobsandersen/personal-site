@@ -1,0 +1,104 @@
+---
+import { Mf2Properties } from '../../../types/mf2-document'
+import RSVPRenderer from './subtype/RSVPRenderer.astro'
+import RepostRenderer from './subtype/RepostRenderer.astro'
+import NoteRenderer from './subtype/NoteRenderer.astro'
+import ArticleRenderer from './subtype/ArticleRenderer.astro'
+import LikeRenderer from './subtype/LikeRenderer.astro'
+import ReplyRenderer from './subtype/ReplyRenderer.astro'
+import VideoRenderer from './subtype/VideoRenderer.astro'
+import PhotoRenderer from './subtype/PhotoRenderer.astro'
+
+export interface Props {
+    props: Mf2Properties
+}
+
+const { props } = Astro.props
+
+function isValidRsvp(props: Mf2Properties): boolean {
+    const rsvpValues = props.rsvp
+    if (!rsvpValues || rsvpValues.length === 0) {
+        return false
+    }
+    const rsvp = rsvpValues[0]
+    return typeof rsvp === 'string' && ['yes', 'no', 'maybe', 'interested'].includes(rsvp.toLowerCase())
+}
+
+function isValidUrl(prop: string): boolean {
+    try {
+        new URL(prop)
+        return true
+    } catch {
+        return false
+    }
+}
+
+function hasPropWithValidUrl(props: Mf2Properties, propName: string): boolean {
+    const values = props[propName]
+    if (!values || values.length === 0) {
+        return false
+    }
+    const propValue = values[0]
+    return typeof propValue === 'string' && isValidUrl(propValue)
+}
+
+function discoverAndRender() {
+    if (isValidRsvp(props)) {
+        return (<RSVPRenderer props={props} />)
+    } else if (hasPropWithValidUrl(props, 'repost-of')) {
+        return (<RepostRenderer props={props} />)
+    } else if (hasPropWithValidUrl(props, 'like-of')) {
+        return (<LikeRenderer props={props} />)
+    } else if (hasPropWithValidUrl(props, 'in-reply-to')) {
+        return (<ReplyRenderer props={props} />)
+    } else if (hasPropWithValidUrl(props, 'video')) {
+        return (<VideoRenderer props={props} />)
+    } else if (hasPropWithValidUrl(props, 'photo')) {
+        return (<PhotoRenderer props={props} />)
+    } else {
+        let postContent = ""
+
+        if (props.content && props.content.length > 0) {
+            for (let item of props.content) {
+                if (typeof item === 'string' && item.length > 0) {
+                    postContent = item
+                    break
+                }
+            }
+        } else if (props.summary && props.summary.length > 0) {
+            for (let item of props.summary) {
+                if (typeof item === 'string' && item.length > 0) {
+                    postContent = item
+                    break
+                }
+            }
+        } else {
+            return (<NoteRenderer props={props} />)
+        }
+
+        let name = ""
+        if (props.name) {
+            for (let item of props.name) {
+                if (typeof item === 'string' && item.length > 0) {
+                    name = item
+                    break
+                }
+            }
+        }
+
+        if (!name) {
+            return (<NoteRenderer props={props} />)
+        } else {
+            name = name.trim().replaceAll(/\s+/g, ' ')
+            postContent = postContent.trim().replaceAll(/\s+/g, ' ')
+            if (!postContent.startsWith(name)) {
+                return (<ArticleRenderer props={props} />)
+            } else {
+                return (<NoteRenderer props={props} />)
+            }
+        }
+    }
+}
+---
+
+{discoverAndRender()}

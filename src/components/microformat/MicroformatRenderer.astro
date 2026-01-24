@@ -1,0 +1,18 @@
+---
+import { Mf2Document } from '../../types/mf2-document'
+import HEntryRenderer from './h-entry/HEntryRenderer.astro'
+
+export interface Props {
+  doc: Mf2Document
+}
+
+const { doc } = Astro.props
+const type = doc.type[0] || "unknown"
+---
+
+{type === 'h-entry' ? (
+  <p>This is an h-entry microformat document.</p>
+  <HEntryRenderer props={doc.properties} />
+) : (
+  <p>Microformat type: {type}</p>
+)}
