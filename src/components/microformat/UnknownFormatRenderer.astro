@@ -1,0 +1,13 @@
+---
+import { Mf2Properties } from '../../types/mf2-document'
+
+export interface Props {
+    props: Mf2Properties
+}
+
+const { props } = Astro.props
+---
+
+<p>Unknown microformat type.</p>
+<p>Raw properties:</p>
+<pre>{JSON.stringify(props, null, 2)}</pre>

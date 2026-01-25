@@ -1,26 +1,17 @@
 ---
 import type { Mf2Document } from "../../../types/mf2-document";
-import { drizzle } from "drizzle-orm/d1";
-import { eq } from "drizzle-orm";
-import * as schema from "../../../db/schema";
 import MicroformatRenderer from "../../../components/microformat/MicroformatRenderer.astro";
 
 export const prerender = false
 
-const { slug } = Astro.params
-if (!slug) {
-  return new Response(null, { status: 400 })
+const { scribble_db } = Astro.locals.runtime.env
+const stmt = scribble_db.prepare("select doc from scribble_content where json_extract(doc, '$.properties.slug') = json_array(?) limit 1")
+const result = await stmt.bind(Astro.params.slug).first()
+if (!result) {
+  return new Response(null, { status: 404 })
 }
 
-const db = drizzle(Astro.locals.runtime.env.scribble_db, { schema })
-
-const results = await db.select().from(schema.scribbleContent).where(eq(schema.scribbleContent.slug, slug)).limit(1)
-if (results.length === 0) {
-  return new Response(null, { status: 404})
-}
-
-const entry = results[0]
-const doc = JSON.parse(entry.doc) as Mf2Document
+const doc = JSON.parse(result['doc'] as string) as Mf2Document
 ---
 
 <MicroformatRenderer doc={doc} />
