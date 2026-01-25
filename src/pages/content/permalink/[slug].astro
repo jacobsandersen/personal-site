@@ -12,6 +12,10 @@ if (!result) {
 }
 
 const doc = JSON.parse(result['doc'] as string) as Mf2Document
+if (Array.isArray(doc.properties.deleted) && doc.properties.deleted.includes(true)) {
+  return new Response(null, { status: 410})
+}
+
 ---
 
 <MicroformatRenderer doc={doc} />
