@@ -6,7 +6,16 @@ export interface Props {
 }
 
 const { props } = Astro.props
+
+const rsvp = props.rsvp[0] as string
+const inReplyTo = props['in-reply-to'] && props['in-reply-to'].length > 0 ? (props['in-reply-to'][0] as string) : null
+const eventName = props.content && props.content.length > 0 ? (props.content[0] as string) : "an event"
 ---
 
-<p>This is a rsvp</p>
-<pre>{JSON.stringify(props, null, 2)}</pre>
+<div class="h-entry">
+    <p class="p-summary">
+        <a href="https://jacobandersen.dev" class="p-author h-card">Jacob Andersen</a>
+        RSVPs <span class="p-rsvp">{rsvp}</span> to 
+        {inReplyTo ? <a href={inReplyTo} class="u-in-reply-to">{eventName}</a> : <span>{eventName}</span>}
+    </p>
+</div>
