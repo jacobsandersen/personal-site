@@ -1,6 +1,7 @@
 ---
-import type { Mf2Document } from "../../../types/mf2-document";
-import MicroformatRenderer from "../../../components/microformat/MicroformatRenderer.astro";
+import Layout from "~/layouts/Layout.astro";
+import type { Mf2Document } from "~/types/mf2-document";
+import MicroformatRenderer from "~/components/microformat/MicroformatRenderer.astro";
 
 export const prerender = false
 
@@ -12,10 +13,12 @@ if (!result) {
 }
 
 const doc = JSON.parse(result['doc'] as string) as Mf2Document
-if (Array.isArray(doc.properties.deleted) && doc.properties.deleted.includes(true)) {
-  return new Response(null, { status: 410})
-}
+const isDeleted = Array.isArray(doc.properties.deleted) ? doc.properties.deleted.includes(true) : false
+const isVisible = Array.isArray(doc.properties['post-status']) ? ['published', 'unlisted'].includes(doc.properties['post-status'][0] as string) : true
 
+if (isDeleted || !isVisible) {
+  return new Response(null, { status: 404 })
+}
 ---
 
 <MicroformatRenderer doc={doc} />

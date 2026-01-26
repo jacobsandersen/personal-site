@@ -1,0 +1,23 @@
+---
+import { Mf2Properties } from '~/types/mf2-document'
+import { extractDates, ExtractedDates } from '~/util/dates'
+
+interface Props {
+    props?: Mf2Properties
+    extractedDates?: ExtractedDates
+}
+
+const { props, extractedDates } = Astro.props
+
+const extracted = props ? extractDates(props) : extractedDates
+if (!extracted) {
+    throw new Error('PostDates component requires either props or extractedDates to be provided.')
+}
+
+const createdRaw = extracted.createdAtRaw
+const createdDisplay = extracted.createdAtFull()
+const updatedRaw = extracted.updatedAtRaw
+const updatedDisplay = extracted.updatedAtFull()
+---
+
+<p>{createdDisplay && <span>Published <time class="dt-published" datetime={createdRaw}>at {extracted.createdAtDisplayTime} on {extracted.createdAtDisplay}</time></span>} {updatedDisplay && <span><em>(Updated <time class="dt-updated" datetime={updatedRaw}>at {extracted.updatedAtDisplayTime} on {extracted.updatedAtDisplay}</time>)</em></span>}</p>

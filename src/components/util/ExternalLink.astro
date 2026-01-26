@@ -1,0 +1,16 @@
+---
+import ExternalLinkIcon from '../icons/ExternalLinkIcon.astro'
+
+interface Props {
+    href: string
+    linkClass?: string[]
+    iconClass?: string[]
+}
+
+const { href, linkClass, iconClass } = Astro.props as Props
+---
+
+<span class="inline-flex items-center gap-1">
+    <a href={href} target="_blank" class:list={["italic", "underline", "decoration-dotted", "hover:decoration-wavy", ...(linkClass ? linkClass : [])]}><slot /></a>
+    <ExternalLinkIcon class:list={["size-4", ...(iconClass ? iconClass : [])]} />
+</span>

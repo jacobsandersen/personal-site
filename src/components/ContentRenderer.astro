@@ -1,0 +1,47 @@
+---
+import { Content } from '~/types/content'
+import ExternalLink from './util/ExternalLink.astro'
+
+interface Props {
+    content: Content
+}
+
+const { content } = Astro.props as Props
+
+const gapSizeMap = {
+    'sm': 'gap-1',
+    'md': 'gap-2',
+    'lg': 'gap-4',
+}
+---
+
+{(() => {
+    switch (content.type) {
+        case 'text':
+            return <p>{content.text}</p>
+        case 'html':
+            return <div class="prose dark:prose-invert" set:html={content.html} />
+        case 'link':
+            const text = content.text ?? content.url
+            if (content.external) {
+                return <ExternalLink href={content.url}>{text}</ExternalLink>
+            } else {
+                return <a href={content.url}>{text}</a>
+            }
+        case 'stack':
+            const gap = gapSizeMap[content.gap] || gapSizeMap['sm']
+            switch (content.direction) {
+                case 'horizontal':
+                    return <div class:list={["flex", "flex-row", gap]}>
+                        {content.items.map((item) => <Astro.self content={item} />)}
+                    </div>
+                case 'vertical':
+                default:
+                    return <div class:list={["flex", "flex-col", gap]}>
+                        {content.items.map((item) => <Astro.self content={item} />)}
+                    </div>
+            }
+        default:
+            return <p>Unsupported content type: {content.type}</p>
+    }
+})()}

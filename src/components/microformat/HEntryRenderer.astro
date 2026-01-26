@@ -1,0 +1,103 @@
+---
+import { Mf2Properties } from '~/types/mf2-document'
+import Mf2Extractor from '~/util/extractor/Mf2Extractor'
+import RsvpMf2Extractor from '~/util/extractor/RsvpMf2Extractor'
+import RepostMf2Extractor from '~/util/extractor/RepostMf2Extractor'
+import LikeMf2Extractor from '~/util/extractor/LikeMf2Extractor'
+import ReplyMf2Extractor from '~/util/extractor/ReplyMf2Extractor'
+import VideoMf2Extractor from '~/util/extractor/VideoMf2Extractor'
+import PhotoMf2Extractor from '~/util/extractor/PhotoMf2Extractor'
+import ArticleMf2Extractor from '~/util/extractor/ArticleMf2Extractor'
+import NoteMf2Extractor from '~/util/extractor/NoteMf2Extractor'
+import PostDates from '~/components/post-fragments/PostDates.astro'
+import Categories from '~/components/post-fragments/Categories.astro'
+import { hasPropWithValidUrl, isValidRsvp } from '~/util/mf2-util'
+import PermalinkLayout from '~/layouts/PermalinkLayout.astro'
+import ContentRenderer from '../ContentRenderer.astro'
+
+export interface Props {
+    props: Mf2Properties
+}
+
+const { props } = Astro.props
+
+let extractor: Mf2Extractor
+if (isValidRsvp(props)) {
+    extractor = new RsvpMf2Extractor(props)
+} else if (hasPropWithValidUrl(props, 'repost-of')) {
+    extractor = new RepostMf2Extractor(props)
+} else if (hasPropWithValidUrl(props, 'like-of')) {
+    extractor = new LikeMf2Extractor(props)
+} else if (hasPropWithValidUrl(props, 'in-reply-to')) {
+    extractor = new ReplyMf2Extractor(props)
+} else if (hasPropWithValidUrl(props, 'video')) {
+    extractor = new VideoMf2Extractor(props)
+} else if (hasPropWithValidUrl(props, 'photo')) {
+    extractor = new PhotoMf2Extractor(props)
+} else {
+    let postContent = ""
+    if (props.content && props.content.length > 0) {
+        for (let item of props.content) {
+            if (typeof item === 'string' && item.length > 0) {
+                postContent = item
+                break
+            } else if (typeof item === 'object' && item !== null && 'html' in item) {
+                const html = (item as any).html
+                if (typeof html === 'string' && html.length > 0) {
+                    postContent = html
+                    break
+                }
+            }
+        }
+    } else if (props.summary && props.summary.length > 0) {
+        for (let item of props.summary) {
+            if (typeof item === 'string' && item.length > 0) {
+                postContent = item
+                break
+            }
+        }
+    }
+
+    if (!postContent) {
+        extractor = new NoteMf2Extractor(props)
+    } else {
+        let name = ""
+        if (props.name) {
+            for (let item of props.name) {
+                if (typeof item === 'string' && item.length > 0) {
+                    name = item
+                    break
+                }
+            }
+        }
+
+        if (!name) {
+            extractor = new NoteMf2Extractor(props)
+        } else {
+            name = name.trim().replaceAll(/\s+/g, ' ')
+            props.name = [name]
+
+            postContent = postContent.trim().replaceAll(/\s+/g, ' ')
+            if (!postContent.startsWith(name)) {
+                extractor = new ArticleMf2Extractor(props)
+            } else {
+                extractor = new NoteMf2Extractor(props)
+            }
+        }
+    }
+}
+
+const RootElem = extractor.getRootElem()
+const content = extractor.getContent()
+const summary = extractor.getSummary()
+---
+
+<PermalinkLayout title={extractor.getTitle()}>
+    <RootElem class:list={["h-entry"]}>
+        <h1 class:list={["text-3xl", ...extractor.getTitleClasses()]}>{extractor.getTitle()}</h1>
+        <PostDates props={props} />
+        {summary && <p class="p-summary">{summary}</p>}
+        <ContentRenderer content={content} />
+        <Categories categories={extractor.getHashtags()} />
+    </RootElem>
+</PermalinkLayout>

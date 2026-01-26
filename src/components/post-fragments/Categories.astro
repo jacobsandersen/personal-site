@@ -1,0 +1,15 @@
+---
+interface Props {
+    categories: string[]
+}
+
+const { categories } = Astro.props as Props
+---
+
+{categories.length > 0 && (
+    <ul class="list-none flex gap-2">
+        {categories.map((category) => (
+            <li>{category}</li>
+        ))}
+    </ul>
+)}

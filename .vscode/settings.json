@@ -1,0 +1,6 @@
+{
+    "sonarlint.connectedMode.project": {
+        "connectionId": "jacobsandersen",
+        "projectKey": "jacobsandersen_personal-site"
+    }
+}

@@ -1,5 +1,13 @@
 ---
-import '../styles/global.css'
+import '~/styles/global.css'
+
+interface Props {
+	pageTitle?: string
+}
+
+const { pageTitle } = Astro.props as Props
+
+const title = pageTitle ? pageTitle : ''
 ---
 
 <!doctype html>
@@ -11,13 +19,9 @@ import '../styles/global.css'
 		<link rel="authorization_endpoint" href="https://indieauth.com/auth">
 		<link rel="token_endpoint" href="https://tokens.indieauth.com/token">
 		<link rel="micropub" href="https://scribble.jacobandersen.dev" />
-		<title>Jacob Andersen</title>
+		<title>{title} &ndash; Jacob Andersen</title>
 	</head>
 	<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 h-screen">
 		<slot />
-		<ul>
-			<li><a href="https://github.com/jacobsandersen" rel="me">@jacobsandersen on Github</a></li>
-			<li><a href="mailto:jacob@jacobandersen.dev" rel="me">jacob@jacobandersen.dev</a></li>
-		</ul>
 	</body>
 </html>
