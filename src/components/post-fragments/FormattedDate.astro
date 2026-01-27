@@ -1,0 +1,12 @@
+---
+interface Props {
+    raw: string,
+    formatted: string,
+    hidden: boolean,
+    class: string
+}
+
+const { raw, formatted, hidden, class: className } = Astro.props
+---
+
+<time datetime={raw} class:list={[{hidden}, ...className]}>{formatted}</time>

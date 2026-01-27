@@ -1,6 +1,7 @@
 ---
 import { Mf2Properties } from '~/types/mf2-document'
 import { extractDates, ExtractedDates } from '~/util/dates'
+import FormattedDate from './FormattedDate.astro'
 
 interface Props {
     props?: Mf2Properties
@@ -14,10 +15,12 @@ if (!extracted) {
     throw new Error('PostDates component requires either props or extractedDates to be provided.')
 }
 
-const createdRaw = extracted.createdAtRaw
-const createdDisplay = extracted.createdAtFull()
-const updatedRaw = extracted.updatedAtRaw
-const updatedDisplay = extracted.updatedAtFull()
+const hideUpdated = extracted.updatedSameAsCreated()
 ---
 
-<p>{createdDisplay && <span>Published <time class="dt-published" datetime={createdRaw}>at {extracted.createdAtDisplayTime} on {extracted.createdAtDisplay}</time></span>} {updatedDisplay && <span><em>(Updated <time class="dt-updated" datetime={updatedRaw}>at {extracted.updatedAtDisplayTime} on {extracted.updatedAtDisplay}</time>)</em></span>}</p>
+<div class="text-xs">
+    <p class="flex gap-x-1">
+        <span><FormattedDate raw={extracted.createdAtRaw} formatted={`Published ${extracted.createdAtDisplayTime}, ${extracted.createdAtDisplay}`} hidden={false} class="dt-published" /></span>
+        <span><em><FormattedDate raw={extracted.updatedAtRaw} formatted={`(Updated ${extracted.updatedAtDisplayTime}, ${extracted.updatedAtDisplay})`} hidden={hideUpdated} class="dt-updated" /></em></span>
+    </p>
+</div>

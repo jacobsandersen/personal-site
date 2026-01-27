@@ -19,9 +19,14 @@ const title = pageTitle ? pageTitle : ''
 		<link rel="authorization_endpoint" href="https://indieauth.com/auth">
 		<link rel="token_endpoint" href="https://tokens.indieauth.com/token">
 		<link rel="micropub" href="https://scribble.jacobandersen.dev" />
+		<slot name="additionalHead" />
 		<title>{title} &ndash; Jacob Andersen</title>
 	</head>
 	<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 h-screen">
-		<slot />
+		<div class="h-full w-full flex justify-center">
+			<div class="h-full w-1/2 flex-col items-center gap-y-2">
+				<slot />
+			</div>
+		</div>
 	</body>
 </html>

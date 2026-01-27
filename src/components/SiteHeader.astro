@@ -1,0 +1,26 @@
+---
+interface Props {
+    shouldMarkupAuthor: boolean
+}
+
+const { shouldMarkupAuthor } = Astro.props as Props
+---
+
+<header class="flex justify-between items-center py-4">
+    <div>
+        <a href="/" class:list={["text-xl", "font-bold", {"h-card": shouldMarkupAuthor}]}>
+            <img src="/images/portrait/150.webp" alt="Jacob Andersen" class:list={["inline-block", "w-8", "h-8", "rounded-full", "mr-1", "aspect-3/2", "object-cover", "object-bottom", {"u-author": shouldMarkupAuthor}]} />
+            <span class:list={["align-middle", {"p-name": shouldMarkupAuthor}]}>
+                Jacob Andersen
+            </span>
+        </a>
+    </div>
+    <nav>
+        <ul class="flex space-x-4">
+            <li><a href="/" class="hover:underline">Home</a></li>
+            <li><a href="#" class="hover:underline">Blog</a></li>
+            <li><a href="#" class="hover:underline">Projects</a></li>
+            <li><a href="#" class="hover:underline">Contact</a></li>
+        </ul>
+    </nav>
+</header>
