@@ -27,6 +27,12 @@ export interface VideoNode {
     poster?: string
 }
 
+export interface MapNode {
+    type: "map",
+    latitude: number,
+    longitude: number
+}
+
 export type StackDirection = "vertical" | "horizontal";
 export type StackGap = "sm" | "md" | "lg";
 
@@ -37,7 +43,7 @@ export interface ContentStack {
     items: Content[]
 }
 
-export type Content = TextNode | ImageNode | VideoNode | HtmlNode | LinkNode | ContentStack
+export type Content = TextNode | ImageNode | VideoNode | HtmlNode | LinkNode | ContentStack | MapNode
 
 export const text = (value: string): TextNode => ({
     type: "text",
@@ -66,6 +72,12 @@ export const video = (url: string, poster?: string): VideoNode => ({
     type: "video",
     url,
     poster
+})
+
+export const map = (latitude: number, longitude: number): MapNode => ({
+    type: "map",
+    latitude,
+    longitude
 })
 
 export const contentStack = (direction: StackDirection, gap: StackGap, ...items: Content[]): ContentStack => ({

@@ -9,6 +9,7 @@ import VideoMf2Extractor from '~/util/extractor/VideoMf2Extractor'
 import PhotoMf2Extractor from '~/util/extractor/PhotoMf2Extractor'
 import ArticleMf2Extractor from '~/util/extractor/ArticleMf2Extractor'
 import NoteMf2Extractor from '~/util/extractor/NoteMf2Extractor'
+import CheckinMf2Extractor from '~/util/extractor/CheckinMf2Extractor'
 import PostDates from '~/components/post-fragments/PostDates.astro'
 import Categories from '~/components/post-fragments/Categories.astro'
 import { hasPropWithValidUrl, isValidRsvp } from '~/util/mf2-util'
@@ -34,6 +35,8 @@ if (isValidRsvp(props)) {
     extractor = new VideoMf2Extractor(props)
 } else if (hasPropWithValidUrl(props, 'photo')) {
     extractor = new PhotoMf2Extractor(props)
+} else if (props.checkin) {
+    extractor = new CheckinMf2Extractor(props)
 } else {
     let postContent = ""
     if (props.content && props.content.length > 0) {
@@ -94,7 +97,7 @@ const summary = extractor.getSummary()
 
 <PermalinkLayout title={extractor.getTitle()}>
     <RootElem class:list={["h-entry"]}>
-        <div class="flex flex-col items-center gap-y-1 mt-4">
+        <div class="flex flex-col items-center gap-y-1 mt-4s">
             <h1 class:list={["font-serif", "text-3xl", ...extractor.getTitleClasses()]}>{extractor.getTitle()}</h1>
             <PostDates props={props} />
         </div>
