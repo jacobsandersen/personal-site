@@ -103,8 +103,10 @@ const summary = extractor.getSummary()
         </div>
         <hr class="mt-6 mb-4 border-dotted" />
         {summary && <p class="p-summary">{summary}</p>}
-        <ContentRenderer content={content} />
+        <div class="e-content">
+            <ContentRenderer content={content} />
+        </div>
         <Categories categories={extractor.getHashtags()} />
-        <a href="/" class="u-author hidden"></a>
+        <a href="/" class="u-author"></a>
     </RootElem>
 </PermalinkLayout>
