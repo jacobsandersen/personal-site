@@ -1,0 +1,67 @@
+---
+import { v4 as uuidv4 } from 'uuid'
+
+interface TileData {
+    url: string;
+    attribution: string;
+}
+
+export const OpenStreetMapTileData: TileData = {
+    url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    attribution: "© OpenStreetMap",
+}
+
+interface Props {
+    latitude: number;
+    longitude: number;
+    zoom: number;
+    tileData: TileData;
+    class: string;
+}
+
+const { latitude, longitude, zoom, tileData, class: className } = Astro.props;
+const mapId = `map-${uuidv4()}`;
+---
+
+<leaflet-element 
+    data-mapid={mapId} 
+    data-latitude={latitude} 
+    data-longitude={longitude} data-zoom={zoom}
+    data-zoom={zoom} 
+    data-tile-url={tileData.url} 
+    data-tile-attrib={tileData.attribution}
+/>
+
+<div id={mapId} class={className}></div>
+
+<script>
+    import L, { LatLngExpression, TileLayer } from "leaflet"
+    import "leaflet/dist/leaflet.css"
+
+    class LeafletElement extends HTMLElement{
+        constructor() {
+            super()
+
+            const coords: LatLngExpression = [
+                Number(this.dataset.latitude),
+                Number(this.dataset.longitude)
+            ]
+
+            const map = L.map(this.dataset.mapid!, { renderer: L.canvas() })
+                .setView(coords, Number(this.dataset.zoom));
+
+            L.tileLayer(this.dataset.tileUrl!, {
+                attribution: this.dataset.tileAttrib!,
+            }).addTo(map)
+
+            L.circle(coords, {
+                color: "red",
+                fillColor: "#f03",
+                fillOpacity: 0.5,
+                radius: 500,
+            }).addTo(map);
+        }
+    }
+
+    window.customElements.define('leaflet-element', LeafletElement);
+</script>

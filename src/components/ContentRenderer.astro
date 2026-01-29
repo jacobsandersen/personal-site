@@ -1,6 +1,7 @@
 ---
 import { Content } from '~/types/content'
 import ExternalLink from './util/ExternalLink.astro'
+import Map, { OpenStreetMapTileData } from './post-fragments/Map.astro'
 
 interface Props {
     content: Content
@@ -29,14 +30,7 @@ const gapSizeMap = {
                 return <a href={content.url}>{text}</a>
             }
         case 'map':
-            const mapSrc = `https://maps.google.com/maps?q=${content.latitude},${content.longitude}&z=15&output=embed`
-            return <div class="w-full h-64">
-                <iframe
-                    width="100%"
-                    height="100%"
-                    src={mapSrc}>
-                </iframe>
-            </div>
+            return <Map latitude={content.latitude} longitude={content.longitude} zoom={13} tileData={OpenStreetMapTileData} class="w-full h-64" />
         case 'stack':
             const gap = gapSizeMap[content.gap] || gapSizeMap['sm']
             switch (content.direction) {
