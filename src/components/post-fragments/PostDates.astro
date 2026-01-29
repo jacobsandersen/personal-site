@@ -15,12 +15,12 @@ if (!extracted) {
     throw new Error('PostDates component requires either props or extractedDates to be provided.')
 }
 
-const hideUpdated = extracted.updatedSameAsCreated()
+const hideUpdated = !extracted.updatedSameAsCreated()
 ---
 
 <div class="text-xs">
     <p class="flex gap-x-1">
         <span><FormattedDate raw={extracted.createdAtRaw} formatted={`Published ${extracted.createdAtDisplayTime}, ${extracted.createdAtDisplay}`} hidden={false} class="dt-published" /></span>
-        <span><em><FormattedDate raw={extracted.updatedAtRaw} formatted={`(Updated ${extracted.updatedAtDisplayTime}, ${extracted.updatedAtDisplay})`} hidden={hideUpdated} class="dt-updated" /></em></span>
+        <span><FormattedDate raw={extracted.updatedAtRaw} formatted={`Updated ${extracted.updatedAtDisplayTime}, ${extracted.updatedAtDisplay}`} hidden={hideUpdated} prefixMDash={true} class="dt-updated" /></em></span>
     </p>
 </div>

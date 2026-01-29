@@ -1,27 +1,23 @@
 ---
-import { Content } from '~/types/content'
+import { Content } from '~/lib/content'
 import ExternalLink from './util/ExternalLink.astro'
 import Map, { OpenStreetMapTileData } from './post-fragments/Map.astro'
+import HtmlRenderer from './HtmlRenderer.astro'
+import ContainerRenderer from './ContainerRenderer.astro'
 
 interface Props {
     content: Content
 }
 
 const { content } = Astro.props as Props
-
-const gapSizeMap = {
-    'sm': 'gap-1',
-    'md': 'gap-2',
-    'lg': 'gap-4',
-}
 ---
 
 {(() => {
     switch (content.type) {
         case 'text':
-            return <p>{content.text}</p>
+            return <p class:list={[...content.classes]}>{content.text}</p>
         case 'html':
-            return <div class="prose dark:prose-invert" set:html={content.html} />
+            return <HtmlRenderer html={content.html} />
         case 'link':
             const text = content.text ?? content.url
             if (content.external) {
@@ -29,21 +25,21 @@ const gapSizeMap = {
             } else {
                 return <a href={content.url}>{text}</a>
             }
+        case 'image':
+            return <img src={content.url} alt={content.alt} class="max-w-1/2 h-auto border-2 rounded-sm" />
+        case 'container':
+            return <ContainerRenderer
+                class={content.classes}
+                items={content.items} 
+            />
         case 'map':
-            return <Map latitude={content.latitude} longitude={content.longitude} zoom={13} tileData={OpenStreetMapTileData} class="w-full h-64" />
-        case 'stack':
-            const gap = gapSizeMap[content.gap] || gapSizeMap['sm']
-            switch (content.direction) {
-                case 'horizontal':
-                    return <div class:list={["flex", "flex-row", gap]}>
-                        {content.items.map((item) => <Astro.self content={item} />)}
-                    </div>
-                case 'vertical':
-                default:
-                    return <div class:list={["flex", "flex-col", gap]}>
-                        {content.items.map((item) => <Astro.self content={item} />)}
-                    </div>
-            }
+            return <Map 
+                latitude={content.latitude} 
+                longitude={content.longitude} 
+                zoom={13} 
+                tileData={OpenStreetMapTileData} 
+                class="w-full h-64" 
+            />
         default:
             return <p>Unsupported content type: {content.type}</p>
     }

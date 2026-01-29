@@ -1,5 +1,5 @@
 import Mf2Extractor from "./Mf2Extractor";
-import { Content, map, text, vStack } from "~/types/content";
+import { container, Content, map, text } from "~/lib/content";
 
 export interface Checkin {
     latitude: number,
@@ -34,7 +34,7 @@ export default class CheckinMf2Extractor extends Mf2Extractor {
         }
     }
 
-    getContent(): Content {
+    async getContent(): Promise<Content> {
         const checkin = this.getCheckin()
 
         const content = this.props.content
@@ -42,10 +42,12 @@ export default class CheckinMf2Extractor extends Mf2Extractor {
             throw new Error("No content found for check-in")
         }
 
-        return vStack(
-            "sm",
-            map(checkin.latitude, checkin.longitude),
-            text(`Checked in at ${checkin.name}`)
-        )
+        return container([
+            container([
+                map(checkin.latitude, checkin.longitude),
+                text(`Checked in at ${checkin.name}`, ["font-bold", "text-lg"])
+            ], ["flex", "flex-col", "items-center", "justify-center", "gap-y-2"]),
+            text(content[0] as string)
+        ], ["flex", "flex-col", "gap-y-4"])
     }
 }

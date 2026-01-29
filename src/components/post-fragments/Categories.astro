@@ -7,9 +7,9 @@ const { categories } = Astro.props as Props
 ---
 
 {categories.length > 0 && (
-    <ul class="list-none flex gap-2">
+    <ul class="list-none flex gap-2 text-sm">
         {categories.map((category) => (
-            <li>{category}</li>
+            <li class="hover:underline decoration-wavy"><a href={`/content/tagged/${category}`}>#{category}</a></li>
         ))}
     </ul>
 )}

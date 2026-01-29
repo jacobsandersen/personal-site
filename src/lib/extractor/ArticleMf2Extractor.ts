@@ -1,5 +1,5 @@
-import { Content, html, text } from "~/types/content";
-import { getFirstPropertyOrDefault } from "../mf2-util";
+import { Content, html, text } from "~/lib/content";
+import { getFirstPropertyOrDefault } from "../../util/mf2-util";
 import Mf2Extractor from "./Mf2Extractor";
 
 export default class ArticleMf2Extractor extends Mf2Extractor {
@@ -15,7 +15,7 @@ export default class ArticleMf2Extractor extends Mf2Extractor {
         return ['p-name']
     }
 
-    getContent(): Content {
+    async getContent(): Promise<Content> {
         const content = getFirstPropertyOrDefault<unknown>(this.props, 'content', null)
         if (typeof content === 'string') {
             return text(content)

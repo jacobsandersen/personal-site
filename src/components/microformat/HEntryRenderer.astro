@@ -1,20 +1,10 @@
 ---
 import { Mf2Properties } from '~/types/mf2-document'
-import Mf2Extractor from '~/util/extractor/Mf2Extractor'
-import RsvpMf2Extractor from '~/util/extractor/RsvpMf2Extractor'
-import RepostMf2Extractor from '~/util/extractor/RepostMf2Extractor'
-import LikeMf2Extractor from '~/util/extractor/LikeMf2Extractor'
-import ReplyMf2Extractor from '~/util/extractor/ReplyMf2Extractor'
-import VideoMf2Extractor from '~/util/extractor/VideoMf2Extractor'
-import PhotoMf2Extractor from '~/util/extractor/PhotoMf2Extractor'
-import ArticleMf2Extractor from '~/util/extractor/ArticleMf2Extractor'
-import NoteMf2Extractor from '~/util/extractor/NoteMf2Extractor'
-import CheckinMf2Extractor from '~/util/extractor/CheckinMf2Extractor'
 import PostDates from '~/components/post-fragments/PostDates.astro'
 import Categories from '~/components/post-fragments/Categories.astro'
-import { hasPropWithValidUrl, isValidRsvp } from '~/util/mf2-util'
 import PermalinkLayout from '~/layouts/PermalinkLayout.astro'
 import ContentRenderer from '../ContentRenderer.astro'
+import { discoverExtractor } from '~/lib/extractor/ExtractorDiscoverer'
 
 export interface Props {
     props: Mf2Properties
@@ -22,91 +12,28 @@ export interface Props {
 
 const { props } = Astro.props
 
-let extractor: Mf2Extractor
-if (isValidRsvp(props)) {
-    extractor = new RsvpMf2Extractor(props)
-} else if (hasPropWithValidUrl(props, 'repost-of')) {
-    extractor = new RepostMf2Extractor(props)
-} else if (hasPropWithValidUrl(props, 'like-of')) {
-    extractor = new LikeMf2Extractor(props)
-} else if (hasPropWithValidUrl(props, 'in-reply-to')) {
-    extractor = new ReplyMf2Extractor(props)
-} else if (hasPropWithValidUrl(props, 'video')) {
-    extractor = new VideoMf2Extractor(props)
-} else if (hasPropWithValidUrl(props, 'photo')) {
-    extractor = new PhotoMf2Extractor(props)
-} else if (props.checkin) {
-    extractor = new CheckinMf2Extractor(props)
-} else {
-    let postContent = ""
-    if (props.content && props.content.length > 0) {
-        for (let item of props.content) {
-            if (typeof item === 'string' && item.length > 0) {
-                postContent = item
-                break
-            } else if (typeof item === 'object' && item !== null && 'html' in item) {
-                const html = (item as any).html
-                if (typeof html === 'string' && html.length > 0) {
-                    postContent = html
-                    break
-                }
-            }
-        }
-    } else if (props.summary && props.summary.length > 0) {
-        for (let item of props.summary) {
-            if (typeof item === 'string' && item.length > 0) {
-                postContent = item
-                break
-            }
-        }
-    }
+const cache = Astro.locals.runtime.env.personal_site_content_cache
 
-    if (!postContent) {
-        extractor = new NoteMf2Extractor(props)
-    } else {
-        let name = ""
-        if (props.name) {
-            for (let item of props.name) {
-                if (typeof item === 'string' && item.length > 0) {
-                    name = item
-                    break
-                }
-            }
-        }
-
-        if (!name) {
-            extractor = new NoteMf2Extractor(props)
-        } else {
-            name = name.trim().replaceAll(/\s+/g, ' ')
-            props.name = [name]
-
-            postContent = postContent.trim().replaceAll(/\s+/g, ' ')
-            if (!postContent.startsWith(name)) {
-                extractor = new ArticleMf2Extractor(props)
-            } else {
-                extractor = new NoteMf2Extractor(props)
-            }
-        }
-    }
-}
-
+const extractor = discoverExtractor(props)
 const RootElem = extractor.getRootElem()
-const content = extractor.getContent()
+const content = await extractor.getContent(cache)
 const summary = extractor.getSummary()
 ---
 
 <PermalinkLayout title={extractor.getTitle()}>
     <RootElem class:list={["h-entry"]}>
-        <div class="flex flex-col items-center gap-y-1 mt-4s">
+        <div class="flex flex-col items-center gap-y-1 mt-8">
             <h1 class:list={["font-serif", "text-3xl", ...extractor.getTitleClasses()]}>{extractor.getTitle()}</h1>
             <PostDates props={props} />
         </div>
-        <hr class="mt-6 mb-4 border-dotted" />
-        {summary && <p class="p-summary">{summary}</p>}
-        <div class="e-content">
-            <ContentRenderer content={content} />
+        <hr class="my-6 border-dotted" />
+        <div class="border-2 border-dashed border-blue-400 dark:border-blue-900 p-4 rounded-sm">
+            {summary && <p class="p-summary">{summary}</p>}
+            <div class="e-content mb-4">
+                <ContentRenderer content={content} />
+            </div>
+            <Categories categories={extractor.getCategories()} />
         </div>
-        <Categories categories={extractor.getHashtags()} />
         <a href="/" class="u-author"></a>
     </RootElem>
 </PermalinkLayout>

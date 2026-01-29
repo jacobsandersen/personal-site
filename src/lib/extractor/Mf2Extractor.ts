@@ -1,6 +1,6 @@
 import { Mf2Properties } from "~/types/mf2-document";
-import { extractDates, ExtractedDates } from "../dates";
-import { Content } from "~/types/content";
+import { extractDates, ExtractedDates } from "../../util/dates";
+import { Content } from "~/lib/content";
 
 export default abstract class Mf2Extractor {
     protected readonly props: Mf2Properties
@@ -31,7 +31,7 @@ export default abstract class Mf2Extractor {
         return ''
     }
 
-    abstract getContent(): Content;
+    abstract getContent(cache?: KVNamespace<string>): Promise<Content>;
 
     getCategories(): string[] {
         return this.props.category ? (this.props.category as string[]) : []

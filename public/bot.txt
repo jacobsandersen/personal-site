@@ -1,0 +1,15 @@
+Hello!
+
+This website is part of the IndieWeb: https://indieweb.org/.
+
+If you're here, you're either a bot yourself or you noticed my website visiting yours.
+
+If I like, reply to, or otherwise reference your content, I create a post that links to it. My website will visit your website to check the content
+so I can render it locally.
+
+If you do not want me to do this, please add my user agent to your robots.txt and disallow it. That's the first thing I check! And, my apologies.
+
+Otherwise, I'm harmless - just grabbing a snapshot for my own UI.
+
+Best,
+Jacob

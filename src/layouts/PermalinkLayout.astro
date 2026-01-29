@@ -11,7 +11,7 @@ const { title } = Astro.props as Props
 
 <BaseLayout pageTitle={title}>
     <SiteHeader shouldMarkupAuthor={true} />
-    <main>
+    <main class="pb-8">
         <slot />
     </main>
 </BaseLayout>

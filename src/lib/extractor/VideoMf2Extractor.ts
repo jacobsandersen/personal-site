@@ -1,6 +1,6 @@
 import { Mf2Properties } from "~/types/mf2-document";
 import Mf2Extractor from "./Mf2Extractor";
-import { Content, text, vStack } from "~/types/content";
+import { Content, container, text } from "~/lib/content";
 
 export default class VideoMf2Extractor extends Mf2Extractor {
     constructor(props: Mf2Properties) {
@@ -12,11 +12,10 @@ export default class VideoMf2Extractor extends Mf2Extractor {
         return "Video Content";
     }
 
-    getContent(): Content {
-        return vStack(
-            "sm",
+    async getContent(): Promise<Content> {
+        return container([
             text("Video Content")
-        )
+        ], ["flex", "flex-col", "items-center", "justify-center", "gap-y-4"]);
     }
 
 }

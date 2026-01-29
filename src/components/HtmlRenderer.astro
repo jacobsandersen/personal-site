@@ -1,0 +1,9 @@
+---
+interface Props {
+    html: string
+}
+
+const { html } = Astro.props as Props
+---
+
+<div class="prose prose-blue dark:prose-invert prose-headings:font-serif prose-headings:my-4" set:html={html} />

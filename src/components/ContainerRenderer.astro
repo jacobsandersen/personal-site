@@ -1,0 +1,15 @@
+---
+import { Content } from '~/lib/content'
+import ContentRenderer from './ContentRenderer.astro'
+
+interface Props {
+    items: Content[],
+    class: string[]
+}
+
+const { items, class: className } = Astro.props as Props
+---
+
+<div class:list={[...className]}>
+    {items.map((item) => <ContentRenderer content={item} />)}
+</div>

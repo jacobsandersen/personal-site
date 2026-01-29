@@ -1,7 +1,12 @@
-import { Content, hStack, link, text, TextNode } from "~/types/content";
+import { Content, container, link, text, TextNode } from "~/lib/content";
 import ReplyMf2Extractor from "./ReplyMf2Extractor";
+import { Mf2Properties } from "~/types/mf2-document";
 
 export default class RsvpMf2Extractor extends ReplyMf2Extractor {
+    constructor(props: Mf2Properties) {
+        super(props);
+    }
+
     getTitle(): string {
         return `RSVP for ${this.getEvent()}`
     }
@@ -26,11 +31,11 @@ export default class RsvpMf2Extractor extends ReplyMf2Extractor {
     }
 
 
-    getContent(): Content {
+    async getContent(): Promise<Content> {
         const event = this.getEvent()
         const rsvp = this.getRsvp()
 
-        const eventLink = link(this.getInReplyTo(), event, true)
+        const eventLink = link(this.remoteUrl, event, true)
 
         let fragment: TextNode
         switch (rsvp.toLowerCase()) {
@@ -51,6 +56,9 @@ export default class RsvpMf2Extractor extends ReplyMf2Extractor {
                 break
         }
 
-        return hStack("sm", fragment, eventLink)
+        return container([
+            fragment,
+            eventLink
+        ], ["flex", "items-center", "justify-center", "gap-x-2"])
     }
 }
