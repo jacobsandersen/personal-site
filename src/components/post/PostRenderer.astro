@@ -1,0 +1,43 @@
+---
+import { Post } from "~/lib/content";
+import ArticlePost from "./ArticlePost.astro";
+import CheckinPost from "./CheckinPost.astro";
+import LikePost from "./LikePost.astro";
+import NotePost from "./NotePost.astro";
+import RepostPost from "./RepostPost.astro";
+import RsvpPost from "./RsvpPost.astro";
+import BookmarkPost from "./BookmarkPost.astro";
+import PhotoPost from "./PhotoPost.astro";
+import ReplyPost from "./ReplyPost.astro";
+
+interface Props {
+    content: Post;
+}
+
+const { content } = Astro.props as Props;
+---
+
+{
+    (() => {
+        switch (content.type) {
+            case "article":
+                return <ArticlePost article={content} />
+            case "checkin":
+                return <CheckinPost checkin={content} />
+            case "like":
+                return <LikePost like={content} />
+            case "note":
+                return <NotePost note={content} />
+            case "repost":
+                return <RepostPost repost={content} />
+            case "rsvp":
+                return <RsvpPost rsvp={content} />
+            case "photo":
+                return <PhotoPost photo={content} />
+            case "reply":
+                return <ReplyPost reply={content} />
+            case "bookmark":
+                return <BookmarkPost bookmark={content} />
+        }
+    })()
+}

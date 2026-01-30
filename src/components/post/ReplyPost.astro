@@ -1,0 +1,22 @@
+---
+import { Reply } from '~/lib/content'
+import ExternalLink from '../util/ExternalLink.astro'
+import ContentRenderer from '../content/ContentRenderer.astro'
+import ReferencedContent from '../post-fragments/ReferencedContent.astro'
+
+interface Props {
+    reply: Reply
+}
+
+const { reply } = Astro.props as Props
+---
+
+<div class="tw:flex tw:flex-col tw:items-center tw:gap-y-4">
+    <h2 class="tw:text-xl tw:font-bold">Reply to <em><ExternalLink href={reply.inReplyTo}>{reply.inReplyTo}</ExternalLink></em></h2>
+    <ContentRenderer content={reply.content} />
+
+    {/* TODO: should use blockquote instead */}
+    <div class="ml-4">
+        <ReferencedContent referencedContent={reply.referencedContent} />
+    </div>
+</div>

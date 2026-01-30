@@ -1,0 +1,16 @@
+---
+import { Bookmark } from '~/lib/content'
+import ContentRenderer from '../content/ContentRenderer.astro'
+import ExternalLink from '../util/ExternalLink.astro'
+
+interface Props {
+    bookmark: Bookmark
+}
+
+const { bookmark } = Astro.props as Props
+---
+
+<div class="tw:flex tw:flex-col tw:gap-y-2">
+    <h2 class="tw:text-xl font-bold">Bookmark: <ExternalLink href={bookmark.bookmarkOf}>{bookmark.bookmarkOf}</ExternalLink></h2>
+    <ContentRenderer content={bookmark.content} />
+</div>

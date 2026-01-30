@@ -1,0 +1,18 @@
+---
+import { Post } from '~/lib/content'
+import PostRenderer from '../post/PostRenderer.astro'
+
+interface Props {
+    referencedContent: Post | null
+}
+
+const { referencedContent } = Astro.props as Props
+---
+
+{referencedContent ? (
+    <div class="tw:p-6 tw:rounded-md tw:bg-blue-100 tw:dark:bg-blue-900 tw:border tw:border-blue-300 tw:dark:border-blue-700">
+        <PostRenderer content={referencedContent} />
+    </div>
+) : (
+    <p>No preview is available for the referenced content. Please visit the original post!</p>
+)}

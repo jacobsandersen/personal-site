@@ -10,4 +10,4 @@ interface Props {
 const { raw, formatted, hidden, prefixMDash = false, class: className } = Astro.props
 ---
 
-<time datetime={raw} class:list={[{hidden}, className]}>{prefixMDash && <span>&mdash; </span>}{formatted}</time>
+<time datetime={raw} class:list={[{'tw:hidden': hidden}, className]}>{prefixMDash && <span>&mdash; </span>}{formatted}</time>

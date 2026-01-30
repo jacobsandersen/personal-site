@@ -1,0 +1,14 @@
+---
+import { Note } from '~/lib/content'
+import StylizedQuote from '../post-fragments/StylizedQuote.astro'
+
+interface Props {
+    note: Note
+}
+
+const { note } = Astro.props as Props
+---
+
+<StylizedQuote class={[]}>
+    {note.content}
+</StylizedQuote>

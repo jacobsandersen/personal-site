@@ -1,0 +1,9 @@
+---
+interface Props {
+    html: string
+}
+
+const { html } = Astro.props as Props
+---
+
+<div class:list={["tw:prose", "tw:prose-blue", "tw:dark:prose-invert", "tw:prose-headings:font-serif", "tw:prose-headings:my-4"]} set:html={html} />

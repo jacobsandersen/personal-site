@@ -4,12 +4,12 @@ import RsvpMf2Extractor from "./RsvpMf2Extractor";
 import RepostMf2Extractor from "./RepostMf2Extractor";
 import LikeMf2Extractor from "./LikeMf2Extractor";
 import ReplyMf2Extractor from "./ReplyMf2Extractor";
-import VideoMf2Extractor from "./VideoMf2Extractor";
 import PhotoMf2Extractor from "./PhotoMf2Extractor";
 import CheckinMf2Extractor from "./CheckinMf2Extractor";
 import NoteMf2Extractor from "./NoteMf2Extractor";
 import ArticleMf2Extractor from "./ArticleMf2Extractor";
 import { hasPropWithValidUrl, isValidRsvp } from "~/util/mf2-util";
+import BookmarkMf2Extractor from "./BookmarkMf2Extractor";
 
 export function discoverExtractor(props: Mf2Properties): Mf2Extractor {
     let extractor: Mf2Extractor
@@ -21,8 +21,8 @@ export function discoverExtractor(props: Mf2Properties): Mf2Extractor {
         extractor = new LikeMf2Extractor(props)
     } else if (hasPropWithValidUrl(props, 'in-reply-to')) {
         extractor = new ReplyMf2Extractor(props)
-    } else if (hasPropWithValidUrl(props, 'video')) {
-        extractor = new VideoMf2Extractor(props)
+    } else if (hasPropWithValidUrl(props, 'bookmark-of')) {
+        extractor = new BookmarkMf2Extractor(props)
     } else if (hasPropWithValidUrl(props, 'photo')) {
         extractor = new PhotoMf2Extractor(props)
     } else if (props.checkin) {

@@ -1,7 +1,7 @@
+import { Checkin } from "../content";
 import Mf2Extractor from "./Mf2Extractor";
-import { container, Content, map, text } from "~/lib/content";
 
-export interface Checkin {
+export interface CheckinData {
     latitude: number,
     longitude: number,
     name: string
@@ -12,7 +12,7 @@ export default class CheckinMf2Extractor extends Mf2Extractor {
         return `Check-in ${this.getLongCreatedFrom()}`
     }
     
-    getCheckin(): Checkin {
+    getCheckin(): CheckinData {
         const checkin = this.props.checkin
         if (!checkin || checkin.length === 0) {
             throw new Error("No check-in data found")
@@ -34,20 +34,15 @@ export default class CheckinMf2Extractor extends Mf2Extractor {
         }
     }
 
-    async getContent(): Promise<Content> {
+    async getPost(): Promise<Checkin> {
         const checkin = this.getCheckin()
 
-        const content = this.props.content
-        if (!content || content.length === 0) {
-            throw new Error("No content found for check-in")
+        return {
+            type: 'checkin',
+            latitude: checkin.latitude,
+            longitude: checkin.longitude,
+            name: checkin.name,
+            content: this.getParsedContentProp()
         }
-
-        return container([
-            container([
-                map(checkin.latitude, checkin.longitude),
-                text(`Checked in at ${checkin.name}`, ["tw:font-bold", "tw:text-lg"])
-            ], ["tw:flex", "tw:flex-col", "tw:items-center", "tw:justify-center", "tw:gap-y-2"]),
-            text(content[0] as string)
-        ], ["tw:flex", "tw:flex-col", "tw:gap-y-4"])
     }
 }

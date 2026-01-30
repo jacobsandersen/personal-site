@@ -1,0 +1,19 @@
+---
+import { Content, isString } from '~/lib/content'
+import TextRenderer from './TextRenderer.astro'
+import HtmlRenderer from './HtmlRenderer.astro'
+
+interface Props {
+    content: Content[]
+}
+
+const { content } = Astro.props as Props
+---
+
+{content.map(piece => {
+    if (isString(piece)) {
+        return <TextRenderer text={piece} />
+    } else {
+        return <HtmlRenderer html={piece.html} />
+    }
+})}

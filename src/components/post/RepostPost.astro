@@ -1,0 +1,16 @@
+---
+import { Repost } from '~/lib/content'
+import ExternalLink from '../util/ExternalLink.astro'
+import ReferencedContent from '../post-fragments/ReferencedContent.astro'
+
+interface Props {
+    repost: Repost
+}
+
+const { repost } = Astro.props as Props
+---
+
+<div class="tw:flex tw:flex-col tw:items-center tw:gap-y-4">
+    <h2 class="tw:text-xl tw:font-bold">Repost of <em><ExternalLink href={repost.repostOf}>{repost.repostOf}</ExternalLink></em></h2>
+    <ReferencedContent referencedContent={repost.referencedContent} />
+</div>

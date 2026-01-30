@@ -3,8 +3,8 @@ import { Mf2Properties } from '~/types/mf2-document'
 import PostDates from '~/components/post-fragments/PostDates.astro'
 import Categories from '~/components/post-fragments/Categories.astro'
 import PermalinkLayout from '~/layouts/PermalinkLayout.astro'
-import ContentRenderer from '../ContentRenderer.astro'
 import { discoverExtractor } from '~/lib/extractor/ExtractorDiscoverer'
+import PostRenderer from '../post/PostRenderer.astro'
 
 export interface Props {
     props: Mf2Properties
@@ -16,7 +16,7 @@ const cache = Astro.locals.runtime.env.personal_site_content_cache
 
 const extractor = discoverExtractor(props)
 const RootElem = extractor.getRootElem()
-const content = await extractor.getContent(cache)
+const content = await extractor.getPost(cache)
 const summary = extractor.getSummary()
 ---
 
@@ -30,7 +30,7 @@ const summary = extractor.getSummary()
         <div class="tw:border-2 tw:border-dashed tw:border-blue-400 tw:dark:border-blue-900 tw:p-4 tw:rounded-sm">
             {summary && <p class="p-summary">{summary}</p>}
             <div class="e-content tw:mb-4">
-                <ContentRenderer content={content} />
+                <PostRenderer content={content} />
             </div>
             <Categories categories={extractor.getCategories()} />
         </div>

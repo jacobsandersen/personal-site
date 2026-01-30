@@ -1,115 +1,80 @@
-export interface ContainerNode {
-    type: "container",
-    classes: string[],
-    items: Content[]
+export type Html = { html: string }
+
+export type Content = string | Html 
+
+export type RsvpType = 'yes' | 'no' | 'maybe' | 'interested'
+
+export type Post = Article | Checkin | Like | Note | Photo | Reply | Repost | Rsvp | Bookmark
+
+export interface Article {
+    type: 'article',
+    content: Content[]
 }
 
-export interface TextNode {
-    type: "text"
-    text: string,
-    classes: string[]
-}
-
-export interface StylizedQuoteNode {
-    type: "stylized-quote"
-    text: string,
-    classes: string[]
-}
-
-export interface LinkNode {
-    type: "link"
-    url: string
-    text?: string | null,
-    external: boolean 
-}
-
-export interface HtmlNode {
-    type: "html"
-    html: string,
-    classes: string[]
-}
-
-export interface ImageNode {
-    type: "image"
-    url: string
-    alt?: string | null
-}
-
-export interface VideoNode {
-    type: "video"
-    url: string
-    poster?: string | null
-}
-
-export interface MapNode {
-    type: "map",
+export interface Checkin {
+    type: 'checkin'
     latitude: number,
-    longitude: number
+    longitude: number,
+    name: string,
+    content: Content[]
 }
 
-export interface ImageCollection {
-    type: "image-collection",
-    photos: ImageNode[]
+export interface Like {
+    type: 'like',
+    likeOf: string,
+    content: Content[],
+    referencedContent: Post | null
 }
 
-export interface FlexContainer {
-    type: "flex-container",
-    classes: string[],
-    items: Content[]
+export interface Note {
+    type: 'note',
+    content: Content[]
 }
 
-export type Content = TextNode | ImageNode | VideoNode | HtmlNode | LinkNode | MapNode | ImageCollection | ContainerNode | StylizedQuoteNode
+export interface Photo {
+    type: 'photo',
+    photoUrls: string[],
+    content: Content[]
+}
 
-export const text = (value: string, classes: string[] = []): TextNode => ({
-    type: "text",
-    text: value,
-    classes
-})
+export interface Reply {
+    type: 'reply',
+    inReplyTo: string,
+    content: Content[],
+    referencedContent: Post | null
+}
 
-export const stylizedQuote = (value: string, classes: string[] = []): StylizedQuoteNode => ({
-    type: "stylized-quote",
-    text: value,
-    classes
-})
+export interface Repost {
+    type: 'repost',
+    repostOf: string,
+    referencedContent: Post | null
+}
 
-export const link = (url: string, text?: string | null, external: boolean = false): LinkNode => ({
-    type: "link",
-    url,
-    text,
-    external
-})
+export interface Rsvp {
+    type: 'rsvp',
+    inReplyTo: string,
+    referencedContent: Post | null,
+    event: string,
+    rsvp: string,
+}
 
-export const html = (value: string, classes: string[] = []): HtmlNode => ({
-    type: "html",
-    html: value,
-    classes
-})
+export interface Bookmark {
+    type: 'bookmark',
+    bookmarkOf: string,
+    content: Content[]
+}
 
-export const image = (url: string, alt?: string | null): ImageNode => ({
-    type: "image",
-    url,
-    alt
-})
+export function isString(v: unknown): v is string {
+    return typeof v === 'string'
+}
 
-export const video = (url: string, poster?: string | null): VideoNode => ({
-    type: "video",
-    url,
-    poster
-})
+export function isHtml(v: unknown): v is Html {
+    return typeof v === 'object' 
+        && v !== null 
+        && 'html' in v 
+        && isString((v as any).html)
+}
 
-export const map = (latitude: number, longitude: number): MapNode => ({
-    type: "map",
-    latitude,
-    longitude
-})
-
-export const imageCollection = (...images: ImageNode[]): ImageCollection => ({
-    type: "image-collection",
-    photos: images
-})
-
-export const container = (items: Content[], classes: string[] = []): ContainerNode => ({
-    type: "container",
-    classes,
-    items: items.filter(Boolean)
-})
+export function normalizePostContent(content: unknown[]): Content[] {
+    return content.filter(item => isString(item) || isHtml(item))
+}
