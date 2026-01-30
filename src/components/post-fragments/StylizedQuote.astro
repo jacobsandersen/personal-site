@@ -6,6 +6,6 @@ interface Props {
 const { class: className } = Astro.props as Props
 ---
 
-<p class:list={["relative", "pl-8", "pt-6", "before:content-['“']", "before:text-6xl", "before:absolute", "before:left-0", "before:top-0", "before:line-height-1", "before:opacity-50", ...className]}>
+<p class:list={["tw:relative", "tw:pl-8", "tw:pt-6", "tw:before:content-['“']", "tw:before:text-6xl", "tw:before:absolute", "tw:before:left-0", "tw:before:top-0", "tw:before:line-height-1", "tw:before:opacity-50", ...className]}>
     <slot />
 </p>

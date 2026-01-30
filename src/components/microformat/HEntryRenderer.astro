@@ -22,14 +22,14 @@ const summary = extractor.getSummary()
 
 <PermalinkLayout title={extractor.getTitle()}>
     <RootElem class:list={["h-entry"]}>
-        <div class="flex flex-col items-center gap-y-1 mt-8">
-            <h1 class:list={["font-serif", "text-3xl", ...extractor.getTitleClasses()]}>{extractor.getTitle()}</h1>
+        <div class="tw:flex tw:flex-col tw:items-center tw:gap-y-1 tw:mt-8">
+            <h1 class:list={["tw:font-serif", "tw:text-3xl", ...extractor.getTitleClasses()]}>{extractor.getTitle()}</h1>
             <PostDates props={props} />
         </div>
-        <hr class="my-6 border-dotted" />
-        <div class="border-2 border-dashed border-blue-400 dark:border-blue-900 p-4 rounded-sm">
+        <hr class="tw:my-6 tw:border-dotted" />
+        <div class="tw:border-2 tw:border-dashed tw:border-blue-400 tw:dark:border-blue-900 tw:p-4 tw:rounded-sm">
             {summary && <p class="p-summary">{summary}</p>}
-            <div class="e-content mb-4">
+            <div class="e-content tw:mb-4">
                 <ContentRenderer content={content} />
             </div>
             <Categories categories={extractor.getCategories()} />

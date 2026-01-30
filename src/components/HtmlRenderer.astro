@@ -7,4 +7,4 @@ interface Props {
 const { html, class: className } = Astro.props as Props
 ---
 
-<div class:list={["prose", "prose-blue", "dark:prose-invert", "prose-headings:font-serif", "prose-headings:my-4", ...className]} set:html={html} />
+<div class:list={["tw:prose", "tw:prose-blue", "tw:dark:prose-invert", "tw:prose-headings:font-serif", "tw:prose-headings:my-4", ...className]} set:html={html} />

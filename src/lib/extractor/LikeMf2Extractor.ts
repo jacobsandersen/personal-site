@@ -29,13 +29,13 @@ export default class LikeMf2Extractor extends RemoteUrlReferenceExtractor {
                 text("The liked content follows. If you enjoyed this, please visit the original post (link above)!"),
                 container([
                     likedContent
-                ], ["p-6", "rounded-md", "bg-blue-100", "dark:bg-blue-900", "border", "border-blue-300", "dark:border-blue-700"])
-            ], ["flex", "flex-col", "items-center", "justify-center", "gap-y-4"])
+                ], ["tw:p-6", "tw:rounded-md", "tw:bg-blue-100", "tw:dark:bg-blue-900", "tw:border", "tw:border-blue-300", "tw:dark:border-blue-700"])
+            ], ["tw:flex", "tw:flex-col", "tw:items-center", "tw:justify-center", "tw:gap-y-4"])
         } else {
             return container([
                 introContent,
                 text("(No preview available - visit the URL to see the liked content)")
-            ], ["flex", "flex-col", "items-center", "justify-center", "gap-y-4"])
+            ], ["tw:flex", "tw:flex-col", "tw:items-center", "tw:justify-center", "tw:gap-y-4"])
         }
     }
 }

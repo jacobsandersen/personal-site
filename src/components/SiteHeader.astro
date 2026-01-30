@@ -6,21 +6,21 @@ interface Props {
 const { shouldMarkupAuthor } = Astro.props as Props
 ---
 
-<header class="flex justify-between items-center py-4">
+<header class="tw:flex tw:justify-between tw:items-center tw:py-4">
     <div>
-        <a href="/" class:list={["text-xl", "font-bold", {"h-card": shouldMarkupAuthor}]}>
-            <img src="/images/portrait/150.webp" alt="Jacob Andersen" class:list={["inline-block", "w-8", "h-8", "rounded-full", "mr-1", "aspect-3/2", "object-cover", "object-bottom", {"u-photo": shouldMarkupAuthor}]} />
-            <span class:list={["align-middle", {"p-name": shouldMarkupAuthor}]}>
+        <a href="/" class:list={["tw:text-xl", "tw:font-bold", {"h-card": shouldMarkupAuthor}]}>
+            <img src="/images/portrait/150.webp" alt="Jacob Andersen" class:list={["tw:inline-block", "tw:w-8", "tw:h-8", "tw:rounded-full", "tw:mr-1", "tw:aspect-3/2", "tw:object-cover", "tw:object-bottom", {"u-photo": shouldMarkupAuthor}]} />
+            <span class:list={["tw:align-middle", {"p-name": shouldMarkupAuthor}]}>
                 Jacob Andersen
             </span>
         </a>
     </div>
     <nav>
-        <ul class="flex space-x-4">
-            <li><a href="/" class="hover:underline">Home</a></li>
-            <li><a href="#" class="hover:underline">Blog</a></li>
-            <li><a href="#" class="hover:underline">Projects</a></li>
-            <li><a href="#" class="hover:underline">Contact</a></li>
+        <ul class="tw:flex tw:space-x-4">
+            <li><a href="/" class="tw:hover:underline">Home</a></li>
+            <li><a href="#" class="tw:hover:underline">Blog</a></li>
+            <li><a href="#" class="tw:hover:underline">Projects</a></li>
+            <li><a href="#" class="tw:hover:underline">Contact</a></li>
         </ul>
     </nav>
 </header>

@@ -29,7 +29,7 @@ const { content } = Astro.props as Props
                 return <a href={content.url}>{text}</a>
             }
         case 'image':
-            return <img src={content.url} alt={content.alt} class="max-w-1/2 h-auto border-2 rounded-sm" />
+            return <img src={content.url} alt={content.alt} class="tw:max-w-1/2 tw:h-auto tw:border-2 tw:rounded-sm" />
         case 'container':
             return <ContainerRenderer
                 class={content.classes}
@@ -41,7 +41,7 @@ const { content } = Astro.props as Props
                 longitude={content.longitude} 
                 zoom={13} 
                 tileData={OpenStreetMapTileData} 
-                class="w-full h-64" 
+                class="tw:w-full tw:h-64" 
             />
         default:
             return <p>Unsupported content type: {content.type}</p>

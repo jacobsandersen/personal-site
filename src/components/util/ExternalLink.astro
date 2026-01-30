@@ -10,7 +10,7 @@ interface Props {
 const { href, linkClass, iconClass } = Astro.props as Props
 ---
 
-<span class="inline-flex items-center gap-1">
-    <a href={href} target="_blank" class:list={["italic", "underline", "decoration-dotted", "hover:decoration-wavy", ...(linkClass ? linkClass : [])]}><slot /></a>
-    <ExternalLinkIcon class:list={["size-4", ...(iconClass ? iconClass : [])]} />
+<span class="tw:inline-flex tw:items-center tw:gap-1">
+    <a href={href} target="_blank" class:list={["tw:italic", "tw:underline", "tw:decoration-dotted", "tw:hover:decoration-wavy", ...(linkClass ? linkClass : [])]}><slot /></a>
+    <ExternalLinkIcon class:list={["tw:size-4", ...(iconClass ? iconClass : [])]} />
 </span>

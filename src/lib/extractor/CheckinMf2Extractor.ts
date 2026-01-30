@@ -45,9 +45,9 @@ export default class CheckinMf2Extractor extends Mf2Extractor {
         return container([
             container([
                 map(checkin.latitude, checkin.longitude),
-                text(`Checked in at ${checkin.name}`, ["font-bold", "text-lg"])
-            ], ["flex", "flex-col", "items-center", "justify-center", "gap-y-2"]),
+                text(`Checked in at ${checkin.name}`, ["tw:font-bold", "tw:text-lg"])
+            ], ["tw:flex", "tw:flex-col", "tw:items-center", "tw:justify-center", "tw:gap-y-2"]),
             text(content[0] as string)
-        ], ["flex", "flex-col", "gap-y-4"])
+        ], ["tw:flex", "tw:flex-col", "tw:gap-y-4"])
     }
 }

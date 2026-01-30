@@ -15,7 +15,7 @@ export default class VideoMf2Extractor extends Mf2Extractor {
     async getContent(): Promise<Content> {
         return container([
             text("Video Content")
-        ], ["flex", "flex-col", "items-center", "justify-center", "gap-y-4"]);
+        ], ["tw:flex", "tw:flex-col", "tw:items-center", "tw:justify-center", "tw:gap-y-4"]);
     }
 
 }

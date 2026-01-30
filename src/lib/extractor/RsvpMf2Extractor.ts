@@ -59,6 +59,6 @@ export default class RsvpMf2Extractor extends ReplyMf2Extractor {
         return container([
             fragment,
             eventLink
-        ], ["flex", "items-center", "justify-center", "gap-x-2"])
+        ], ["tw:flex", "tw:items-center", "tw:justify-center", "tw:gap-x-2"])
     }
 }
