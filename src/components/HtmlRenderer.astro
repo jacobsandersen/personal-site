@@ -1,9 +1,10 @@
 ---
 interface Props {
-    html: string
+    html: string,
+    class: string[]
 }
 
-const { html } = Astro.props as Props
+const { html, class: className } = Astro.props as Props
 ---
 
-<div class="prose prose-blue dark:prose-invert prose-headings:font-serif prose-headings:my-4" set:html={html} />
+<div class:list={["prose", "prose-blue", "dark:prose-invert", "prose-headings:font-serif", "prose-headings:my-4", ...className]} set:html={html} />

@@ -1,5 +1,5 @@
 import Mf2Extractor from "./Mf2Extractor";
-import { Content, text } from "~/lib/content";
+import { Content, stylizedQuote } from "~/lib/content";
 
 export default class NoteMf2Extractor extends Mf2Extractor {
     getTitle(): string {
@@ -12,6 +12,6 @@ export default class NoteMf2Extractor extends Mf2Extractor {
             throw new Error("No content found for note")
         }
 
-        return text(content[0] as string)
+        return stylizedQuote(content[0] as string)
     }
 }

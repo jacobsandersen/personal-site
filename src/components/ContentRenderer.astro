@@ -4,6 +4,7 @@ import ExternalLink from './util/ExternalLink.astro'
 import Map, { OpenStreetMapTileData } from './post-fragments/Map.astro'
 import HtmlRenderer from './HtmlRenderer.astro'
 import ContainerRenderer from './ContainerRenderer.astro'
+import StylizedQuote from './post-fragments/StylizedQuote.astro'
 
 interface Props {
     content: Content
@@ -16,8 +17,10 @@ const { content } = Astro.props as Props
     switch (content.type) {
         case 'text':
             return <p class:list={[...content.classes]}>{content.text}</p>
+        case 'stylized-quote':
+            return <StylizedQuote class={content.classes}>{content.text}</StylizedQuote>
         case 'html':
-            return <HtmlRenderer html={content.html} />
+            return <HtmlRenderer html={content.html} class={content.classes} />
         case 'link':
             const text = content.text ?? content.url
             if (content.external) {

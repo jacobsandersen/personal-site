@@ -10,6 +10,12 @@ export interface TextNode {
     classes: string[]
 }
 
+export interface StylizedQuoteNode {
+    type: "stylized-quote"
+    text: string,
+    classes: string[]
+}
+
 export interface LinkNode {
     type: "link"
     url: string
@@ -19,7 +25,8 @@ export interface LinkNode {
 
 export interface HtmlNode {
     type: "html"
-    html: string
+    html: string,
+    classes: string[]
 }
 
 export interface ImageNode {
@@ -51,10 +58,16 @@ export interface FlexContainer {
     items: Content[]
 }
 
-export type Content = TextNode | ImageNode | VideoNode | HtmlNode | LinkNode | MapNode | ImageCollection | ContainerNode
+export type Content = TextNode | ImageNode | VideoNode | HtmlNode | LinkNode | MapNode | ImageCollection | ContainerNode | StylizedQuoteNode
 
 export const text = (value: string, classes: string[] = []): TextNode => ({
     type: "text",
+    text: value,
+    classes
+})
+
+export const stylizedQuote = (value: string, classes: string[] = []): StylizedQuoteNode => ({
+    type: "stylized-quote",
     text: value,
     classes
 })
@@ -66,9 +79,10 @@ export const link = (url: string, text?: string | null, external: boolean = fals
     external
 })
 
-export const html = (value: string): HtmlNode => ({
+export const html = (value: string, classes: string[] = []): HtmlNode => ({
     type: "html",
-    html: value
+    html: value,
+    classes
 })
 
 export const image = (url: string, alt?: string | null): ImageNode => ({
