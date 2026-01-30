@@ -1,15 +1,12 @@
 ---
 import PageLayout from '~/layouts/PageLayout.astro'
 
-interface Props {
-    tag: string
+const { category } = Astro.params
+if (category!.toLowerCase() === "uncategorized") {
+    return Astro.redirect("/uncategorized")
 }
-
-const { tag } = Astro.props as Props
-
-export const prerender = false
 ---
 
-<PageLayout title={`Posts tagged with "${tag}"`}>
+<PageLayout title={`Posts tagged with #${category}`}>
     <p>Under construction</p>
 </PageLayout>

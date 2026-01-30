@@ -1,15 +1,23 @@
 ---
 interface Props {
-    categories: string[]
+    categories: string[];
 }
 
-const { categories } = Astro.props as Props
+const { categories } = Astro.props as Props;
 ---
 
-{categories.length > 0 && (
-    <ul class="tw:list-none tw:flex tw:gap-2 tw:text-sm">
-        {categories.map((category) => (
-            <li class="tw:hover:underline tw:decoration-wavy"><a href={`/content/tagged/${category}`}>#{category}</a></li>
-        ))}
-    </ul>
-)}
+<ul class="tw:list-none tw:flex tw:gap-2 tw:text-sm">
+    {
+        categories.length ? (
+            categories.map((category) => (
+                <li class="tw:hover:underline tw:decoration-wavy">
+                    <a href={`/tagged/${category}`}>#{category}</a>
+                </li>
+            ))
+        ) : (
+            <li class="tw:hover:underline tw:decoration-wavy">
+                <a href={`/uncategorized`}>#uncategorized</a>
+            </li>
+        )
+    }
+</ul>
