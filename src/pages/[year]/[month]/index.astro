@@ -1,0 +1,19 @@
+---
+import PageLayout from "~/layouts/PageLayout.astro"
+import { validateMonthForPath, validateYearForPath } from "~/util/url"
+
+const { year, month } = Astro.params
+if (!validateYearForPath(year)) {
+    throw new Error(`Invalid year parameter: ${year}`)
+} else if (!validateMonthForPath(month)) {
+    throw new Error(`Invalid month parameter: ${month}`)
+}
+
+export const prerender = false
+
+// TODO: implement month view
+---
+
+<PageLayout title={`Posts from ${month}/${year}`}>
+    <p>Under construction</p>
+</PageLayout>

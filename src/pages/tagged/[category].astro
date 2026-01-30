@@ -1,0 +1,15 @@
+---
+import PageLayout from '~/layouts/PageLayout.astro'
+
+interface Props {
+    tag: string
+}
+
+const { tag } = Astro.props as Props
+
+export const prerender = false
+---
+
+<PageLayout title={`Posts tagged with "${tag}"`}>
+    <p>Under construction</p>
+</PageLayout>

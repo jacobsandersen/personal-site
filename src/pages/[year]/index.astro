@@ -1,0 +1,17 @@
+---
+import PageLayout from "~/layouts/PageLayout.astro"
+import { validateYearForPath } from "~/util/url"
+
+const { year } = Astro.params
+if (!validateYearForPath(year)) {
+    throw new Error(`Invalid year parameter: ${year}`)
+}
+
+export const prerender = false
+
+// TODO: implement year view
+---
+
+<PageLayout title={`Posts from ${year}`}>
+    <p>Under construction</p>
+</PageLayout>

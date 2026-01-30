@@ -1,0 +1,17 @@
+---
+import PageLayout from "~/layouts/PageLayout.astro"
+import { validateYearMonthDayForPath } from "~/util/url"
+
+const { year, month, day } = Astro.params
+if (!validateYearMonthDayForPath(year, month, day)) {
+    throw new Error(`Invalid date parameters: ${year}-${month}-${day}`)
+}
+
+export const prerender = false
+
+// TODO: implement day view
+---
+
+<PageLayout title={`Posts from ${month}/${day}/${year}`}>
+    <p>Under construction</p>
+</PageLayout>
