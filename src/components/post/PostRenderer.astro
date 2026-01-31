@@ -1,43 +1,24 @@
 ---
 import { Post } from "~/lib/content";
-import ArticlePost from "./ArticlePost.astro";
-import CheckinPost from "./CheckinPost.astro";
-import LikePost from "./LikePost.astro";
-import NotePost from "./NotePost.astro";
-import RepostPost from "./RepostPost.astro";
-import RsvpPost from "./RsvpPost.astro";
-import BookmarkPost from "./BookmarkPost.astro";
-import PhotoPost from "./PhotoPost.astro";
-import ReplyPost from "./ReplyPost.astro";
 
 interface Props {
     content: Post;
 }
 
+const loaders: Record<Post['type'], () => Promise<{ default: unknown }>> = {
+  article: () => import('./ArticlePost.astro'),
+  checkin: () => import('./CheckinPost.astro'),
+  like: () => import('./LikePost.astro'),
+  note: () => import('./NotePost.astro'),
+  repost: () => import('./RepostPost.astro'),
+  rsvp: () => import('./RsvpPost.astro'),
+  photo: () => import('./PhotoPost.astro'),
+  reply: () => import('./ReplyPost.astro'),
+  bookmark: () => import('./BookmarkPost.astro'),
+};
+
 const { content } = Astro.props as Props;
+const Component = (await loaders[content.type]())?.default as any 
 ---
 
-{
-    (() => {
-        switch (content.type) {
-            case "article":
-                return <ArticlePost article={content} />
-            case "checkin":
-                return <CheckinPost checkin={content} />
-            case "like":
-                return <LikePost like={content} />
-            case "note":
-                return <NotePost note={content} />
-            case "repost":
-                return <RepostPost repost={content} />
-            case "rsvp":
-                return <RsvpPost rsvp={content} />
-            case "photo":
-                return <PhotoPost photo={content} />
-            case "reply":
-                return <ReplyPost reply={content} />
-            case "bookmark":
-                return <BookmarkPost bookmark={content} />
-        }
-    })()
-}
+{Component ? <Component {...{ [content.type]: content }} /> : <p>Unsupported post type: {content.type}</p>}
