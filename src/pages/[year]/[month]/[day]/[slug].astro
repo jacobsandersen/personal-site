@@ -9,9 +9,17 @@ if (!validateYearMonthDayForPath(year, month, day)) {
   throw new Error(`Invalid date parameters: ${year}-${month}-${day}`)
 }
 
+const base = new Date(`${year}-${month}-${day}T00:00:00Z`)
+const nextDay = new Date(base)
+nextDay.setUTCDate(base.getUTCDate() + 1)
+
 const result = await Astro.locals.runtime.env.scribble_db
-  .prepare("select doc from scribble_content where json_extract(doc, '$.properties.slug') = json_array(?) limit 1")
-  .bind(`${year}/${month}/${day}/${slug}`)
+  .prepare(`select doc from scribble_content 
+    where json_extract(doc, '$.properties.slug[0]') = ? 
+    and json_extract(doc, '$.properties.created_at[0]') >= ? 
+    and json_extract(doc, '$.properties.created_at[0]') < ?
+    limit 1`)
+  .bind(slug, base.toISOString(), nextDay.toISOString())
   .first()
 
 if (!result) {

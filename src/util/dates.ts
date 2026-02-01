@@ -22,9 +22,9 @@ function getParsedAndDisplay(rawDate: string): [dayjs.Dayjs, string, string] {
 }
 
 export function extractDates(props: Mf2Properties): ExtractedDates {
-    const createdAtRaw = getFirstStringOrBlank(props, 'created-at')
+    const createdAtRaw = getFirstStringOrBlank(props, 'created_at')
     const createdAtComponents = getParsedAndDisplay(createdAtRaw)
-    const updatedAtRaw = getFirstStringOrBlank(props, 'updated-at')
+    const updatedAtRaw = getFirstStringOrBlank(props, 'updated_at')
     const updatedAtComponents = getParsedAndDisplay(updatedAtRaw)
     
     return {

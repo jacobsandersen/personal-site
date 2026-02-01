@@ -24,7 +24,7 @@ const summary = extractor.getSummary()
     <RootElem class:list={["h-entry"]}>
         <div class="tw:flex tw:flex-col tw:items-center tw:gap-y-1 tw:mt-8">
             <h1 class:list={["tw:font-serif", "tw:text-3xl", ...extractor.getTitleClasses()]}>{extractor.getTitle()}</h1>
-            <PostDates props={props} />
+            <PostDates extractedDates={extractor.getDates()} />
         </div>
         <hr class="tw:my-6 tw:border-dotted" />
         <div class="tw:border-2 tw:border-dashed tw:border-blue-400 tw:dark:border-blue-900 tw:p-4 tw:rounded-sm">
