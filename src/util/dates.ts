@@ -1,6 +1,8 @@
 import dayjs from 'dayjs'
-import { Mf2Properties } from '~/types/mf2-document';
-import { getFirstStringOrBlank } from './mf2-util';
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+import { Mf2Properties } from '~/types/mf2-document'
+import { getFirstStringOrBlank } from './mf2-util'
 
 export interface ExtractedDates {
     createdAtRaw: string,
@@ -14,8 +16,11 @@ export interface ExtractedDates {
     updatedSameAsCreated(): boolean
 }
 
+dayjs.extend(utc)
+dayjs.extend(timezone)
+
 function getParsedAndDisplay(rawDate: string): [dayjs.Dayjs, string, string] {
-    const parsed = dayjs(rawDate)
+    const parsed = dayjs(rawDate).tz("Asia/Manila")
     const display = parsed.isValid() ? parsed.format('MMMM D, YYYY') : ''
     const displayTime = parsed.isValid() ? parsed.format('HH:mm') : ''
     return [parsed, display, displayTime]
