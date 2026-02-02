@@ -1,10 +1,10 @@
 ---
-import PageLayout from "~/layouts/PageLayout.astro"
-import { validateYearForPath } from "~/util/url"
+import PageLayout from "~/layouts/PageLayout.astro";
+import { validateYearForPath } from "~/util/url";
 
-const { year } = Astro.params
+const { year } = Astro.params;
 if (!validateYearForPath(year)) {
-    return Astro.rewrite(`/404`)
+    return new Response(null, { status: 404 });
 }
 
 // TODO: implement year view

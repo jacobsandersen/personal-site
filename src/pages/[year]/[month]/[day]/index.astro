@@ -1,10 +1,10 @@
 ---
-import PageLayout from "~/layouts/PageLayout.astro"
-import { validateYearMonthDayForPath } from "~/util/url"
+import PageLayout from "~/layouts/PageLayout.astro";
+import { validateYearMonthDayForPath } from "~/util/url";
 
-const { year, month, day } = Astro.params
+const { year, month, day } = Astro.params;
 if (!validateYearMonthDayForPath(year, month, day)) {
-    return Astro.rewrite(`/404`)
+    return new Response(null, { status: 404 });
 }
 
 // TODO: implement day view

@@ -1,10 +1,10 @@
 ---
-import PageLayout from "~/layouts/PageLayout.astro"
-import { validateMonthForPath, validateYearForPath } from "~/util/url"
+import PageLayout from "~/layouts/PageLayout.astro";
+import { validateMonthForPath, validateYearForPath } from "~/util/url";
 
-const { year, month } = Astro.params
+const { year, month } = Astro.params;
 if (!validateYearForPath(year) || !validateMonthForPath(month)) {
-    return Astro.rewrite(`/404`)
+    return new Response(null, { status: 404 });
 }
 
 // TODO: implement month view
