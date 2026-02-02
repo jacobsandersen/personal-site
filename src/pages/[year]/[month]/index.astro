@@ -3,10 +3,8 @@ import PageLayout from "~/layouts/PageLayout.astro"
 import { validateMonthForPath, validateYearForPath } from "~/util/url"
 
 const { year, month } = Astro.params
-if (!validateYearForPath(year)) {
-    throw new Error(`Invalid year parameter: ${year}`)
-} else if (!validateMonthForPath(month)) {
-    throw new Error(`Invalid month parameter: ${month}`)
+if (!validateYearForPath(year) || !validateMonthForPath(month)) {
+    return Astro.rewrite(`/404`)
 }
 
 // TODO: implement month view

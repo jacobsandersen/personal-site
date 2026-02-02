@@ -4,7 +4,7 @@ import { validateYearForPath } from "~/util/url"
 
 const { year } = Astro.params
 if (!validateYearForPath(year)) {
-    throw new Error(`Invalid year parameter: ${year}`)
+    return Astro.rewrite(`/404`)
 }
 
 // TODO: implement year view
