@@ -9,24 +9,31 @@ if (!validateYearMonthDayForPath(year, month, day)) {
   throw new Error(`Invalid date parameters: ${year}-${month}-${day}`)
 }
 
-const base = new Date(`${year}-${month}-${day}T00:00:00Z`)
-const nextDay = new Date(base)
-nextDay.setUTCDate(base.getUTCDate() + 1)
+const url = new URL("https://scribble.jacobandersen.dev/query/list")
+url.searchParams.set("slug", slug!)
+url.searchParams.set("year", year!)
+url.searchParams.set("month", month!)
+url.searchParams.set("day", day!)
+url.searchParams.set("limit", "1")
 
-const result = await Astro.locals.runtime.env.scribble_db
-  .prepare(`select doc from scribble_content 
-    where json_extract(doc, '$.properties.slug[0]') = ? 
-    and json_extract(doc, '$.properties.created_at[0]') >= ? 
-    and json_extract(doc, '$.properties.created_at[0]') < ?
-    limit 1`)
-  .bind(slug, base.toISOString(), nextDay.toISOString())
-  .first()
+console.log(`Fetching blog post data from: ${url.toString()}`)
 
-if (!result) {
+const result = await fetch(url.toString(), {
+  headers: {
+    'Accept': 'application/json',
+  },
+})
+
+if (!result || !result.ok) {
   return new Response(null, { status: 404 })
 }
 
-const doc = JSON.parse(result['doc'] as string) as Mf2Document
+const data = await result.json() as Mf2Document[]
+if (!data || data.length === 0) {
+  return new Response(null, { status: 404 })
+}
+
+const doc = data[0]
 const isDeleted = Array.isArray(doc.properties.deleted) ? doc.properties.deleted.includes(true) : false
 const isVisible = Array.isArray(doc.properties['post-status']) ? ['published', 'unlisted'].includes(doc.properties['post-status'][0] as string) : true
 

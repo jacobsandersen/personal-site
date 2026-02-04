@@ -13,15 +13,6 @@
 	"observability": {
     "enabled": true
   },
-  "d1_databases": [
-    {
-      "binding": "scribble_db",
-      "database_name": "scribble-db",
-      "database_id": "06e6010d-14cc-49b9-8c86-8eb7cf04806c",
-      // "preview_database_id": "fde5555b-1f23-4cd5-bf29-0a9f9826d83f",
-      "remote": true
-    }
-  ],
   "kv_namespaces": [
     {
       "binding": "personal_site_content_cache",
