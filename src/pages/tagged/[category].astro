@@ -1,12 +1,23 @@
 ---
+import PostListRenderer from '~/components/post/PostListRenderer.astro';
 import PageLayout from '~/layouts/PageLayout.astro'
+import { QueryParams, queryPosts } from '~/lib/scribble/scribble';
 
 const { category } = Astro.params
 if (category!.toLowerCase() === "uncategorized") {
     return Astro.redirect("/uncategorized")
 }
+
+const queryParams: QueryParams = {
+    category: category!,
+}
+
+const posts = await queryPosts(queryParams);
+
+const title = `Posts tagged with #${category}`;
 ---
 
-<PageLayout title={`Posts tagged with #${category}`}>
-    <p>Under construction</p>
+<PageLayout title={title}>
+    <h1>{title}</h1>
+    <PostListRenderer posts={posts} />
 </PageLayout>

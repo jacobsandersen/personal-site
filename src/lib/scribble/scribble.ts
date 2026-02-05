@@ -32,7 +32,7 @@ export interface QueryParams {
     day_of_year?: number
 }
 
-async function queryPosts(params: QueryParams, page?: number, limit?: number): Promise<Mf2Document[]> {
+export async function queryPosts(params: QueryParams, page?: number, limit?: number): Promise<Mf2Document[]> {
     const queryUrl = getScribbleUrl(`query/list`)
 
     const url = new URL(queryUrl)
@@ -55,6 +55,18 @@ async function queryPosts(params: QueryParams, page?: number, limit?: number): P
 
     const res = await fetch(url.toString())
     
+    if (!res.ok) {
+        return []
+    }
+
+    return await res.json()
+}
+
+export async function listCategories(): Promise<string[]> {
+    const categoriesUrl = getScribbleUrl(`query/list-categories`)
+    
+    const res = await fetch(categoriesUrl)
+
     if (!res.ok) {
         return []
     }

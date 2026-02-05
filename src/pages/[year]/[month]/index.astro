@@ -1,5 +1,8 @@
 ---
+import PostListRenderer from "~/components/post/PostListRenderer.astro";
 import PageLayout from "~/layouts/PageLayout.astro";
+import { QueryParams, queryPosts } from "~/lib/scribble/scribble";
+import { parseAdhoc } from "~/util/dates";
 import { validateMonthForPath, validateYearForPath } from "~/util/url";
 
 const { year, month } = Astro.params;
@@ -7,9 +10,23 @@ if (!validateYearForPath(year) || !validateMonthForPath(month)) {
     return new Response(null, { status: 404 });
 }
 
-// TODO: implement month view
+const queryParams: QueryParams = {
+    year: Number(year!),
+    month: Number(month!)
+}
+
+const date = new Date()
+date.setFullYear(queryParams.year!)
+date.setMonth((queryParams.month ?? 1) - 1)
+date.setDate(1)
+
+const formattedDate = parseAdhoc(date, 'MMMM, YYYY')
+
+const results = await queryPosts(queryParams);
+const title = `Posts from ${formattedDate}`;
 ---
 
-<PageLayout title={`Posts from ${month}/${year}`}>
-    <p>Under construction</p>
+<PageLayout title={title}>
+    <h1>{title}</h1>
+    <PostListRenderer posts={results} />
 </PageLayout>

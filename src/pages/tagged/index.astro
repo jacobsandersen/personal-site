@@ -1,7 +1,21 @@
 ---
 import PageLayout from "~/layouts/PageLayout.astro";
+import { listCategories } from "~/lib/scribble/scribble";
+
+const tags = await listCategories();
 ---
 
 <PageLayout title="Post Tags">
-    <p>Under construction</p>
+    <h1>Post Tags</h1>
+    {
+        tags.length > 0 ? (
+            <ul>
+                {tags.map((tag) => (
+                    <li><a href={`/tagged/${tag}`}>#{tag}</a></li>
+                ))}
+            </ul>
+        ) : (
+            <p>No tags found.</p>
+        )
+    }
 </PageLayout>

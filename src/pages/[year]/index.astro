@@ -1,5 +1,7 @@
 ---
+import PostListRenderer from "~/components/post/PostListRenderer.astro";
 import PageLayout from "~/layouts/PageLayout.astro";
+import { QueryParams, queryPosts } from "~/lib/scribble/scribble";
 import { validateYearForPath } from "~/util/url";
 
 const { year } = Astro.params;
@@ -7,9 +9,15 @@ if (!validateYearForPath(year)) {
     return new Response(null, { status: 404 });
 }
 
-// TODO: implement year view
+const queryParams: QueryParams = {
+    year: Number(year!)
+}
+
+const results = await queryPosts(queryParams);
+const title = `Posts from ${year}`;
 ---
 
 <PageLayout title={`Posts from ${year}`}>
-    <p>Under construction</p>
+    <h1>{title}</h1>
+    <PostListRenderer posts={results} />
 </PageLayout>

@@ -1,0 +1,30 @@
+---
+import { Mf2Document } from "~/types/mf2-document";
+import { getPermalinkUrl } from "~/util/mf2-util";
+
+interface Props {
+    posts: Mf2Document[];
+}
+
+const { posts } = Astro.props as Props;
+---
+
+{
+    posts.length === 0 ? (
+        <p>No posts found.</p>
+    ) : (
+        <ul>
+            {posts.map((post) => {
+                const permalink = getPermalinkUrl(post.properties);
+                const title = post.properties.name
+                    ? post.properties.name[0]
+                    : "Untitled Post";
+                return (
+                    <li>
+                        <a href={permalink}>{title}</a>
+                    </li>
+                );
+            })}
+        </ul>
+    )
+}
