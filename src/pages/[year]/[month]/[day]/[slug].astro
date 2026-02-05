@@ -3,6 +3,7 @@ import MicroformatRenderer from "~/components/microformat/MicroformatRenderer.as
 import { validateYearMonthDayForPath } from "~/util/url";
 import { findPost } from "~/lib/scribble/scribble";
 import {getDateParts} from "~/util/dates";
+import { getPermalinkUrl } from "~/util/mf2-util";
 
 const { year, month, day, slug } = Astro.params
 
@@ -24,8 +25,7 @@ if (!createdAtRaw || createdAtRaw.length === 0) {
 
 const { year: createdYear, month: createdMonth, day: createdDay } = getDateParts(createdAtRaw[0])
 if (createdYear !== year || createdMonth !== month || createdDay !== day) {
-  console.warn(`Date mismatch for post with slug ${slug}: expected ${year}-${month}-${day}, got ${createdYear}-${createdMonth}-${createdDay}`)
-  return new Response(null, { status: 404 })
+  return Astro.redirect(getPermalinkUrl(post.properties))
 }
 ---
 

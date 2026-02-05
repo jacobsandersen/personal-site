@@ -1,5 +1,7 @@
 import { Mf2Properties } from "~/types/mf2-document"
 import { isValidUrl } from "./url"
+import { getDateParts } from "./dates"
+import { create } from "node:domain"
 
 export function getFirstStringOrBlank(properties: Mf2Properties, propertyName: string): string {
     return getFirstPropertyOrDefault<string>(properties, propertyName, "")
@@ -30,3 +32,20 @@ export function isValidRsvp(props: Mf2Properties): boolean {
     const rsvp = rsvpValues[0]
     return typeof rsvp === 'string' && ['yes', 'no', 'maybe', 'interested'].includes(rsvp.toLowerCase())
 }
+
+export function getPermalinkUrl(props: Mf2Properties): string {
+    const slug = getFirstStringOrBlank(props, 'slug')
+    if (!slug) {
+        return ''
+    }
+
+    const createdAt = getFirstStringOrBlank(props, 'created_at')
+    if (!createdAt) {
+        return ''
+    }
+
+    const { year, month, day } = getDateParts(createdAt)
+
+    return `/${year}/${month}/${day}/${slug}`
+} 
+    
