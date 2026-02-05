@@ -1,7 +1,8 @@
 ---
-import type { Mf2Document } from "~/types/mf2-document";
 import MicroformatRenderer from "~/components/microformat/MicroformatRenderer.astro";
 import { validateYearMonthDayForPath } from "~/util/url";
+import { findPost } from "~/lib/scribble/scribble";
+import {getDateParts} from "~/util/dates";
 
 const { year, month, day, slug } = Astro.params
 
@@ -9,37 +10,23 @@ if (!validateYearMonthDayForPath(year, month, day)) {
   throw new Error(`Invalid date parameters: ${year}-${month}-${day}`)
 }
 
-const url = new URL("https://scribble.jacobandersen.dev/query/list")
-url.searchParams.set("slug", slug!)
-url.searchParams.set("year", year!)
-url.searchParams.set("month", month!)
-url.searchParams.set("day", day!)
-url.searchParams.set("limit", "1")
+const post = await findPost(slug!)
+if (!post) {
+  console.warn(`Post not found for slug: ${slug}`)
+  return new Response(null, { status: 404 })
+} 
 
-console.log(`Fetching blog post data from: ${url.toString()}`)
-
-const result = await fetch(url.toString(), {
-  headers: {
-    'Accept': 'application/json',
-  },
-})
-
-if (!result || !result.ok) {
+const createdAtRaw = post.properties['created_at'] as string[]
+if (!createdAtRaw || createdAtRaw.length === 0) {
+  console.error(`Missing created_at date for post with slug ${slug}`)
   return new Response(null, { status: 404 })
 }
 
-const data = await result.json() as Mf2Document[]
-if (!data || data.length === 0) {
-  return new Response(null, { status: 404 })
-}
-
-const doc = data[0]
-const isDeleted = Array.isArray(doc.properties.deleted) ? doc.properties.deleted.includes(true) : false
-const isVisible = Array.isArray(doc.properties['post-status']) ? ['published', 'unlisted'].includes(doc.properties['post-status'][0] as string) : true
-
-if (isDeleted || !isVisible) {
+const { year: createdYear, month: createdMonth, day: createdDay } = getDateParts(createdAtRaw[0])
+if (createdYear !== year || createdMonth !== month || createdDay !== day) {
+  console.warn(`Date mismatch for post with slug ${slug}: expected ${year}-${month}-${day}, got ${createdYear}-${createdMonth}-${createdDay}`)
   return new Response(null, { status: 404 })
 }
 ---
 
-<MicroformatRenderer doc={doc} />
+<MicroformatRenderer doc={post} />

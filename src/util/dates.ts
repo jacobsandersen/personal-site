@@ -46,3 +46,13 @@ export function extractDates(props: Mf2Properties): ExtractedDates {
         }
     }
 }
+
+export function getDateParts(date: string) {
+  const parsed = dayjs(date).utcOffset(dayjs(date).utcOffset(), true)
+
+  return {
+    year: parsed.format('YYYY'),
+    month: parsed.format('MM'),
+    day: parsed.format('DD')
+  }
+}
