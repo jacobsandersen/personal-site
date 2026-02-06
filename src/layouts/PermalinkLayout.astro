@@ -9,8 +9,7 @@ interface Props {
 const { title } = Astro.props as Props
 ---
 
-<BaseLayout pageTitle={title}>
-    <SiteHeader shouldMarkupAuthor={true} />
+<BaseLayout pageTitle={title} headerMarksUpAuthor={true}>
     <main class="tw:pb-8">
         <slot />
     </main>

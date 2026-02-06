@@ -11,6 +11,6 @@ const { like } = Astro.props as Props
 ---
 
 <div class="tw:flex tw:flex-col tw:items-center tw:gap-y-4">
-    <h2 class="tw:text-xl tw:font-bold">Liked <em><ExternalLink href={like.likeOf}>{like.likeOf}</ExternalLink></em></h2>
+    <h2 class="tw:text-xl tw:font-bold">Liked <em><ExternalLink href={like.likeOf} showIcon={true}>{like.likeOf}</ExternalLink></em></h2>
     <ReferencedContent referencedContent={like.referencedContent} />
 </div

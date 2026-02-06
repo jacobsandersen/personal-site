@@ -1,7 +1,6 @@
 ---
 import { Rsvp } from '~/lib/content'
 import ExternalLink from '../util/ExternalLink.astro';
-import ContentRenderer from '../content/ContentRenderer.astro';
 import ReferencedContent from '../post-fragments/ReferencedContent.astro';
 
 interface Props {
@@ -28,7 +27,7 @@ switch (rsvp.rsvp) {
 ---
 
 <div class="tw:flex tw:flex-col tw:items-center tw:justify-center tw:gap-y-2">
-    <h2 class="tw:text-xl tw:font-bold">{rsvpText} <em><ExternalLink href={rsvp.inReplyTo}>{rsvp.event ?? "an event"}</ExternalLink></em></h2>
+    <h2 class="tw:text-xl tw:font-bold">{rsvpText} <em><ExternalLink href={rsvp.inReplyTo} showIcon={true}>{rsvp.event ?? "an event"}</ExternalLink></em></h2>
     
     {/* TODO: should use blockquote instead */}
     {/* Only try to render if it exists, as a bonus; don't inform the user that the content is not renderable otherwise. */}

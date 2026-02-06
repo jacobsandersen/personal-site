@@ -12,7 +12,7 @@ const { reply } = Astro.props as Props
 ---
 
 <div class="tw:flex tw:flex-col tw:items-center tw:gap-y-4">
-    <h2 class="tw:text-xl tw:font-bold">Reply to <em><ExternalLink href={reply.inReplyTo}>{reply.inReplyTo}</ExternalLink></em></h2>
+    <h2 class="tw:text-xl tw:font-bold">Reply to <em><ExternalLink href={reply.inReplyTo} showIcon={true}>{reply.inReplyTo}</ExternalLink></em></h2>
     <ContentRenderer content={reply.content} />
 
     {/* TODO: should use blockquote instead */}

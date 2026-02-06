@@ -4,8 +4,6 @@ import tailwindcss from '@tailwindcss/vite';
 
 import cloudflare from '@astrojs/cloudflare';
 
-import icon from 'astro-icon';
-
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
@@ -19,6 +17,4 @@ export default defineConfig({
       enabled: true,
     }
   }),
-
-  integrations: [icon()],
 });

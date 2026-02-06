@@ -1,5 +1,4 @@
 ---
-import SiteHeader from '~/components/SiteHeader.astro'
 import BaseLayout from './BaseLayout.astro'
 
 interface Props {
@@ -9,8 +8,7 @@ interface Props {
 const { title } = Astro.props as Props
 ---
 
-<BaseLayout pageTitle={title}>
-    <SiteHeader shouldMarkupAuthor={false} />
+<BaseLayout pageTitle={title} headerMarksUpAuthor={false}>
     <main>
         <slot />
     </main>

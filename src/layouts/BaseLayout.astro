@@ -1,13 +1,18 @@
 ---
-import '~/styles/global.css'
+import dayjs from "dayjs";
+import "~/styles/global.css";
+import SiteHeader from "~/components/SiteHeader.astro";
+import RelMeExternalLink from "~/components/util/RelMeExternalLink.astro";
 
 interface Props {
-	pageTitle?: string
+	pageTitle?: string;
+	headerMarksUpAuthor?: boolean;
 }
 
-const { pageTitle } = Astro.props as Props
+const { pageTitle, headerMarksUpAuthor = false } = Astro.props as Props;
 
-const title = pageTitle ? pageTitle : ''
+const title = pageTitle ? pageTitle : "";
+const year = dayjs().year();
 ---
 
 <!doctype html>
@@ -15,17 +20,47 @@ const title = pageTitle ? pageTitle : ''
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
+		<meta name="fediverse:creator" content="@simpleauthority@mastodon.social">
 		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
-		<link rel="authorization_endpoint" href="https://indieauth.com/auth">
-		<link rel="token_endpoint" href="https://tokens.indieauth.com/token">
-		<link rel="micropub" href="https://scribble.jacobandersen.dev/micropub" />
+		<link rel="pgpkey" href="/gpg.pub" />
+		<link rel="authorization_endpoint" href="https://indieauth.com/auth" />
+		<link rel="token_endpoint" href="https://tokens.indieauth.com/token" />
+		<link
+			rel="micropub"
+			href="https://scribble.jacobandersen.dev/micropub"
+		/>
 		<slot name="additionalHead" />
 		<title>{title} &ndash; Jacob Andersen</title>
 	</head>
-	<body class="tw:bg-blue-200 tw:dark:bg-blue-950 tw:text-blue-950 tw:dark:text-blue-200 tw:h-screen">
+	<body
+		class="tw:bg-blue-200 tw:dark:bg-blue-950 tw:text-blue-950 tw:dark:text-blue-200 tw:h-screen"
+	>
 		<div class="tw:h-full tw:w-full tw:flex tw:justify-center">
 			<div class="tw:h-full tw:w-1/2 tw:flex-col tw:items-center tw:gap-y-2">
+				<SiteHeader shouldMarkupAuthor={headerMarksUpAuthor} />
 				<slot />
+				<footer class="tw:flex tw:justify-between tw:border-t-2 tw:border-dotted tw:mt-4 tw:pt-1">
+					<div>
+						<p>Copyright &copy; {year} Jacob Andersen</p>
+					</div>
+					<ul class="tw:flex tw:gap-x-2 tw:text-xs">
+						<li>
+							<RelMeExternalLink href="https://indieweb.org/User:Jacobandersen.dev">indieweb</RelMeExternalLink>
+						</li>
+						<li>
+							<RelMeExternalLink href="https://mastodon.social/@simpleauthority">mastodon</RelMeExternalLink>
+						</li>
+						<li>
+							<RelMeExternalLink href="https://bsky.app/profile/jacobandersen.dev">bsky</RelMeExternalLink>
+						</li>
+						<li>
+							<RelMeExternalLink href="https://github.com/jacobsandersen">github</RelMeExternalLink>
+						</li>
+						<li>
+							<RelMeExternalLink href="mailto:jacob@jacobandersen.dev">email</RelMeExternalLink>
+						</li>
+					</ul>
+				</footer>
 			</div>
 		</div>
 	</body>

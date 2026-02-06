@@ -3,14 +3,16 @@ import ExternalLinkIcon from '../icons/ExternalLinkIcon.astro'
 
 interface Props {
     href: string
+    linkProps?: Record<string, string>
+    showIcon?: boolean
     linkClass?: string[]
     iconClass?: string[]
 }
 
-const { href, linkClass, iconClass } = Astro.props as Props
+const { href, linkProps = {}, showIcon = false, linkClass, iconClass } = Astro.props as Props
 ---
 
 <span class="tw:inline-flex tw:items-center tw:gap-1">
-    <a href={href} target="_blank" class:list={["tw:italic", "tw:underline", "tw:decoration-dotted", "tw:hover:decoration-wavy", ...(linkClass ? linkClass : [])]}><slot /></a>
-    <ExternalLinkIcon class:list={["tw:size-4", ...(iconClass ? iconClass : [])]} />
+    <a href={href} target="_blank" class:list={["tw:italic", "tw:underline", "tw:decoration-dotted", "tw:hover:decoration-wavy", ...(linkClass ? linkClass : [])]} {...linkProps}><slot /></a>
+    {showIcon && <ExternalLinkIcon class:list={["tw:size-4", ...(iconClass ? iconClass : [])]} />}
 </span>
