@@ -1,7 +1,6 @@
 import { Mf2Properties } from "~/types/mf2-document"
 import { isValidUrl } from "./url"
 import { getDateParts } from "./dates"
-import { create } from "node:domain"
 
 export function getFirstStringOrBlank(properties: Mf2Properties, propertyName: string): string {
     return getFirstPropertyOrDefault<string>(properties, propertyName, "")
@@ -47,5 +46,48 @@ export function getPermalinkUrl(props: Mf2Properties): string {
     const { year, month, day } = getDateParts(createdAt)
 
     return `/${year}/${month}/${day}/${slug}`
-} 
-    
+}
+
+function findStringContent(items: unknown[]): string {
+    for (let item of items) {
+        if (typeof item === 'string' && item.length > 0) {
+            return item
+        }
+    }
+    return ""
+}
+
+function findHtmlContent(items: unknown[]): string {
+    for (let item of items) {
+        if (typeof item === 'object' && item !== null && 'html' in item) {
+            const html = (item as any).html
+            if (typeof html === 'string' && html.length > 0) {
+                return html
+            }
+        }
+    }
+    return ""
+}
+
+export function extractPostContent(props: Mf2Properties): string {
+    if (props.content && props.content.length > 0) {
+        const stringContent = findStringContent(props.content)
+        if (stringContent) return stringContent
+        return findHtmlContent(props.content)
+    }
+
+    if (props.summary && props.summary.length > 0) {
+        return findStringContent(props.summary)
+    }
+
+    return ""
+}
+
+export function extractPostName(props: Mf2Properties): string {
+    if (props.name) {
+        return findStringContent(props.name)
+    }
+
+    return ""
+}
+

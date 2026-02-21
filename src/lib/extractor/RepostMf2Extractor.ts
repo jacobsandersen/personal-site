@@ -7,6 +7,10 @@ export default class RepostMf2Extractor extends RemoteUrlReferenceExtractor {
         super(props, 'repost-of');
     }
 
+    isCompactPreview(): boolean {
+        return true
+    }
+    
     getTitle(): string {
         return `Repost from ${this.getLongCreatedFrom()}`;
     }

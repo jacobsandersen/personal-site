@@ -7,6 +7,10 @@ export default class LikeMf2Extractor extends RemoteUrlReferenceExtractor {
         super(props, 'like-of')
     }
 
+    isCompactPreview(): boolean {
+        return true
+    }
+
     getTitle(): string {
         return `Liked Content ${this.getLongCreatedFrom()}`;
     }

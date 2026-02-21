@@ -5,9 +5,10 @@ import ReferencedContent from '../post-fragments/ReferencedContent.astro';
 
 interface Props {
     rsvp: Rsvp
+    preview?: boolean
 }
 
-const { rsvp } = Astro.props as Props
+const { rsvp, preview = false } = Astro.props as Props
 
 let rsvpText = '';
 switch (rsvp.rsvp) {
@@ -31,7 +32,7 @@ switch (rsvp.rsvp) {
     
     {/* TODO: should use blockquote instead */}
     {/* Only try to render if it exists, as a bonus; don't inform the user that the content is not renderable otherwise. */}
-    {rsvp.referencedContent && (<div class="ml-4">
+    {!preview && rsvp.referencedContent && (<div class="ml-4">
         <ReferencedContent referencedContent={rsvp.referencedContent} />
     </div>)}
 </div>

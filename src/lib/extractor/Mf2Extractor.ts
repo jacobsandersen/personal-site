@@ -21,6 +21,10 @@ export default abstract class Mf2Extractor {
         return []
     }
 
+    isCompactPreview(): boolean {
+        return false
+    }
+
     getSummary(): string {
         for (const summary of this.props.summary ?? []) {
             if (typeof summary === 'string') {

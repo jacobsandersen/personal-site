@@ -7,6 +7,10 @@ export default class RsvpMf2Extractor extends RemoteUrlReferenceExtractor {
         super(props, 'in-reply-to');
     }
 
+    isCompactPreview(): boolean {
+        return true
+    }
+
     getTitle(): string {
         return `RSVP for ${this.getEvent()}`
     }

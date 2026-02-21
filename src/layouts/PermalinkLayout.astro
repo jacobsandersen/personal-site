@@ -6,7 +6,7 @@ interface Props {
     title?: string
 }
 
-const { title } = Astro.props as Props
+const { title = 'Post' } = Astro.props as Props
 ---
 
 <BaseLayout pageTitle={title} headerMarksUpAuthor={true}>

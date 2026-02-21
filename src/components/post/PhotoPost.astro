@@ -4,9 +4,10 @@ import ContentRenderer from '../content/ContentRenderer.astro'
 
 interface Props {
     photo: Photo
+    preview?: boolean
 }
 
-const { photo } = Astro.props as Props
+const { photo, preview = false } = Astro.props as Props
 const isMultiPhoto = photo.photoUrls.length > 1
 ---
 
@@ -14,8 +15,8 @@ const isMultiPhoto = photo.photoUrls.length > 1
     {isMultiPhoto ? (
         <p>Multi-photo not yet supported</p>
     ) : (
-        <img src={photo.photoUrls[0]} class="tw:max-w-1/2 tw:h-auto tw:border-2 tw:rounded-sm" />
+        <img src={photo.photoUrls[0]} class:list={["tw:h-auto tw:border-2 tw:rounded-sm", preview ? "tw:max-w-48" : "tw:max-w-1/2"]} />
     )}
 
-    <ContentRenderer content={photo.content} />
+    <ContentRenderer content={photo.content} preview={preview} />
 </div>

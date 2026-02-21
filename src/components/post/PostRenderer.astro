@@ -12,32 +12,33 @@ import ReplyPost from "./ReplyPost.astro";
 
 interface Props {
     content: Post;
+    preview?: boolean;
 }
 
-const { content } = Astro.props as Props;
+const { content, preview = false } = Astro.props as Props;
 ---
 
 {
     (() => {
         switch (content.type) {
             case "article":
-                return <ArticlePost article={content} />
+                return <ArticlePost article={content} preview={preview} />
             case "checkin":
-                return <CheckinPost checkin={content} />
+                return <CheckinPost checkin={content} preview={preview} />
             case "like":
-                return <LikePost like={content} />
+                return <LikePost like={content} preview={preview} />
             case "note":
-                return <NotePost note={content} />
+                return <NotePost note={content} preview={preview} />
             case "repost":
-                return <RepostPost repost={content} />
+                return <RepostPost repost={content} preview={preview} />
             case "rsvp":
-                return <RsvpPost rsvp={content} />
+                return <RsvpPost rsvp={content} preview={preview} />
             case "photo":
-                return <PhotoPost photo={content} />
+                return <PhotoPost photo={content} preview={preview} />
             case "reply":
-                return <ReplyPost reply={content} />
+                return <ReplyPost reply={content} preview={preview} />
             case "bookmark":
-                return <BookmarkPost bookmark={content} />
+                return <BookmarkPost bookmark={content} preview={preview} />
         }
     })()
 }

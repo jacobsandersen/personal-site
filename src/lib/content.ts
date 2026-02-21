@@ -4,6 +4,8 @@ export type Content = string | Html
 
 export type RsvpType = 'yes' | 'no' | 'maybe' | 'interested'
 
+export type PostType = 'rsvp' | 'repost' | 'like' | 'reply' | 'bookmark' | 'photo' | 'checkin' | 'note' | 'article'
+
 export type Post = Article | Checkin | Like | Note | Photo | Reply | Repost | Rsvp | Bookmark
 
 export interface Article {

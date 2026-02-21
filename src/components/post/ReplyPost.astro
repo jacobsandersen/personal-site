@@ -6,17 +6,20 @@ import ReferencedContent from '../post-fragments/ReferencedContent.astro'
 
 interface Props {
     reply: Reply
+    preview?: boolean
 }
 
-const { reply } = Astro.props as Props
+const { reply, preview = false } = Astro.props as Props
 ---
 
 <div class="tw:flex tw:flex-col tw:items-center tw:gap-y-4">
     <h2 class="tw:text-xl tw:font-bold">Reply to <em><ExternalLink href={reply.inReplyTo} showIcon={true}>{reply.inReplyTo}</ExternalLink></em></h2>
-    <ContentRenderer content={reply.content} />
+    <ContentRenderer content={reply.content} preview={preview} />
 
-    {/* TODO: should use blockquote instead */}
-    <div class="ml-4">
-        <ReferencedContent referencedContent={reply.referencedContent} />
-    </div>
+    {!preview && (
+        /* TODO: should use blockquote instead */
+        <div class="ml-4">
+            <ReferencedContent referencedContent={reply.referencedContent} />
+        </div>
+    )}
 </div>

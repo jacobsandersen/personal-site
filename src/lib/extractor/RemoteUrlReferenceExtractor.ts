@@ -2,7 +2,7 @@ import { Mf2Document, Mf2Properties } from "~/types/mf2-document";
 import Mf2Extractor from "./Mf2Extractor";
 import attemptRetrieveRemoteMf2Docs from "../retriever/retriever";
 import { Post } from "../content";
-import { discoverExtractor } from "./ExtractorDiscoverer";
+import { discoverPostType, getExtractorForType } from "../discovery";
 
 export default abstract class RemoteUrlReferenceExtractor extends Mf2Extractor {
     protected readonly remoteUrl: string
@@ -34,7 +34,7 @@ export default abstract class RemoteUrlReferenceExtractor extends Mf2Extractor {
 
     async getRemoteContent(cache: KVNamespace<string>): Promise<Post | null> {
         const doc = await this.getRemoteHEntry(cache)
-        const extractor = doc ? discoverExtractor(doc.properties) : null
+        const extractor = doc ? getExtractorForType(discoverPostType(doc.properties), doc.properties) : null
         return extractor ? await extractor.getPost() : null
     }
 }

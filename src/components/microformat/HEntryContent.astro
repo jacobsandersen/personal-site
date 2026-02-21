@@ -1,0 +1,57 @@
+---
+import PostDates from '~/components/post-fragments/PostDates.astro'
+import Categories from '~/components/post-fragments/Categories.astro'
+import PostRenderer from '../post/PostRenderer.astro'
+import type Mf2Extractor from '~/lib/extractor/Mf2Extractor'
+import type { Post } from '~/lib/content'
+
+export interface Props {
+    extractor: Mf2Extractor
+    preview: boolean
+    permalink: string
+    content: Post | null
+}
+
+const { extractor, preview, permalink, content } = Astro.props
+
+const RootElem = extractor.getRootElem()
+const title = extractor.getTitle()
+const summary = extractor.getSummary()
+const shouldShortCircuitWithSummary = preview && !!summary
+const skipBody = preview && extractor.isCompactPreview()
+if (shouldShortCircuitWithSummary) {
+    console.warn(
+        `Short-circuiting content for post "${title}" since we're in preview mode and a summary is available.`
+    )
+}
+---
+
+<RootElem class:list={["h-entry", preview && "tw:border tw:border-gray-200 tw:dark:border-gray-700 tw:rounded-md tw:bg-gray-50 tw:dark:bg-gray-900 tw:p-5"]}>
+    <div class:list={["tw:flex tw:flex-col tw:items-center tw:gap-y-1", !preview && "tw:mt-8"]}>
+        {preview ? (
+            <h2 class:list={["tw:font-serif", "tw:text-2xl", ...extractor.getTitleClasses()]}>
+                <a href={permalink}>{title}</a>
+            </h2>
+        ) : (
+            <h1 class:list={["tw:font-serif", "tw:text-3xl", ...extractor.getTitleClasses()]}>{title}</h1>
+        )}
+        <PostDates extractedDates={extractor.getDates()} />
+    </div>
+    {!preview && <hr class="tw:my-6 tw:border-dotted" />}
+    {!skipBody && (
+    <div class:list={[!preview && "tw:border-2 tw:border-dashed tw:border-blue-400 tw:dark:border-blue-900 tw:p-4 tw:rounded-sm", preview && "tw:mt-3"]}>
+        {shouldShortCircuitWithSummary ? (
+            <p class="p-summary">{summary}</p>
+        ) : (
+            <>
+                {summary && <p class="p-summary">{summary}</p>}
+                <div class:list={["e-content", !preview && "tw:mb-4"]}>
+                    <PostRenderer content={content!} preview={preview} />
+                </div>
+            </>
+        )}
+        <Categories categories={extractor.getCategories()} />
+    </div>
+    )}
+    {!preview && <a href="/" class="u-author"></a>}
+</RootElem>

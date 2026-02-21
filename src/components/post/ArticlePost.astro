@@ -4,9 +4,10 @@ import ContentRenderer from '../content/ContentRenderer.astro'
 
 interface Props {
     article: Article
+    preview?: boolean
 }
 
-const { article } = Astro.props as Props
+const { article, preview = false } = Astro.props as Props
 ---
 
-<ContentRenderer content={article.content} />
+<ContentRenderer content={article.content} preview={preview} />

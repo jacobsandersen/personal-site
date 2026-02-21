@@ -1,39 +1,35 @@
 ---
 import { Mf2Properties } from '~/types/mf2-document'
-import PostDates from '~/components/post-fragments/PostDates.astro'
-import Categories from '~/components/post-fragments/Categories.astro'
 import PermalinkLayout from '~/layouts/PermalinkLayout.astro'
-import { discoverExtractor } from '~/lib/extractor/ExtractorDiscoverer'
-import PostRenderer from '../post/PostRenderer.astro'
+import HEntryContent from './HEntryContent.astro'
+import { discoverPostType, getExtractorForType } from '~/lib/discovery'
+import { getPermalinkUrl } from '~/util/mf2-util'
 
 export interface Props {
     props: Mf2Properties
+    preview?: boolean
 }
 
-const { props } = Astro.props
+const { props, preview = false } = Astro.props
 
 const cache = Astro.locals.runtime.env.personal_site_content_cache
 
-const extractor = discoverExtractor(props)
-const RootElem = extractor.getRootElem()
-const content = await extractor.getPost(cache)
+const type = discoverPostType(props)
+const extractor = getExtractorForType(type, props)
 const summary = extractor.getSummary()
+const title = extractor.getTitle()
+const permalink = getPermalinkUrl(props)
+
+const shouldShortCircuitWithSummary = preview && !!summary
+const content = shouldShortCircuitWithSummary ? null : await extractor.getPost(cache)
+
+const contentProps = { extractor, preview, permalink, content }
 ---
 
-<PermalinkLayout title={extractor.getTitle()}>
-    <RootElem class:list={["h-entry"]}>
-        <div class="tw:flex tw:flex-col tw:items-center tw:gap-y-1 tw:mt-8">
-            <h1 class:list={["tw:font-serif", "tw:text-3xl", ...extractor.getTitleClasses()]}>{extractor.getTitle()}</h1>
-            <PostDates extractedDates={extractor.getDates()} />
-        </div>
-        <hr class="tw:my-6 tw:border-dotted" />
-        <div class="tw:border-2 tw:border-dashed tw:border-blue-400 tw:dark:border-blue-900 tw:p-4 tw:rounded-sm">
-            {summary && <p class="p-summary">{summary}</p>}
-            <div class="e-content tw:mb-4">
-                <PostRenderer content={content} />
-            </div>
-            <Categories categories={extractor.getCategories()} />
-        </div>
-        <a href="/" class="u-author"></a>
-    </RootElem>
-</PermalinkLayout>
+{preview ? (
+    <HEntryContent {...contentProps} />
+) : (
+    <PermalinkLayout title={title}>
+        <HEntryContent {...contentProps} />
+    </PermalinkLayout>
+)}
