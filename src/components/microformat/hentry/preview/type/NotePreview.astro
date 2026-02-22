@@ -10,7 +10,7 @@ interface Props {
 const { note } = Astro.props as Props
 ---
 
-<div class="tw:flex tw:flex-col">
+<div class="tw:flex tw:flex-col tw:gap-y-1">
     <h2 class="tw:text-xl tw:font-bold">Posted a note</h2>
     <ContentRenderer content={note.content} preview={true} />
 </div>

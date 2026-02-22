@@ -6,9 +6,10 @@ import HEntryRenderer from './hentry/HEntryRenderer.astro'
 export interface Props {
   doc: Mf2Document
   preview?: boolean
+  typePredicate?: (type: string) => boolean
 }
 
-const { doc, preview = false } = Astro.props
+const { doc, preview = false, typePredicate } = Astro.props
 const type = doc['type'] ? (doc['type'][0] as string) : 'unknown'
 
 let Renderer: typeof HEntryRenderer | 
@@ -19,8 +20,10 @@ if (type === 'h-entry') {
 } else {
   Renderer = UnknownFormatRenderer
 }
+
+const shouldNoOp = typePredicate ? !typePredicate(type) : false
 ---
 
-<Renderer props={doc.properties} preview={preview} />
+{shouldNoOp ? <></> : <Renderer props={doc.properties} preview={preview} />}
 
 <!-- <pre class="text-xs mt-2">{JSON.stringify(doc, null, 2)}</pre> -->

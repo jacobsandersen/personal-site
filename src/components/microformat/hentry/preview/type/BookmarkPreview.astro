@@ -10,7 +10,7 @@ interface Props {
 const { bookmark } = Astro.props as Props
 ---
 
-<div class="tw:flex tw:flex-col">
+<div class="tw:flex tw:flex-col tw:gap-y-1">
     <h2 class="tw:text-xl tw:font-bold">Added a <ExternalLink href={bookmark.bookmarkOf} showIcon={true}>bookmark</ExternalLink></h2>
     <ContentRenderer content={bookmark.content} />
 </div>

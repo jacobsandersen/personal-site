@@ -2,15 +2,16 @@
 import clip from '@arendjr/text-clipper'
 
 interface Props {
-    html: string
+    html: string,
+    class?: string,
     preview?: boolean
 }
 
-const { html, preview = false } = Astro.props as Props
+const { html, class: className = "", preview = false } = Astro.props as Props
 
 const PREVIEW_MAX_CHARS = 300
 
 const rendered = preview ? clip(html, PREVIEW_MAX_CHARS, { html: true, stripTags: ['img', 'video', 'audio', 'iframe', 'svg'] }) : html
 ---
 
-<div class:list={["tw:prose", "tw:prose-blue", "tw:dark:prose-invert", "tw:prose-headings:font-serif", "tw:prose-headings:my-4", "tw:max-w-none"]} set:html={rendered} />
+<div class:list={["tw:prose", "tw:prose-blue", "tw:dark:prose-invert", "tw:prose-headings:font-serif", "tw:prose-headings:my-4", "tw:max-w-none", className]} set:html={rendered} />

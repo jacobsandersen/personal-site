@@ -2,15 +2,16 @@
 import clip from '@arendjr/text-clipper'
 
 interface Props {
-    text: string
+    text: string,
+    class?: string,
     preview?: boolean,
     raw?: boolean
 }
 
-const { text, preview = false, raw = false } = Astro.props as Props
+const { text, class: className = "", preview = false, raw = false } = Astro.props as Props
 
 const PREVIEW_MAX_CHARS = 300
 const rendered = preview ? clip(text, PREVIEW_MAX_CHARS) : text
 ---
 
-{ raw ? rendered : <p>{rendered}</p> }
+{ raw ? rendered : <p class:list={className}>{rendered}</p> }

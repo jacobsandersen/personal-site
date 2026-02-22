@@ -4,7 +4,7 @@ import { QueryParams } from "~/lib/scribble/scribble";
 import { validateYearMonthDayForPath } from "~/util/url";
 import { queryPosts } from "~/lib/scribble/scribble";
 import { parseAdhoc } from "~/util/dates";
-import MicroformatListRenderer from "~/components/microformat/MicroformatListRenderer.astro";
+import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
 
 const { year, month, day } = Astro.params;
 if (!validateYearMonthDayForPath(year, month, day)) {
@@ -29,6 +29,5 @@ const title = `Posts from ${formattedDate}`;
 ---
 
 <PageLayout title={title}>
-    <h1 class="tw:text-2xl tw:font-bold tw:mb-6">{title}</h1>
-    <MicroformatListRenderer posts={results} />
+    <HFeedRenderer posts={results} feedInfo={{title, url:`/${year}/${month}/${day}`}} />
 </PageLayout>

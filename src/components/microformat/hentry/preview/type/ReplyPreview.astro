@@ -10,7 +10,7 @@ interface Props {
 const { reply } = Astro.props as Props
 ---
 
-<div class="tw:flex tw:flex-col">
+<div class="tw:flex tw:flex-col tw:gap-y-1">
     <h2 class="tw:text-xl tw:font-bold">Replied to <em><ExternalLink href={reply.inReplyTo} showIcon={true}>a post</ExternalLink></em></h2>
     <ContentRenderer content={reply.content} preview={true} />
 </div>

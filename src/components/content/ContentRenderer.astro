@@ -4,18 +4,19 @@ import TextRenderer from './TextRenderer.astro'
 import HtmlRenderer from './HtmlRenderer.astro'
 
 interface Props {
-    content: Content[]
+    content: Content[],
+    class?: string,
     preview?: boolean,
     raw?: boolean
 }
 
-const { content, preview = false, raw = false } = Astro.props as Props
+const { content, class: className = "", preview = false, raw = false } = Astro.props as Props
 ---
 
 {content.map(piece => {
     if (isString(piece)) {
-        return <TextRenderer text={piece} preview={preview} raw={raw} />
+        return <TextRenderer text={piece} preview={preview} raw={raw} class={className} />
     } else {
-        return <HtmlRenderer html={piece.html} preview={preview} />
+        return <HtmlRenderer html={piece.html} preview={preview} class={className} />
     }
 })}

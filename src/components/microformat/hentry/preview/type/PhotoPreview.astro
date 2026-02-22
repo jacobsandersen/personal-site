@@ -11,7 +11,7 @@ const isMultiPhoto = photo.photoUrls.length > 1
 const wording = isMultiPhoto ? `Posted ${photo.photoUrls.length} photos` : 'Posted a photo'
 ---
 
-<div class="tw:flex tw:flex-col">
+<div class="tw:flex tw:flex-col tw:gap-y-1">
     <h2 class="tw:text-xl tw:font-bold">{wording}</h2>
     <ContentRenderer content={photo.content} />
 </div>

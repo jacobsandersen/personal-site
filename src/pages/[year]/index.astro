@@ -1,5 +1,5 @@
 ---
-import MicroformatListRenderer from "~/components/microformat/MicroformatListRenderer.astro";
+import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
 import PageLayout from "~/layouts/PageLayout.astro";
 import { QueryParams, queryPosts } from "~/lib/scribble/scribble";
 import { validateYearForPath } from "~/util/url";
@@ -18,6 +18,5 @@ const title = `Posts from ${year}`;
 ---
 
 <PageLayout title={`Posts from ${year}`}>
-    <h1 class="tw:text-2xl tw:font-bold tw:mb-6">{title}</h1>
-    <MicroformatListRenderer posts={results} />
+    <HFeedRenderer posts={results} feedInfo={{title, url:`/${year}`}} />
 </PageLayout>
