@@ -3,13 +3,14 @@ import clip from '@arendjr/text-clipper'
 
 interface Props {
     text: string
-    preview?: boolean
+    preview?: boolean,
+    raw?: boolean
 }
 
-const { text, preview = false } = Astro.props as Props
+const { text, preview = false, raw = false } = Astro.props as Props
 
 const PREVIEW_MAX_CHARS = 300
 const rendered = preview ? clip(text, PREVIEW_MAX_CHARS) : text
 ---
 
-<p>{rendered}</p>
+{ raw ? rendered : <p>{rendered}</p> }

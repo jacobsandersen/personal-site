@@ -11,6 +11,10 @@ export default abstract class Mf2Extractor {
         this.dates = extractDates(props)
     }
 
+    getProperties(): Mf2Properties {
+        return this.props
+    }
+
     getRootElem(): string {
         return 'div'
     }

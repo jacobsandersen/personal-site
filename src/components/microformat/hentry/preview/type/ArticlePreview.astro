@@ -9,4 +9,7 @@ interface Props {
 const { article } = Astro.props as Props
 ---
 
-<ContentRenderer content={article.content} />
+<div class="tw:flex tw:flex-col">
+    <h2 class="tw:text-xl tw:font-bold">Posted an article</h2>
+    <ContentRenderer content={article.content} />
+</div>

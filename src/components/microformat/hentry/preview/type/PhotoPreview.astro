@@ -8,14 +8,10 @@ interface Props {
 
 const { photo } = Astro.props as Props
 const isMultiPhoto = photo.photoUrls.length > 1
+const wording = isMultiPhoto ? `Posted ${photo.photoUrls.length} photos` : 'Posted a photo'
 ---
 
-<div class="tw:flex tw:flex-col tw:items-center tw:justify-center tw:gap-y-4">
-    {isMultiPhoto ? (
-        <p>Multi-photo not yet supported</p>
-    ) : (
-        <img src={photo.photoUrls[0]} class:list={["tw:h-auto tw:border-2 tw:rounded-sm", "tw:max-w-1/2"]} />
-    )}
-
+<div class="tw:flex tw:flex-col">
+    <h2 class="tw:text-xl tw:font-bold">{wording}</h2>
     <ContentRenderer content={photo.content} />
 </div>

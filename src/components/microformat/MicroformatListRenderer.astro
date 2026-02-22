@@ -13,7 +13,7 @@ const { posts } = Astro.props as Props;
     posts.length === 0 ? (
         <p>No posts found.</p>
     ) : (
-        <div class="tw:flex tw:flex-col tw:gap-y-6">
+        <div class="tw:flex tw:flex-col tw:gap-y-4">
             {posts.map((post) => (
                 <MicroformatRenderer doc={post} preview={true} />
             ))}
