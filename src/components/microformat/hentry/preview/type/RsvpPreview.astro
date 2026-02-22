@@ -1,0 +1,30 @@
+---
+import ExternalLink from '~/components/util/ExternalLink.astro';
+import { Rsvp } from '~/lib/content'
+
+interface Props {
+    rsvp: Rsvp
+}
+
+const { rsvp } = Astro.props as Props
+
+let rsvpText = '';
+switch (rsvp.rsvp) {
+    case 'yes':
+        rsvpText = 'Is going to';
+        break;
+    case 'no':
+        rsvpText = 'Is not going to';
+        break;
+    case 'maybe':
+        rsvpText = 'Might be going to';
+        break;
+    case 'interested':
+        rsvpText = 'Is interested in';
+}
+
+---
+
+<div class="tw:flex tw:flex-col tw:items-center tw:justify-center tw:gap-y-2">
+    <h2 class="tw:text-xl tw:font-bold">{rsvpText} <em><ExternalLink href={rsvp.inReplyTo} showIcon={true}>{rsvp.event ?? "an event"}</ExternalLink></em></h2>
+</div>

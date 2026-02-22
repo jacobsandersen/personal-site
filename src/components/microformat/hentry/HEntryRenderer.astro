@@ -1,0 +1,22 @@
+---
+import { Mf2Properties } from '~/types/mf2-document'
+import { discoverPostType, getExtractorForType } from '~/lib/discovery'
+import HEntryPreview from './preview/HEntryPreview.astro'
+import HEntryPermalink from './permalink/HEntryPermalink.astro'
+
+export interface Props {
+    props: Mf2Properties
+    preview?: boolean
+}
+
+const { props, preview = false } = Astro.props
+
+const type = discoverPostType(props)
+const extractor = getExtractorForType(type, props)
+---
+
+{preview ? (
+    <HEntryPreview extractor={extractor} />
+) : (
+    <HEntryPermalink extractor={extractor} />
+)}

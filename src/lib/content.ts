@@ -24,8 +24,7 @@ export interface Checkin {
 export interface Like {
     type: 'like',
     likeOf: string,
-    content: Content[],
-    referencedContent: Post | null
+    content: Content[]
 }
 
 export interface Note {
@@ -42,22 +41,19 @@ export interface Photo {
 export interface Reply {
     type: 'reply',
     inReplyTo: string,
-    content: Content[],
-    referencedContent: Post | null
+    content: Content[]
 }
 
 export interface Repost {
     type: 'repost',
-    repostOf: string,
-    referencedContent: Post | null
+    repostOf: string
 }
 
 export interface Rsvp {
     type: 'rsvp',
     inReplyTo: string,
-    referencedContent: Post | null,
     event: string,
-    rsvp: string,
+    rsvp: string
 }
 
 export interface Bookmark {

@@ -20,11 +20,7 @@ export default abstract class Mf2Extractor {
     getTitleClasses(): string[] {
         return []
     }
-
-    isCompactPreview(): boolean {
-        return false
-    }
-
+    
     getSummary(): string {
         for (const summary of this.props.summary ?? []) {
             if (typeof summary === 'string') {
@@ -44,7 +40,7 @@ export default abstract class Mf2Extractor {
         return normalizePostContent(contentProp)
     }
 
-    abstract getPost(cache?: KVNamespace<string>): Promise<Post>;
+    abstract getPost(): Promise<Post>;
 
     getCategories(): string[] {
         return this.props.category ? (this.props.category as string[]) : []

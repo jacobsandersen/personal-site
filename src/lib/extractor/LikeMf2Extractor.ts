@@ -7,20 +7,15 @@ export default class LikeMf2Extractor extends RemoteUrlReferenceExtractor {
         super(props, 'like-of')
     }
 
-    isCompactPreview(): boolean {
-        return true
-    }
-
     getTitle(): string {
         return `Liked Content ${this.getLongCreatedFrom()}`;
     }
 
-    async getPost(cache: KVNamespace<string>): Promise<Like> {
+    async getPost(): Promise<Like> {
         return {
             type: 'like',
             likeOf: this.remoteUrl,
-            content: this.getParsedContentProp(),
-            referencedContent: await this.getRemoteContent(cache)
+            content: this.getParsedContentProp()
         }
     }
 }

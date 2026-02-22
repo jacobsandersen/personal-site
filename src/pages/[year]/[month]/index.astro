@@ -1,5 +1,5 @@
 ---
-import PostListRenderer from "~/components/post/PostListRenderer.astro";
+import MicroformatListRenderer from "~/components/microformat/MicroformatListRenderer.astro";
 import PageLayout from "~/layouts/PageLayout.astro";
 import { QueryParams, queryPosts } from "~/lib/scribble/scribble";
 import { parseAdhoc } from "~/util/dates";
@@ -28,5 +28,5 @@ const title = `Posts from ${formattedDate}`;
 
 <PageLayout title={title}>
     <h1>{title}</h1>
-    <PostListRenderer posts={results} />
+    <MicroformatListRenderer posts={results} />
 </PageLayout>

@@ -1,0 +1,80 @@
+---
+import PostDates from "~/components/fragments/PostDates.astro";
+import Categories from "~/components/fragments/Categories.astro";
+import type Mf2Extractor from "~/lib/extractor/Mf2Extractor";
+import ArticlePreview from "./type/ArticlePreview.astro";
+import BookmarkPreview from "./type/BookmarkPreview.astro";
+import CheckinPreview from "./type/CheckinPreview.astro";
+import LikePreview from "./type/LikePreview.astro";
+import NotePreview from "./type/NotePreview.astro";
+import PhotoPreview from "./type/PhotoPreview.astro";
+import ReplyPreview from "./type/ReplyPreview.astro";
+import RepostPreview from "./type/RepostPreview.astro";
+import RsvpPreview from "./type/RsvpPreview.astro";
+
+export interface Props {
+    extractor: Mf2Extractor;
+}
+
+const { extractor } = Astro.props;
+
+const RootElem = extractor.getRootElem();
+const title = extractor.getTitle();
+const summary = extractor.getSummary();
+const content = await extractor.getPost();
+---
+
+<RootElem class:list={["h-entry"]}>
+    <div
+        class:list={["tw:flex tw:flex-col tw:items-center tw:gap-y-1 tw:mt-8"]}
+    >
+        <h1
+            class:list={[
+                "tw:font-serif",
+                "tw:text-3xl",
+                ...extractor.getTitleClasses(),
+            ]}
+        >
+            {title}
+        </h1>
+        <PostDates extractedDates={extractor.getDates()} />
+    </div>
+    <hr class="tw:my-6 tw:border-dotted" />
+    <div
+        class:list={[
+            "tw:border-2 tw:border-dashed tw:border-blue-400 tw:dark:border-blue-900 tw:p-4 tw:rounded-sm",
+        ]}
+    >
+        <>
+            {summary && <p class="p-summary">{summary}</p>}
+            <div class:list={["e-content", "tw:mb-4"]}>
+                {
+                    (() => {
+                        switch (content.type) {
+                            case "article":
+                                return <ArticlePreview article={content} />;
+                            case "checkin":
+                                return <CheckinPreview checkin={content} />;
+                            case "like":
+                                return <LikePreview like={content} />;
+                            case "note":
+                                return <NotePreview note={content} />;
+                            case "repost":
+                                return <RepostPreview repost={content} />;
+                            case "rsvp":
+                                return <RsvpPreview rsvp={content} />;
+                            case "photo":
+                                return <PhotoPreview photo={content} />;
+                            case "reply":
+                                return <ReplyPreview reply={content} />;
+                            case "bookmark":
+                                return <BookmarkPreview bookmark={content} />;
+                        }
+                    })()
+                }
+            </div>
+        </>
+        <Categories categories={extractor.getCategories()} />
+    </div>
+    <a href="/" class="u-author"></a>
+</RootElem>

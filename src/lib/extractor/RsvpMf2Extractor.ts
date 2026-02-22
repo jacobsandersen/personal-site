@@ -7,10 +7,6 @@ export default class RsvpMf2Extractor extends RemoteUrlReferenceExtractor {
         super(props, 'in-reply-to');
     }
 
-    isCompactPreview(): boolean {
-        return true
-    }
-
     getTitle(): string {
         return `RSVP for ${this.getEvent()}`
     }
@@ -35,11 +31,10 @@ export default class RsvpMf2Extractor extends RemoteUrlReferenceExtractor {
     }
 
 
-    async getPost(cache: KVNamespace<string>): Promise<Rsvp> {
+    async getPost(): Promise<Rsvp> {
         return {
             type: 'rsvp',
             inReplyTo: this.remoteUrl,
-            referencedContent: await this.getRemoteContent(cache),
             event: this.getEvent(),
             rsvp: this.getRsvp()
         }

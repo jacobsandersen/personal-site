@@ -1,17 +1,14 @@
 ---
 import { Like } from '~/lib/content'
-import ExternalLink from '../util/ExternalLink.astro'
-import ReferencedContent from '../post-fragments/ReferencedContent.astro'
+import ExternalLink from '~/components/util/ExternalLink.astro'
 
 interface Props {
     like: Like
-    preview?: boolean
 }
 
-const { like, preview = false } = Astro.props as Props
+const { like } = Astro.props as Props
 ---
 
 <div class="tw:flex tw:flex-col tw:items-center tw:gap-y-4">
     <h2 class="tw:text-xl tw:font-bold">Liked <em><ExternalLink href={like.likeOf} showIcon={true}>{like.likeOf}</ExternalLink></em></h2>
-    {!preview && <ReferencedContent referencedContent={like.referencedContent} />}
 </div>

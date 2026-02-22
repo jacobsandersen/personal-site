@@ -3,8 +3,8 @@ import PageLayout from "~/layouts/PageLayout.astro";
 import { QueryParams } from "~/lib/scribble/scribble";
 import { validateYearMonthDayForPath } from "~/util/url";
 import { queryPosts } from "~/lib/scribble/scribble";
-import PostListRenderer from "~/components/post/PostListRenderer.astro";
 import { parseAdhoc } from "~/util/dates";
+import MicroformatListRenderer from "~/components/microformat/MicroformatListRenderer.astro";
 
 const { year, month, day } = Astro.params;
 if (!validateYearMonthDayForPath(year, month, day)) {
@@ -30,5 +30,5 @@ const title = `Posts from ${formattedDate}`;
 
 <PageLayout title={title}>
     <h1>{title}</h1>
-    <PostListRenderer posts={results} />
+    <MicroformatListRenderer posts={results} />
 </PageLayout>

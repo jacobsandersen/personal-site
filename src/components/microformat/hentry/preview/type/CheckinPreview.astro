@@ -1,0 +1,20 @@
+---
+import ContentRenderer from '~/components/content/ContentRenderer.astro'
+import Map, { OpenStreetMapTileData } from '~/components/fragments/Map.astro'
+import { Checkin } from '~/lib/content'
+
+interface Props {
+    checkin: Checkin
+}
+
+const { checkin } = Astro.props as Props
+---
+
+<div class="tw:flex tw:flex-col tw:gap-y-4">
+    <div class="tw:flex tw:flex-col tw:items-center tw:justify-center tw:gap-y-2">
+        <h2 class="tw:text-xl tw:font-bold">Checked in at <em>{checkin.name}</em></h2>
+        <Map latitude={checkin.latitude} longitude={checkin.longitude} zoom={13} tileData={OpenStreetMapTileData} class="tw:w-full tw:h-64" />
+    </div>
+
+    <ContentRenderer content={checkin.content} />
+</div>

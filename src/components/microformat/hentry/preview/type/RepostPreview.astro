@@ -1,0 +1,14 @@
+---
+import ExternalLink from '~/components/util/ExternalLink.astro'
+import { Repost } from '~/lib/content'
+
+interface Props {
+    repost: Repost
+}
+
+const { repost } = Astro.props as Props
+---
+
+<div class="tw:flex tw:flex-col tw:items-center tw:gap-y-4">
+    <h2 class="tw:text-xl tw:font-bold">Repost of <em><ExternalLink href={repost.repostOf} showIcon={true}>{repost.repostOf}</ExternalLink></em></h2>
+</div>

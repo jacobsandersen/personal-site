@@ -1,0 +1,15 @@
+---
+import ContentRenderer from '~/components/content/ContentRenderer.astro'
+import StylizedQuote from '~/components/fragments/StylizedQuote.astro'
+import { Note } from '~/lib/content'
+
+interface Props {
+    note: Note
+}
+
+const { note } = Astro.props as Props
+---
+
+<StylizedQuote class={[]}>
+    <ContentRenderer content={note.content} />
+</StylizedQuote>

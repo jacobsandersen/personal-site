@@ -1,0 +1,21 @@
+---
+import ContentRenderer from '~/components/content/ContentRenderer.astro'
+import { Photo } from '~/lib/content'
+
+interface Props {
+    photo: Photo
+}
+
+const { photo } = Astro.props as Props
+const isMultiPhoto = photo.photoUrls.length > 1
+---
+
+<div class="tw:flex tw:flex-col tw:items-center tw:justify-center tw:gap-y-4">
+    {isMultiPhoto ? (
+        <p>Multi-photo not yet supported</p>
+    ) : (
+        <img src={photo.photoUrls[0]} class:list={["tw:h-auto tw:border-2 tw:rounded-sm", "tw:max-w-1/2"]} />
+    )}
+
+    <ContentRenderer content={photo.content} />
+</div>

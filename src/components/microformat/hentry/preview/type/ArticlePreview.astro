@@ -1,0 +1,12 @@
+---
+import ContentRenderer from '~/components/content/ContentRenderer.astro'
+import { Article } from '~/lib/content'
+
+interface Props {
+    article: Article
+}
+
+const { article } = Astro.props as Props
+---
+
+<ContentRenderer content={article.content} />

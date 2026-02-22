@@ -11,12 +11,11 @@ export default class ReplyMf2Extractor extends RemoteUrlReferenceExtractor {
         return `Reply ${this.getLongCreatedFrom()}`;
     }
 
-    async getPost(cache: KVNamespace<string>): Promise<Reply> {
+    async getPost(): Promise<Reply> {
         return {
             type: 'reply',
             inReplyTo: this.remoteUrl,
-            content: this.getParsedContentProp(),
-            referencedContent: await this.getRemoteContent(cache)
+            content: this.getParsedContentProp()
         }
     }
 }
