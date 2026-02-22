@@ -1,15 +1,13 @@
 ---
 import dayjs from "dayjs";
 import "~/styles/global.css";
-import SiteHeader from "~/components/SiteHeader.astro";
 import ExternalLink from "~/components/util/ExternalLink.astro";
 
 interface Props {
 	pageTitle?: string;
-	headerMarksUpAuthor?: boolean;
 }
 
-const { pageTitle, headerMarksUpAuthor = false } = Astro.props as Props;
+const { pageTitle } = Astro.props as Props;
 
 const title = pageTitle ? pageTitle : "";
 const year = dayjs().year();
@@ -33,13 +31,12 @@ const year = dayjs().year();
 		<title>{title} &ndash; Jacob Andersen</title>
 	</head>
 	<body
-		class="tw:bg-blue-200 tw:dark:bg-blue-950 tw:text-blue-950 tw:dark:text-blue-200 tw:h-screen"
+		class="tw:bg-blue-200 tw:dark:bg-blue-950 tw:text-blue-950 tw:dark:text-blue-200 tw:h-screen tw:py-6"
 	>
 		<div class="tw:h-full tw:w-full tw:flex tw:justify-center">
 			<div class="tw:h-full tw:w-1/2 tw:flex-col tw:items-center tw:gap-y-2">
-				<SiteHeader shouldMarkupAuthor={headerMarksUpAuthor} />
 				<slot />
-				<footer class="tw:flex tw:justify-between tw:border-t-2 tw:border-dotted tw:mt-4 tw:pt-1">
+				<footer class="tw:flex tw:justify-between tw:border-t-2 tw:border-dotted tw:py-2 tw:mt-4">
 					<div>
 						<p>Copyright &copy; {year} Jacob Andersen</p>
 					</div>

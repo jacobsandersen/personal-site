@@ -2,21 +2,32 @@
 import { Mf2Document } from "~/types/mf2-document";
 import MicroformatRenderer from "~/components/microformat/MicroformatRenderer.astro";
 
+interface HeaderConfig {
+    level?: number;
+    class?: string;
+}
+
 interface FeedInfo {
     title: string;
     url: string;
+    headerConfig?: HeaderConfig;
 }
 
 interface Props {
     feedInfo?: FeedInfo;
     posts: Mf2Document[];
+    class?: string;
 }
 
-const { feedInfo, posts } = Astro.props as Props;
+const { feedInfo, posts, class: className } = Astro.props as Props;
+const headerConf = feedInfo?.headerConfig ?? { level: 1, class: "" };
+const headerLevel = Math.min(Math.max(headerConf.level ?? 1, 1), 6)
+const HeaderElem = `h${headerLevel}`;
+const headerClass = headerConf.class ?? "";
 ---
 
-<section class="h-feed tw:flex tw:flex-col tw:gap-y-4">
-    {feedInfo && <h1 class="tw:text-2xl tw:font-bold"><a href={feedInfo.url}>{feedInfo.title}</a></h1>}
+<section class={`h-feed tw:flex tw:flex-col tw:gap-y-4 ${className ?? ""}`}>
+    {feedInfo && <HeaderElem class:list={`tw:text-2xl tw:font-bold ${headerClass}`}><a href={feedInfo.url}>{feedInfo.title}</a></HeaderElem>}
     {posts.map((post) => (
         <MicroformatRenderer doc={post} preview={true} />
     ))}

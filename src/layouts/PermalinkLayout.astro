@@ -1,5 +1,7 @@
 ---
+import Link from '~/components/util/Link.astro'
 import BaseLayout from './BaseLayout.astro'
+import { LucideArrowBigLeft } from '@lucide/astro'
 
 interface Props {
     title?: string
@@ -8,8 +10,9 @@ interface Props {
 const { title = 'Post' } = Astro.props as Props
 ---
 
-<BaseLayout pageTitle={title} headerMarksUpAuthor={true}>
-    <main class="tw:pb-8">
+<BaseLayout pageTitle={title}>
+    <Link href="/" linkClass={["tw:inline-flex tw:gap-x-2"]}><LucideArrowBigLeft /> Back to Home</Link>
+    <main>
         <slot />
     </main>
 </BaseLayout>
