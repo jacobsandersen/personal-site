@@ -2,7 +2,7 @@
 import dayjs from "dayjs";
 import "~/styles/global.css";
 import SiteHeader from "~/components/SiteHeader.astro";
-import RelMeExternalLink from "~/components/util/RelMeExternalLink.astro";
+import ExternalLink from "~/components/util/ExternalLink.astro";
 
 interface Props {
 	pageTitle?: string;
@@ -45,19 +45,19 @@ const year = dayjs().year();
 					</div>
 					<ul class="tw:flex tw:gap-x-2 tw:text-xs">
 						<li>
-							<RelMeExternalLink href="https://indieweb.org/User:Jacobandersen.dev">indieweb</RelMeExternalLink>
+							<ExternalLink href="https://indieweb.org/User:Jacobandersen.dev" rel="me">indieweb</ExternalLink>
 						</li>
 						<li>
-							<RelMeExternalLink href="https://mastodon.social/@simpleauthority">mastodon</RelMeExternalLink>
+							<ExternalLink href="https://mastodon.social/@simpleauthority" rel="me">mastodon</ExternalLink>
 						</li>
 						<li>
-							<RelMeExternalLink href="https://bsky.app/profile/jacobandersen.dev">bsky</RelMeExternalLink>
+							<ExternalLink href="https://bsky.app/profile/jacobandersen.dev" rel="me">bsky</ExternalLink>
 						</li>
 						<li>
-							<RelMeExternalLink href="https://github.com/jacobsandersen">github</RelMeExternalLink>
+							<ExternalLink href="https://github.com/jacobsandersen" rel="me">github</ExternalLink>
 						</li>
 						<li>
-							<RelMeExternalLink href="mailto:jacob@jacobandersen.dev">email</RelMeExternalLink>
+							<ExternalLink href="mailto:jacob@jacobandersen.dev" rel="me">email</ExternalLink>
 						</li>
 					</ul>
 				</footer>

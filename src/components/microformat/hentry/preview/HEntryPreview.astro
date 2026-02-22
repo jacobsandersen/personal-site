@@ -12,6 +12,7 @@ import ReplyPreview from "./type/ReplyPreview.astro";
 import RepostPreview from "./type/RepostPreview.astro";
 import RsvpPreview from "./type/RsvpPreview.astro";
 import { getPermalinkUrl } from "~/util/mf2-util";
+import Link from "~/components/util/Link.astro";
 
 export interface Props {
     extractor: Mf2Extractor;
@@ -27,7 +28,7 @@ const permalink = getPermalinkUrl(extractor.getProperties())
 <RootElem
     class:list={[
         "h-entry",
-        "tw:border-2 tw:border-dashed tw:border-blue-400 tw:dark:border-blue-900 tw:p-4 tw:rounded-sm",
+        "tw:border-2 tw:border-dashed tw:border-blue-400 tw:dark:border-blue-900 tw:p-3 tw:rounded-sm",
     ]}
 >
     <div class:list={["e-content"]}>
@@ -56,9 +57,9 @@ const permalink = getPermalinkUrl(extractor.getProperties())
             })()
         }
     </div>
-    <a href={permalink} class="tw:text-sm tw:text-gray-500">Go to post</a>
+    <Link href={permalink}>Go to full post</Link>
     <div class="tw:flex tw:justify-between">
         <Categories categories={extractor.getCategories()} />
-        <PostDates extractedDates={extractor.getDates()} />
+        <PostDates extractedDates={extractor.getDates()} forceHideUpdated={true} />
     </div>
 </RootElem>

@@ -1,0 +1,13 @@
+---
+interface Props {
+    href: string
+    rel?: string
+    target?: string
+    linkProps?: Record<string, string>
+    linkClass?: string[]
+}
+
+const { href, rel = "", target = "", linkProps = {}, linkClass } = Astro.props as Props
+---
+
+<a href={href} rel={rel} target={target} class:list={["tw:italic", "tw:underline", "tw:decoration-dotted", "tw:hover:decoration-wavy", ...(linkClass ? linkClass : [])]} {...linkProps}><slot /></a>

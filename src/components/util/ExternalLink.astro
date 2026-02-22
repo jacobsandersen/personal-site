@@ -1,18 +1,17 @@
 ---
-import ExternalLinkIcon from '../icons/ExternalLinkIcon.astro'
+import { LucideExternalLink } from '@lucide/astro'
+import Link from './Link.astro'
 
 interface Props {
     href: string
+    rel?: string
     linkProps?: Record<string, string>
     showIcon?: boolean
     linkClass?: string[]
     iconClass?: string[]
 }
 
-const { href, linkProps = {}, showIcon = false, linkClass, iconClass } = Astro.props as Props
+const { href, rel = "", linkProps = {}, showIcon = false, linkClass, iconClass } = Astro.props as Props
 ---
 
-<span class="tw:inline-flex tw:items-center tw:gap-1">
-    <a href={href} target="_blank" class:list={["tw:italic", "tw:underline", "tw:decoration-dotted", "tw:hover:decoration-wavy", ...(linkClass ? linkClass : [])]} {...linkProps}><slot /></a>
-    {showIcon && <ExternalLinkIcon class:list={["tw:size-4", ...(iconClass ? iconClass : [])]} />}
-</span>
+<Link href={href} rel={rel} target="_blank" linkProps={linkProps} linkClass={linkClass}><slot /></Link>{showIcon && <LucideExternalLink class:list={["tw:inline tw:size-4 tw:align-middle tw:ml-1", ...(iconClass ? iconClass : [])]} />}

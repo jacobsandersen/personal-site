@@ -1,4 +1,6 @@
 ---
+import Link from './util/Link.astro'
+
 interface Props {
     shouldMarkupAuthor: boolean
 }
@@ -17,10 +19,10 @@ const { shouldMarkupAuthor } = Astro.props as Props
     </div>
     <nav>
         <ul class="tw:flex tw:space-x-4">
-            <li><a href="/" class="tw:hover:underline">Home</a></li>
-            <li><a href="#" class="tw:hover:underline">Blog</a></li>
-            <li><a href="#" class="tw:hover:underline">Projects</a></li>
-            <li><a href="#" class="tw:hover:underline">Contact</a></li>
+            <li><Link href="/">Home</Link></li>
+            <li><Link href="/blog">Blog</Link></li>
+            <li><Link href="/projects">Projects</Link></li>
+            <li><Link href="/contact">Contact</Link></li>
         </ul>
     </nav>
 </header>

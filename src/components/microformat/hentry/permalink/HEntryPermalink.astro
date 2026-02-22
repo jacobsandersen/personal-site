@@ -11,6 +11,7 @@ import PhotoPermalink from "./type/PhotoPermalink.astro";
 import ReplyPermalink from "./type/ReplyPermalink.astro";
 import RepostPermalink from "./type/RepostPermalink.astro";
 import RsvpPermalink from "./type/RsvpPermalink.astro";
+import PermalinkLayout from "~/layouts/PermalinkLayout.astro";
 
 export interface Props {
     extractor: Mf2Extractor;
@@ -24,57 +25,67 @@ const summary = extractor.getSummary();
 const content = await extractor.getPost();
 ---
 
-<RootElem class:list={["h-entry"]}>
-    <div
-        class:list={["tw:flex tw:flex-col tw:items-center tw:gap-y-1 tw:mt-8"]}
-    >
-        <h1
+<PermalinkLayout title={title}>
+    <RootElem class:list={["h-entry"]}>
+        <div
             class:list={[
-                "tw:font-serif",
-                "tw:text-3xl",
-                ...extractor.getTitleClasses(),
+                "tw:flex tw:flex-col tw:items-center tw:gap-y-1 tw:mt-8",
             ]}
         >
-            {title}
-        </h1>
-        <PostDates extractedDates={extractor.getDates()} />
-    </div>
-    <hr class="tw:my-6 tw:border-dotted" />
-    <div
-        class:list={[
-            "tw:border-2 tw:border-dashed tw:border-blue-400 tw:dark:border-blue-900 tw:p-4 tw:rounded-sm",
-        ]}
-    >
-        <>
-            {summary && <p class="p-summary">{summary}</p>}
-            <div class:list={["e-content", "tw:mb-4"]}>
-                {
-                    (() => {
-                        switch (content.type) {
-                            case "article":
-                                return <ArticlePermalink article={content} />;
-                            case "checkin":
-                                return <CheckinPermalink checkin={content} />;
-                            case "like":
-                                return <LikePermalink like={content} />;
-                            case "note":
-                                return <NotePermalink note={content} />;
-                            case "repost":
-                                return <RepostPermalink repost={content} />;
-                            case "rsvp":
-                                return <RsvpPermalink rsvp={content} />;
-                            case "photo":
-                                return <PhotoPermalink photo={content} />;
-                            case "reply":
-                                return <ReplyPermalink reply={content} />;
-                            case "bookmark":
-                                return <BookmarkPermalink bookmark={content} />;
-                        }
-                    })()
-                }
-            </div>
-        </>
-        <Categories categories={extractor.getCategories()} />
-    </div>
-    <a href="/" class="u-author"></a>
-</RootElem>
+            <h1
+                class:list={[
+                    "tw:font-serif",
+                    "tw:text-3xl",
+                    ...extractor.getTitleClasses(),
+                ]}
+            >
+                {title}
+            </h1>
+            <PostDates extractedDates={extractor.getDates()} />
+        </div>
+        <hr class="tw:my-6 tw:border-dotted" />
+        <div
+            class:list={[
+                "tw:border-2 tw:border-dashed tw:border-blue-400 tw:dark:border-blue-900 tw:p-4 tw:rounded-sm",
+            ]}
+        >
+            <>
+                {summary && <p class="p-summary">{summary}</p>}
+                <div class:list={["e-content", "tw:mb-4"]}>
+                    {
+                        (() => {
+                            switch (content.type) {
+                                case "article":
+                                    return (
+                                        <ArticlePermalink article={content} />
+                                    );
+                                case "checkin":
+                                    return (
+                                        <CheckinPermalink checkin={content} />
+                                    );
+                                case "like":
+                                    return <LikePermalink like={content} />;
+                                case "note":
+                                    return <NotePermalink note={content} />;
+                                case "repost":
+                                    return <RepostPermalink repost={content} />;
+                                case "rsvp":
+                                    return <RsvpPermalink rsvp={content} />;
+                                case "photo":
+                                    return <PhotoPermalink photo={content} />;
+                                case "reply":
+                                    return <ReplyPermalink reply={content} />;
+                                case "bookmark":
+                                    return (
+                                        <BookmarkPermalink bookmark={content} />
+                                    );
+                            }
+                        })()
+                    }
+                </div>
+            </>
+            <Categories categories={extractor.getCategories()} />
+        </div>
+        <a href="/" class="u-author"></a>
+    </RootElem>
+</PermalinkLayout>

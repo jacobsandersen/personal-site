@@ -5,17 +5,18 @@ import FormattedDate from './FormattedDate.astro'
 
 interface Props {
     props?: Mf2Properties
-    extractedDates?: ExtractedDates
+    extractedDates?: ExtractedDates,
+    forceHideUpdated?: boolean
 }
 
-const { props, extractedDates } = Astro.props
+const { props, extractedDates, forceHideUpdated = false } = Astro.props
 
 const extracted = props ? extractDates(props) : extractedDates
 if (!extracted) {
     throw new Error('PostDates component requires either props or extractedDates to be provided.')
 }
 
-const hideUpdated = extracted.updatedSameAsCreated()
+const hideUpdated = forceHideUpdated || extracted.updatedSameAsCreated()
 ---
 
 <div class="tw:text-xs">
