@@ -1,16 +1,17 @@
 ---
-import HFeedRenderer from '~/components/microformat/hfeed/HFeedRenderer.astro';
-import PageLayout from '~/layouts/PageLayout.astro'
-import { QueryParams, queryPosts } from '~/lib/scribble/scribble';
+import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
+import PageLayout from "~/layouts/PageLayout.astro";
+import { QueryParams, queryPosts } from "~/lib/scribble/scribble";
 
-const { category } = Astro.params
+const { category } = Astro.params;
 if (category!.toLowerCase() === "uncategorized") {
-    return Astro.redirect("/uncategorized")
+    return Astro.redirect("/uncategorized");
 }
 
 const queryParams: QueryParams = {
+    type: "h-entry",
     category: category!,
-}
+};
 
 const posts = await queryPosts(queryParams);
 
@@ -18,5 +19,8 @@ const title = `Posts tagged with #${category}`;
 ---
 
 <PageLayout title={title}>
-    <HFeedRenderer posts={posts} feedInfo={{title, url:`/tagged/${category}`}} />
+    <HFeedRenderer
+        posts={posts}
+        feedInfo={{ title, url: `/tagged/${category}` }}
+    />
 </PageLayout>

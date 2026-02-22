@@ -22,6 +22,7 @@ export async function findPost(slug: string): Promise<Mf2Document | null> {
 }
 
 export interface QueryParams {
+    type?: string
     slug?: string
     category?: string
     year?: number

@@ -10,13 +10,14 @@ if (!validateYearForPath(year)) {
 }
 
 const queryParams: QueryParams = {
-    year: Number(year!)
-}
+    type: "h-entry",
+    year: Number(year!),
+};
 
 const results = await queryPosts(queryParams);
 const title = `Posts from ${year}`;
 ---
 
 <PageLayout title={`Posts from ${year}`}>
-    <HFeedRenderer posts={results} feedInfo={{title, url:`/${year}`}} />
+    <HFeedRenderer posts={results} feedInfo={{ title, url: `/${year}` }} />
 </PageLayout>

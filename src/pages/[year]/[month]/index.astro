@@ -11,21 +11,25 @@ if (!validateYearForPath(year) || !validateMonthForPath(month)) {
 }
 
 const queryParams: QueryParams = {
+    type: "h-entry",
     year: Number(year!),
-    month: Number(month!)
-}
+    month: Number(month!),
+};
 
-const date = new Date()
-date.setFullYear(queryParams.year!)
-date.setMonth((queryParams.month ?? 1) - 1)
-date.setDate(1)
+const date = new Date();
+date.setFullYear(queryParams.year!);
+date.setMonth((queryParams.month ?? 1) - 1);
+date.setDate(1);
 
-const formattedDate = parseAdhoc(date, 'MMMM, YYYY')
+const formattedDate = parseAdhoc(date, "MMMM, YYYY");
 
 const results = await queryPosts(queryParams);
 const title = `Posts from ${formattedDate}`;
 ---
 
 <PageLayout title={title}>
-    <HFeedRenderer posts={results} feedInfo={{title, url:`/${year}/${month}`}} />
+    <HFeedRenderer
+        posts={results}
+        feedInfo={{ title, url: `/${year}/${month}` }}
+    />
 </PageLayout>
