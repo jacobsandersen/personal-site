@@ -1,6 +1,6 @@
 ---
 import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
-import PageLayout from "~/layouts/PageLayout.astro";
+import BaseLayout from "~/layouts/BaseLayout.astro";
 import { QueryParams, queryPosts } from "~/lib/scribble/scribble";
 import { parseAdhoc } from "~/util/dates";
 import { validateMonthForPath, validateYearForPath } from "~/util/url";
@@ -27,9 +27,9 @@ const results = await queryPosts(queryParams);
 const title = `Posts from ${formattedDate}`;
 ---
 
-<PageLayout title={title}>
+<BaseLayout title={title}>
     <HFeedRenderer
         posts={results}
         feedInfo={{ title, url: `/${year}/${month}` }}
     />
-</PageLayout>
+</BaseLayout>

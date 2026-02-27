@@ -6,17 +6,18 @@ import HEntryPermalink from './permalink/HEntryPermalink.astro'
 
 export interface Props {
     props: Mf2Properties
-    preview?: boolean
+    preview?: boolean,
+    class?: string
 }
 
-const { props, preview = false } = Astro.props
+const { props, preview = false, class: className } = Astro.props
 
 const type = discoverPostType(props)
 const extractor = getExtractorForType(type, props)
 ---
 
 {preview ? (
-    <HEntryPreview extractor={extractor} />
+    <HEntryPreview extractor={extractor} class={className} />
 ) : (
-    <HEntryPermalink extractor={extractor} />
+    <HEntryPermalink extractor={extractor} class={className} />
 )}

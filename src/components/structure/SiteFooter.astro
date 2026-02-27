@@ -1,0 +1,44 @@
+---
+import dayjs from "dayjs";
+import ExternalLink from "../util/ExternalLink.astro";
+
+const year = dayjs().year();
+---
+
+<footer
+    class="tw:flex tw:justify-between tw:border-t-2 tw:border-dotted tw:py-2"
+>
+    <div>
+        <p>Copyright &copy; {year} Jacob Andersen</p>
+    </div>
+    <ul class="tw:flex tw:gap-x-2 tw:text-xs">
+        <li>
+            <ExternalLink
+                href="https://indieweb.org/User:Jacobandersen.dev"
+                rel="me">indieweb</ExternalLink
+            >
+        </li>
+        <li>
+            <ExternalLink
+                href="https://mastodon.social/@simpleauthority"
+                rel="me">mastodon</ExternalLink
+            >
+        </li>
+        <li>
+            <ExternalLink
+                href="https://bsky.app/profile/jacobandersen.dev"
+                rel="me">bsky</ExternalLink
+            >
+        </li>
+        <li>
+            <ExternalLink href="https://github.com/jacobsandersen" rel="me"
+                >github</ExternalLink
+            >
+        </li>
+        <li>
+            <ExternalLink href="mailto:jacob@jacobandersen.dev" rel="me"
+                >email</ExternalLink
+            >
+        </li>
+    </ul>
+</footer>

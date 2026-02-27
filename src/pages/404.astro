@@ -1,12 +1,12 @@
 ---
 import Link from '~/components/util/Link.astro';
-import PageLayout from '~/layouts/PageLayout.astro';
+import BaseLayout from '~/layouts/BaseLayout.astro';
 
 export const prerender = true
 ---
 
-<PageLayout title="404 Not Found">
+<BaseLayout title="404 Not Found">
     <h1>Content not found</h1>
     <p>Whatever you were searching for, it's not here.</p>
     <Link href="/">Return to the homepage</Link>
-</PageLayout>
+</BaseLayout>

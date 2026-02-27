@@ -1,6 +1,6 @@
 ---
 import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
-import PageLayout from "~/layouts/PageLayout.astro";
+import BaseLayout from "~/layouts/BaseLayout.astro";
 import { QueryParams, queryPosts } from "~/lib/scribble/scribble";
 
 const { category } = Astro.params;
@@ -18,9 +18,9 @@ const posts = await queryPosts(queryParams);
 const title = `Posts tagged with #${category}`;
 ---
 
-<PageLayout title={title}>
+<BaseLayout title={title}>
     <HFeedRenderer
         posts={posts}
         feedInfo={{ title, url: `/tagged/${category}` }}
     />
-</PageLayout>
+</BaseLayout>

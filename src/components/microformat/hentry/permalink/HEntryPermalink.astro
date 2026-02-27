@@ -11,13 +11,14 @@ import PhotoPermalink from "./type/PhotoPermalink.astro";
 import ReplyPermalink from "./type/ReplyPermalink.astro";
 import RepostPermalink from "./type/RepostPermalink.astro";
 import RsvpPermalink from "./type/RsvpPermalink.astro";
-import PermalinkLayout from "~/layouts/PermalinkLayout.astro";
+import BaseLayout from "~/layouts/BaseLayout.astro";
 
 export interface Props {
     extractor: Mf2Extractor;
+    class?: string;
 }
 
-const { extractor } = Astro.props;
+const { extractor, class: className } = Astro.props;
 
 const RootElem = extractor.getRootElem();
 const title = extractor.getTitle();
@@ -25,8 +26,8 @@ const summary = extractor.getSummary();
 const content = await extractor.getPost();
 ---
 
-<PermalinkLayout title={title}>
-    <RootElem class:list={["h-entry"]}>
+<BaseLayout title={title}>
+    <RootElem class:list={["h-entry tw:col-span-12", className]}>
         <div
             class:list={[
                 "tw:flex tw:flex-col tw:items-center tw:gap-y-1 tw:mt-8",
@@ -88,4 +89,4 @@ const content = await extractor.getPost();
         </div>
         <a href="/" class="u-author"></a>
     </RootElem>
-</PermalinkLayout>
+</BaseLayout>

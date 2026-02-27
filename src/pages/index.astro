@@ -1,24 +1,35 @@
 ---
-import PostFeed from "~/components/feeds/PostFeed.astro";
-import PageLayout from "~/layouts/PageLayout.astro";
+import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { queryPosts } from "~/lib/scribble/scribble";
 
-export const prerender = true;
+const queryParams = {
+    type: 'h-entry'
+};
+
+const results = await queryPosts(queryParams);
+
+const feedInfo = {
+	title: "Recent Posts",
+	url: "/",
+	headerConfig: {
+		level: 2,
+		class: "tw:col-span-12"
+	}
+}
 ---
 
-<PageLayout title="Home">
-	<div class="tw:grid tw:grid-cols-12 tw:gap-x-4">
-		<div class="tw:col-span-6">
-			<div class="tw:flex tw:flex-col tw:gap-y-2">
-				<div class="tw:flex tw:gap-x-4 tw:items-center tw:mb-2">
-					<img src="/images/portrait/300.webp" alt="Jacob Andersen" class:list={["tw:inline-block", "tw:w-16", "tw:h-16", "tw:rounded-full", "tw:mr-1", "tw:aspect-3/2", "tw:object-cover", "tw:object-bottom"]} />
-					<h1 class="tw:text-3xl ">Hi, I'm <span class="tw:inline-block tw:-rotate-3 tw:font-bold tw:px-1 tw:text-4xl tw:underline">Jacob</span></h1>
-				</div>
-				<p>I'm a software engineer, reader, husband, and lifelong learner. This is my humble abode on the internet, and here I post my thoughts, projects, and experiences.</p>
-				<p>This website is <em>very</em> much a work in progress!</p>
-			</div>
+<BaseLayout title="Home" mainClass="tw:gap-y-6">
+	<div class="tw:col-span-12 tw:flex tw:flex-col tw:gap-y-4">
+		<h1 class="tw:text-3xl tw:font-bold">Hi, I'm Jacob!</h1>
+		<div>
+			<p>
+				I'm a software engineer, reader, husband, and lifelong learner. This
+				is my humble abode on the internet, and here I post my thoughts,
+				projects, and experiences.
+			</p>
+			<p>This website is <em>very</em> much a work in progress!</p>
 		</div>
-		<PostFeed class="tw:col-span-6" server:defer>
-			<p slot="fallback" class="tw:col-span-6">Loading posts...</p>
-		</PostFeed>
 	</div>
-</PageLayout>
+	<HFeedRenderer posts={results} feedInfo={feedInfo} class="tw:col-span-12 tw:grid tw:grid-cols-subgrid tw:gap-y-2 tw:gap-x-4" itemClass="tw:col-span-3" />
+</BaseLayout>

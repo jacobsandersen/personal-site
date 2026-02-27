@@ -17,18 +17,19 @@ interface Props {
     feedInfo?: FeedInfo;
     posts: Mf2Document[];
     class?: string;
+    itemClass?: string;
 }
 
-const { feedInfo, posts, class: className } = Astro.props as Props;
+const { feedInfo, posts, class: className, itemClass } = Astro.props as Props;
 const headerConf = feedInfo?.headerConfig ?? { level: 1, class: "" };
 const headerLevel = Math.min(Math.max(headerConf.level ?? 1, 1), 6)
 const HeaderElem = `h${headerLevel}`;
 const headerClass = headerConf.class ?? "";
 ---
 
-<section class={`h-feed tw:flex tw:flex-col tw:gap-y-4 ${className ?? ""}`}>
-    {feedInfo && <HeaderElem class:list={`tw:text-2xl tw:font-bold ${headerClass}`}><a href={feedInfo.url}>{feedInfo.title}</a></HeaderElem>}
+<section class:list={["h-feed", className]}>
+    {feedInfo && <HeaderElem class:list={["tw:text-2xl", "tw:font-bold", headerClass]}><a href={feedInfo.url}>{feedInfo.title}</a></HeaderElem>}
     {posts.map((post) => (
-        <MicroformatRenderer doc={post} preview={true} />
+        <MicroformatRenderer doc={post} preview={true} class={itemClass} />
     ))}
 </section>

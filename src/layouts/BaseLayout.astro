@@ -1,16 +1,14 @@
 ---
-import dayjs from "dayjs";
 import "~/styles/global.css";
-import ExternalLink from "~/components/util/ExternalLink.astro";
+import SiteHeader from "~/components/structure/SiteHeader.astro";
+import SiteFooter from "~/components/structure/SiteFooter.astro";
 
 interface Props {
-	pageTitle?: string;
+	title?: string;
+	mainClass?: string;
 }
 
-const { pageTitle } = Astro.props as Props;
-
-const title = pageTitle ? pageTitle : "";
-const year = dayjs().year();
+const { title, mainClass } = Astro.props as Props;
 ---
 
 <!doctype html>
@@ -28,36 +26,16 @@ const year = dayjs().year();
 			href="https://scribble.jacobandersen.dev/micropub"
 		/>
 		<slot name="additionalHead" />
-		<title>{title} &ndash; Jacob Andersen</title>
+		<title>{title ?? "Unnamed Page"} &ndash; Jacob Andersen</title>
 	</head>
-	<body
-		class="tw:bg-blue-200 tw:dark:bg-blue-950 tw:text-blue-950 tw:dark:text-blue-200 tw:h-screen tw:py-6"
-	>
+	<body class="tw:h-screen tw:py-2 tw:bg-blue-200 tw:dark:bg-blue-950 tw:text-blue-950 tw:dark:text-blue-200">
 		<div class="tw:h-full tw:w-full tw:flex tw:justify-center">
-			<div class="tw:h-full tw:w-1/2 tw:flex-col tw:items-center tw:gap-y-2">
-				<slot />
-				<footer class="tw:flex tw:justify-between tw:border-t-2 tw:border-dotted tw:py-2 tw:mt-4">
-					<div>
-						<p>Copyright &copy; {year} Jacob Andersen</p>
-					</div>
-					<ul class="tw:flex tw:gap-x-2 tw:text-xs">
-						<li>
-							<ExternalLink href="https://indieweb.org/User:Jacobandersen.dev" rel="me">indieweb</ExternalLink>
-						</li>
-						<li>
-							<ExternalLink href="https://mastodon.social/@simpleauthority" rel="me">mastodon</ExternalLink>
-						</li>
-						<li>
-							<ExternalLink href="https://bsky.app/profile/jacobandersen.dev" rel="me">bsky</ExternalLink>
-						</li>
-						<li>
-							<ExternalLink href="https://github.com/jacobsandersen" rel="me">github</ExternalLink>
-						</li>
-						<li>
-							<ExternalLink href="mailto:jacob@jacobandersen.dev" rel="me">email</ExternalLink>
-						</li>
-					</ul>
-				</footer>
+			<div class="tw:h-full tw:w-3/4 tw:flex tw:flex-col tw:gap-y-4">
+				<SiteHeader />
+				<main class:list={["tw:grid", "tw:grid-cols-12", mainClass]}>
+					<slot />
+				</main>
+				<SiteFooter />
 			</div>
 		</div>
 	</body>

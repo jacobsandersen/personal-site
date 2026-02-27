@@ -16,16 +16,17 @@ import Link from "~/components/util/Link.astro";
 
 export interface Props {
     extractor: Mf2Extractor;
+    class?: string;
 }
 
-const { extractor } = Astro.props;
+const { extractor, class: className } = Astro.props;
 
 const RootElem = extractor.getRootElem();
 const content = await extractor.getPost();
 const permalink = getPermalinkUrl(extractor.getProperties())
 ---
 
-<RootElem class:list="h-entry tw:border-2 tw:border-dashed tw:border-blue-400 tw:dark:border-blue-900 tw:p-3 tw:rounded-sm tw:flex tw:flex-col tw:gap-y-2">
+<RootElem class:list={["h-entry", "tw:border-2", "tw:border-dashed", "tw:border-blue-400", "tw:dark:border-blue-900", "tw:p-3", "tw:rounded-sm", "tw:flex", "tw:flex-col", "tw:gap-y-2", className]}>
     <div class:list={["e-content"]}>
         {
             (() => {
