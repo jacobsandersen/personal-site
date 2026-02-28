@@ -1,0 +1,22 @@
+---
+interface Props {
+    class?: string;
+}
+
+const { class: className } = Astro.props as Props;
+---
+
+<section class:list={["tw:border-2 tw:border-dashed tw:rounded-sm tw:p-3", className]}>
+    <div class="tw:flex tw:items-center tw:justify-center tw:gap-x-2 tw:mb-4">
+        <img src="/images/portrait/300.webp" alt="Jacob Andersen" class:list={["tw:inline-block", "tw:w-10", "tw:h-10", "tw:rounded-full", "tw:aspect-3/2", "tw:object-cover", "tw:object-bottom"]} />
+        <p class="tw:text-xl tw:font-bold">Jacob Andersen</p>
+    </div>
+    <nav>
+        <ul class="tw:text-lg tw:flex tw:flex-col tw:items-center tw:gap-y-4">
+            <li><a href="/">Home</a></li>
+            <li><a href="/posts">Posts</a></li>
+            <li><a href="/lab">Lab</a></li>
+            <li><a href="/resume">Resume</a></li>
+        </ul>
+    </nav>
+</section>

@@ -1,7 +1,7 @@
 ---
 import "~/styles/global.css";
-import SiteHeader from "~/components/structure/SiteHeader.astro";
 import SiteFooter from "~/components/structure/SiteFooter.astro";
+import SiteSidebar from "~/components/structure/SiteSidebar.astro";
 
 interface Props {
 	title?: string;
@@ -31,10 +31,12 @@ const { title, mainClass } = Astro.props as Props;
 	<body class="tw:h-screen tw:py-2 tw:bg-blue-200 tw:dark:bg-blue-950 tw:text-blue-950 tw:dark:text-blue-200">
 		<div class="tw:h-full tw:w-full tw:flex tw:justify-center">
 			<div class="tw:h-full tw:w-3/4 tw:flex tw:flex-col tw:gap-y-4">
-				<SiteHeader />
-				<main class:list={["tw:grid", "tw:grid-cols-12", mainClass]}>
-					<slot />
-				</main>
+				<div class="tw:grid tw:grid-cols-16 tw:gap-x-2">
+					<SiteSidebar class="tw:col-span-3" />
+					<main class:list={["tw:border-2", "tw:border-dotted", "tw:rounded-sm", "tw:p-3", "tw:col-span-13", "tw:grid", "tw:grid-cols-12", mainClass]}>
+						<slot />
+					</main>
+				</div>
 				<SiteFooter />
 			</div>
 		</div>
