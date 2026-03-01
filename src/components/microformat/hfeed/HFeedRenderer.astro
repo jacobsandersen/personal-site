@@ -1,35 +1,20 @@
 ---
-import { Mf2Document } from "~/types/mf2-document";
 import MicroformatRenderer from "~/components/microformat/MicroformatRenderer.astro";
+import { FeedRenderProps, RenderMethod } from "~/types/mf2-rendering";
 
-interface HeaderConfig {
-    level?: number;
-    class?: string;
-}
+interface Props extends FeedRenderProps {}
 
-interface FeedInfo {
-    title: string;
-    url: string;
-    headerConfig?: HeaderConfig;
-}
-
-interface Props {
-    feedInfo?: FeedInfo;
-    posts: Mf2Document[];
-    class?: string;
-    itemClass?: string;
-}
-
-const { feedInfo, posts, class: className, itemClass } = Astro.props as Props;
+const { feedInfo, renderMethod = RenderMethod.Preview, posts, class: className, itemClass } = Astro.props as Props;
 const headerConf = feedInfo?.headerConfig ?? { level: 1, class: "" };
+const headerHidden = headerConf.hidden ?? false;
 const headerLevel = Math.min(Math.max(headerConf.level ?? 1, 1), 6)
 const HeaderElem = `h${headerLevel}`;
 const headerClass = headerConf.class ?? "";
 ---
 
 <section class:list={["h-feed", className]}>
-    {feedInfo && <HeaderElem class:list={["tw:text-2xl", "tw:font-bold", headerClass]}><a href={feedInfo.url}>{feedInfo.title}</a></HeaderElem>}
+    {feedInfo && <HeaderElem class:list={["tw:text-2xl", "tw:font-bold", headerClass, { "tw:hidden": headerHidden }]}><a href={feedInfo.url}>{feedInfo.title}</a></HeaderElem>}
     {posts.map((post) => (
-        <MicroformatRenderer doc={post} preview={true} class={itemClass} />
+        <MicroformatRenderer doc={post} renderMethod={renderMethod} class={itemClass} />
     ))}
 </section>

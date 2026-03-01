@@ -1,36 +1,24 @@
-import { isValidUrl } from "~/util/url";
-import Mf2Extractor from "./Mf2Extractor";
 import { Mf2Properties } from "~/types/mf2-document";
 import { Bookmark } from "../content";
+import RemoteUrlReferenceExtractor from "./RemoteUrlReferenceExtractor";
 
-export default class BookmarkMf2Extractor extends Mf2Extractor {
+export default class BookmarkMf2Extractor extends RemoteUrlReferenceExtractor {
     constructor(props: Mf2Properties) {
-        super(props);
+        super(props, "bookmark-of");
     }
 
     getTitle(): string {
         return `Bookmark ${this.getLongCreatedFrom()}`;
     }
 
-    getBookmarkUrl(): string {
-        const bookmarks = this.props['bookmark-of'];
-
-        if (!bookmarks || bookmarks.length === 0) {
-            throw new Error("No bookmark URLs found for bookmark post");
-        }
-
-        const validBookmarks = bookmarks.filter(url => typeof url === 'string' && isValidUrl(url)) as string[];
-        if (validBookmarks.length === 0) {
-            throw new Error("No valid bookmark URLs found for bookmark post");
-        }
-
-        return validBookmarks[0];
+    getMinimalTitle(): string {
+        return `Bookmarked ${this.getRemoteUrlAbbrev()}`
     }
 
     async getPost(): Promise<Bookmark> {
         return {
             type: 'bookmark',
-            bookmarkOf: this.getBookmarkUrl(),
+            bookmarkOf: this.getRemoteUrl(),
             content: this.getParsedContentProp()
         }
     }

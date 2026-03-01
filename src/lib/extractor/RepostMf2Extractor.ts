@@ -11,6 +11,10 @@ export default class RepostMf2Extractor extends RemoteUrlReferenceExtractor {
         return `Repost from ${this.getLongCreatedFrom()}`;
     }
 
+    getMinimalTitle(): string {
+        return `Reposted ${this.getRemoteUrlAbbrev()}`
+    }
+
     async getPost(): Promise<Repost> {
         return {
             type: 'repost',

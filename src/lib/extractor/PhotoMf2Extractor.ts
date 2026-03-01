@@ -12,6 +12,12 @@ export default class PhotoMf2Extractor extends Mf2Extractor {
         return `Photo ${this.getLongCreatedFrom()}`;
     }
 
+    getMinimalTitle(): string {
+        const numPhotos = this.getPhotoUrls().length;
+        const photoText = numPhotos === 1 ? 'photo' : 'photos';
+        return `Posted ${numPhotos === 1 ? "a" : numPhotos} ${photoText}`;
+    }
+
     getPhotoUrls(): string[] {
         const photos = this.props.photo;
         if (!photos || photos.length === 0) {

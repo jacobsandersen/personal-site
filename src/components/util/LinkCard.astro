@@ -1,0 +1,20 @@
+---
+export interface Props {
+    title: string;
+    titleLevel: number;
+    description?: string;
+    href: string;
+    class?: string;
+    titleClass?: string;
+    descriptionClass?: string;
+}
+
+const { title, titleLevel, description, href, class: className = "", titleClass = "", descriptionClass = "" } = Astro.props as Props
+const normalizedTitleLevel = Math.min(Math.max(titleLevel, 1), 6)
+const TitleElem = `h${normalizedTitleLevel}`
+---
+
+<a href={href} class:list={["tw:block", className]}>
+    <TitleElem class:list={["tw:text-xl", titleClass]}>{title}</TitleElem>
+    {description && <p class:list={["tw:text-base", descriptionClass]}>{description}</p>}
+</a>

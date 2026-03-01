@@ -11,6 +11,10 @@ export default class CheckinMf2Extractor extends Mf2Extractor {
     getTitle(): string {
         return `Check-in ${this.getLongCreatedFrom()}`
     }
+
+    getMinimalTitle(): string {
+        return `Checked in at ${this.getCheckin().name}`
+    }
     
     getCheckin(): CheckinData {
         const checkin = this.props.checkin

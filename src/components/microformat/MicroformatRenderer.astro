@@ -1,15 +1,11 @@
 ---
-import { Mf2Document } from '~/types/mf2-document'
 import UnknownFormatRenderer from './UnknownFormatRenderer.astro'
 import HEntryRenderer from './hentry/HEntryRenderer.astro'
+import { DocumentRenderProps, RenderMethod } from '~/types/mf2-rendering'
 
-export interface Props {
-  doc: Mf2Document
-  preview?: boolean
-  class?: string
-}
+export interface Props extends DocumentRenderProps {}
 
-const { doc, preview = false, class: className } = Astro.props
+const { doc, renderMethod = RenderMethod.Full, class: className } = Astro.props as DocumentRenderProps
 const type = doc['type'] ? (doc['type'][0] as string) : 'unknown'
 
 let Renderer: typeof HEntryRenderer | 
@@ -22,6 +18,4 @@ if (type === 'h-entry') {
 }
 ---
 
-<Renderer props={doc.properties} preview={preview} class={className} />
-
-<!-- <pre class="text-xs mt-2">{JSON.stringify(doc, null, 2)}</pre> -->
+<Renderer doc={doc} renderMethod={renderMethod} class={className} />

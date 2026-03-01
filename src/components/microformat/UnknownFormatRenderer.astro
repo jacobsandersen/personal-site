@@ -1,13 +1,11 @@
 ---
-import { Mf2Properties } from '~/types/mf2-document'
+import { DocumentRenderProps } from '~/types/mf2-rendering'
 
-export interface Props {
-    props: Mf2Properties
-}
+export interface Props extends DocumentRenderProps {}
 
-const { props } = Astro.props
+const { doc } = Astro.props as DocumentRenderProps
 ---
 
 <p>Unknown microformat type.</p>
 <p>Raw properties:</p>
-<pre>{JSON.stringify(props, null, 2)}</pre>
+<pre>{JSON.stringify(doc, null, 2)}</pre>

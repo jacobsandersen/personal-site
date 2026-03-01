@@ -11,10 +11,14 @@ export default class ReplyMf2Extractor extends RemoteUrlReferenceExtractor {
         return `Reply ${this.getLongCreatedFrom()}`;
     }
 
+    getMinimalTitle(): string {
+        return `Replied to ${this.getRemoteUrlAbbrev()}`
+    }
+
     async getPost(): Promise<Reply> {
         return {
             type: 'reply',
-            inReplyTo: this.remoteUrl,
+            inReplyTo: this.getRemoteUrl(),
             content: this.getParsedContentProp()
         }
     }

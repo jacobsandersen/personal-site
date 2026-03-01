@@ -21,6 +21,10 @@ export default abstract class Mf2Extractor {
 
     abstract getTitle(): string;
 
+    getMinimalTitle(): string { 
+        return this.getTitle()
+    }
+
     getTitleClasses(): string[] {
         return []
     }

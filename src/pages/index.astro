@@ -1,7 +1,9 @@
 ---
 import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
+import LinkCard from "~/components/util/LinkCard.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { queryPosts } from "~/lib/scribble/scribble";
+import { RenderMethod } from "~/types/mf2-rendering";
 
 const queryParams = {
     type: 'h-entry'
@@ -13,23 +15,70 @@ const feedInfo = {
 	title: "Recent Posts",
 	url: "/",
 	headerConfig: {
-		level: 2,
-		class: "tw:col-span-12"
+		hidden: true
 	}
 }
+
+const linkCardTitleClass = "tw:mb-2";
+const linkCardClass = "tw:p-2 tw:border-2 tw:border-dotted tw:rounded-md";
 ---
 
-<BaseLayout title="Home" mainClass="tw:gap-y-6">
-	<div class="tw:col-span-12 tw:flex tw:flex-col tw:gap-y-4">
-		<h1 class="tw:text-3xl tw:font-bold">Hi, I'm Jacob!</h1>
-		<div>
-			<p>
-				I'm a software engineer, reader, husband, and lifelong learner. This
-				is my humble abode on the internet, and here I post my thoughts,
-				projects, and experiences.
-			</p>
-			<p>This website is <em>very</em> much a work in progress!</p>
-		</div>
-	</div>
-	<HFeedRenderer posts={results} feedInfo={feedInfo} class="tw:col-span-12 tw:grid tw:grid-cols-subgrid tw:gap-y-2 tw:gap-x-4" itemClass="tw:col-span-3" />
+<BaseLayout title="Home">
+	<main class="tw:col-span-16 tw:grid tw:grid-cols-subgrid tw:mt-4">
+		<section class="tw:col-span-10 tw:flex tw:flex-col tw:gap-y-6">
+			<div class="tw:flex tw:gap-x-8 tw:items-center">
+				<img src="/images/portrait/300.webp" alt="Jacob Andersen" class="tw:w-24 tw:h-24 tw:rounded-full tw:aspect-3/2 tw:object-cover tw:object-bottom tw:shadow tw:border-2" />
+				<h1 class="tw:text-6xl tw:font-signature">Jacob Andersen</h1>
+			</div>
+			<div class="tw:text-xl tw:leading-10 tw:tracking-tighter">
+				<p>Hello 👋</p>
+				<p>I'm Jacob. I'm a software engineer, reader, traveller, and lifelong learner.</p>
+				<p>Welcome to my digital garden. This is where I hang out on the Internet.</p>
+				<p>Take a look around and feel free to explore! Thanks for visiting. 😊</p>
+			</div>
+			<section class="tw:flex tw:flex-col tw:gap-y-4">
+				<div class="tw:flex tw:flex-col tw:gap-y-1">
+					<h2 class="tw:text-3xl tw:font-bold">Atlas</h2>
+					<p>Here are some links to help you find your way around:</p>
+				</div>
+				<nav>
+					<ul class="tw:grid tw:grid-cols-4 tw:gap-2">
+						<LinkCard 
+							title="Posts" 
+							titleLevel={3} 
+							href="/posts" 
+							description="Essays, reflections, and other writings on a variety of topics." 
+							titleClass={linkCardTitleClass}
+							class={linkCardClass}
+						/>
+						<LinkCard 
+							title="Lab" 
+							titleLevel={3} 
+							href="/lab" 
+							description="Experiments, projects, and other explorations in technology and creativity." 
+							titleClass={linkCardTitleClass}
+							class={linkCardClass}
+						/>
+						<LinkCard 
+							title="Resume" 
+							titleLevel={3} 
+							href="/resume" 
+							description="My professional experience, skills, and accomplishments." 
+							titleClass={linkCardTitleClass}
+							class={linkCardClass}
+						/>
+					</ul>
+				</nav>
+			</section>
+		</section>
+		<section class="tw:col-span-6 tw:flex tw:flex-col tw:gap-y-4">
+			<h2 class="tw:text-3xl tw:font-bold">Recent Posts</h2>
+			<HFeedRenderer 
+				posts={results} 
+				renderMethod={RenderMethod.Minimal} 
+				feedInfo={feedInfo} 
+				class="tw:flex tw:flex-col tw:gap-y-6" 
+			/>
+		</section>
+	</main>
 </BaseLayout>

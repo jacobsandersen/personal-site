@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Homemade+Apple&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
 @import "tailwindcss" prefix(tw);
 
 @plugin "@tailwindcss/typography";
@@ -35,4 +37,9 @@
   --tw-prose-invert-pre-bg: rgb(0 0 0 / 50%);
   --tw-prose-invert-th-borders: var(--color-blue-600);
   --tw-prose-invert-td-borders: var(--color-blue-700);
+}
+
+@theme {
+  --font-sans: "Inter", sans-serif;
+  --font-signature: "Homemade Apple", cursive;
 }

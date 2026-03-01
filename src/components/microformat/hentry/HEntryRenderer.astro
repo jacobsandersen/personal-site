@@ -1,23 +1,31 @@
 ---
-import { Mf2Properties } from '~/types/mf2-document'
 import { discoverPostType, getExtractorForType } from '~/lib/discovery'
+import HEntryMinimal from './minimal/HEntryMinimal.astro'
 import HEntryPreview from './preview/HEntryPreview.astro'
 import HEntryPermalink from './permalink/HEntryPermalink.astro'
+import { DocumentRenderProps, RenderMethod } from '~/types/mf2-rendering'
 
-export interface Props {
-    props: Mf2Properties
-    preview?: boolean,
-    class?: string
-}
+export interface Props extends DocumentRenderProps {}
 
-const { props, preview = false, class: className } = Astro.props
+const { doc, renderMethod = RenderMethod.Full, class: className } = Astro.props as DocumentRenderProps
 
-const type = discoverPostType(props)
-const extractor = getExtractorForType(type, props)
+const type = discoverPostType(doc.properties)
+const extractor = getExtractorForType(type, doc.properties)
 ---
 
-{preview ? (
-    <HEntryPreview extractor={extractor} class={className} />
-) : (
-    <HEntryPermalink extractor={extractor} class={className} />
-)}
+{(() => {
+    switch (renderMethod) {
+        case RenderMethod.Minimal:
+             return (
+                <HEntryMinimal extractor={extractor} class={className} />
+            )
+        case RenderMethod.Preview:
+            return (
+                <HEntryPreview extractor={extractor} class={className} />
+            )
+        case RenderMethod.Full:
+            return (
+                <HEntryPermalink extractor={extractor} class={className} />
+            )
+    }
+})()}

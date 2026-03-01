@@ -11,10 +11,14 @@ export default class LikeMf2Extractor extends RemoteUrlReferenceExtractor {
         return `Liked Content ${this.getLongCreatedFrom()}`;
     }
 
+    getMinimalTitle(): string {
+        return `Liked ${this.getRemoteUrlAbbrev()}`
+    }
+
     async getPost(): Promise<Like> {
         return {
             type: 'like',
-            likeOf: this.remoteUrl,
+            likeOf: this.getRemoteUrl(),
             content: this.getParsedContentProp()
         }
     }

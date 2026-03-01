@@ -1,0 +1,22 @@
+---
+import PostDates from "~/components/fragments/PostDates.astro";
+import type Mf2Extractor from "~/lib/extractor/Mf2Extractor";
+import { getPermalinkUrl } from "~/util/mf2-util";
+
+export interface Props {
+    extractor: Mf2Extractor;
+    class?: string;
+}
+
+const { extractor, class: className } = Astro.props;
+
+const RootElem = extractor.getRootElem();
+const permalink = getPermalinkUrl(extractor.getProperties())
+const dates = extractor.getDates();
+
+---
+
+<RootElem class:list={["h-entry", className]}>
+    <p class:list={[...extractor.getTitleClasses(), "tw:text-lg"]}><a href={permalink}>{extractor.getMinimalTitle()}</a></p>
+    <p class="dt-published tw:text-xs">{dates.createdAtDisplayTime}, {dates.createdAtDisplay}</p>
+</RootElem>

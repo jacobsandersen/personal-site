@@ -11,6 +11,11 @@ export default class RsvpMf2Extractor extends RemoteUrlReferenceExtractor {
         return `RSVP for ${this.getEvent()}`
     }
 
+    getMinimalTitle(): string {
+        const rsvp = this.getRsvp()
+        return `${rsvp[0].toUpperCase() + rsvp.slice(1)}: ${this.getRemoteUrlAbbrev()}`
+    }
+
     getRsvp(): string {
         const rsvpValues = this.props.rsvp
 
