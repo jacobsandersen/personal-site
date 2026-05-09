@@ -1,0 +1,3 @@
+[submodule "micropub"]
+	path = micropub
+	url = git@github.com:jacobsandersen/personal-site-content.git
