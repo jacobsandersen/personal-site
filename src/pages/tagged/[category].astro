@@ -38,5 +38,7 @@ const title = `Posts tagged with #${category}`;
     <HFeedRenderer
         posts={posts}
         feedInfo={{ title, url: `/tagged/${category}` }}
+        class="tw:col-span-16"
+        itemClass="tw:my-2"
     />
 </BaseLayout>
