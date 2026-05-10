@@ -1,9 +1,6 @@
 name: Sync content submodule
 
 on:
-  push:
-    branches:
-      - main
   repository_dispatch:
     types:
       - content-updated
@@ -15,11 +12,14 @@ jobs:
       - name: Checkout website repo
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
       - name: Update submodule to latest remote
         run: git submodule update --init --remote --recursive
+        env:
+          GIT_CONFIG_COUNT: 1
+          GIT_CONFIG_KEY_0: url.https://x-access-token:${{ secrets.CONTENT_REPO_TOKEN }}@github.com/.insteadOf
+          GIT_CONFIG_VALUE_0: https://github.com/
 
       - name: Commit and push updated submodule
         run: |
