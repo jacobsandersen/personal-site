@@ -6,7 +6,7 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 
 const posts = await getCollection("micropub");
 const categories = [...new Set(
-  posts.flatMap(post => post.data.properties['category']
+  posts.flatMap(post => (post.data.properties['category'] ?? [])
     .filter(cat => typeof cat === 'string')
   )
 )];

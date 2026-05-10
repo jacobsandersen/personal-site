@@ -10,7 +10,7 @@ export const getStaticPaths = (async () => {
 
   const byCategory = posts.reduce((acc, post) => {
     const categories = [...new Set(
-      post.data.properties['category']
+      (post.data.properties['category'] ?? [])
         .filter(category => typeof category === 'string')
     )];
 
