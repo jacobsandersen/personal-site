@@ -1,28 +1,35 @@
 ---
-import type { GetStaticPaths } from "astro";
 import { getCollection } from "astro:content";
 import Link from "~/components/util/Link.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 
 const posts = await getCollection("micropub");
-const categories = [...new Set(
-  posts.flatMap(post => (post.data.properties['category'] ?? [])
-    .filter(cat => typeof cat === 'string')
-  )
-)];
+const categories = [
+  ...new Set(
+    posts.flatMap((post) =>
+      (post.data.properties["category"] ?? []).filter(
+        (cat) => typeof cat === "string",
+      ),
+    ),
+  ),
+];
 ---
 
 <BaseLayout title="Post Tags">
-    <h1>Post Tags</h1>
-    {
-        categories.length > 0 ? (
-            <ul>
-                {categories.map((category) => (
-                    <li><Link href={`/tagged/${category}`}>#{category}</Link></li>
-                ))}
-            </ul>
-        ) : (
-            <p>No tags found.</p>
-        )
-    }
+  <div class="tw:col-span-16 tw:flex tw:flex-col tw:gap-y-2">
+    <h1 class="tw:text-4xl">Post Tags</h1>
+    <p class="tw:text-xl">
+      This page lists all of the tags/categories that I have ever used in making
+      a post, and links back to those posts.
+    </p>
+    <ul class="tw:flex tw:flex-col tw:gap-y-1">
+      {
+        categories.map((category) => (
+          <li>
+            <Link href={`/tagged/${category}`}>#{category}</Link>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 </BaseLayout>
