@@ -1,12 +1,12 @@
-import { Mf2Properties } from "~/types/mf2-document"
 import { isValidUrl } from "./url"
 import { getDateParts } from "./dates"
+import { Mf2ObjectProperties } from "~/content.config"
 
-export function getFirstStringOrBlank(properties: Mf2Properties, propertyName: string): string {
+export function getFirstStringOrBlank(properties: Mf2ObjectProperties, propertyName: string): string {
     return getFirstPropertyOrDefault<string>(properties, propertyName, "")
 }
 
-export function getFirstPropertyOrDefault<T>(properties: Mf2Properties, propertyName: string, defaultValue: T): T {
+export function getFirstPropertyOrDefault<T>(properties: Mf2ObjectProperties, propertyName: string, defaultValue: T): T {
     const values = properties[propertyName]
     if (values && values.length > 0) {
         return values[0] as T
@@ -14,7 +14,7 @@ export function getFirstPropertyOrDefault<T>(properties: Mf2Properties, property
     return defaultValue
 }
 
-export function hasPropWithValidUrl(props: Mf2Properties, propName: string): boolean {
+export function hasPropWithValidUrl(props: Mf2ObjectProperties, propName: string): boolean {
     const values = props[propName]
     if (!values || values.length === 0) {
         return false
@@ -23,7 +23,7 @@ export function hasPropWithValidUrl(props: Mf2Properties, propName: string): boo
     return typeof propValue === 'string' && isValidUrl(propValue)
 }
 
-export function isValidRsvp(props: Mf2Properties): boolean {
+export function isValidRsvp(props: Mf2ObjectProperties): boolean {
     const rsvpValues = props.rsvp
     if (!rsvpValues || rsvpValues.length === 0) {
         return false
@@ -32,13 +32,13 @@ export function isValidRsvp(props: Mf2Properties): boolean {
     return typeof rsvp === 'string' && ['yes', 'no', 'maybe', 'interested'].includes(rsvp.toLowerCase())
 }
 
-export function getPermalinkUrl(props: Mf2Properties): string {
-    const slug = getFirstStringOrBlank(props, 'slug')
+export function getPermalinkUrl(props: Mf2ObjectProperties): string {
+    const slug = getFirstStringOrBlank(props, 'mp-slug')
     if (!slug) {
         return ''
     }
 
-    const createdAt = getFirstStringOrBlank(props, 'created_at')
+    const createdAt = getFirstStringOrBlank(props, 'published')
     if (!createdAt) {
         return ''
     }
@@ -69,7 +69,7 @@ function findHtmlContent(items: unknown[]): string {
     return ""
 }
 
-export function extractPostContent(props: Mf2Properties): string {
+export function extractPostContent(props: Mf2ObjectProperties): string {
     if (props.content && props.content.length > 0) {
         const stringContent = findStringContent(props.content)
         if (stringContent) return stringContent
@@ -83,7 +83,7 @@ export function extractPostContent(props: Mf2Properties): string {
     return ""
 }
 
-export function extractPostName(props: Mf2Properties): string {
+export function extractPostName(props: Mf2ObjectProperties): string {
     if (props.name) {
         return findStringContent(props.name)
     }

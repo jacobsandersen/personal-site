@@ -1,4 +1,4 @@
-import { Mf2Document } from "./mf2-document"
+import { Mf2Object } from "~/content.config";
 
 export enum RenderMethod {
   Minimal = "minimal",
@@ -12,12 +12,12 @@ export interface RenderProps {
 }
 
 export interface DocumentRenderProps extends RenderProps {
-    doc: Mf2Document
+    doc: Mf2Object
 }
 
 export interface FeedRenderProps extends RenderProps {
     feedInfo?: FeedInfo
-    posts: Mf2Document[],
+    posts: Mf2Object[],
     itemClass?: string;
 }
 

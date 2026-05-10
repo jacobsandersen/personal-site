@@ -1,10 +1,10 @@
 ---
-import { Mf2Properties } from '~/types/mf2-document'
 import { extractDates, ExtractedDates } from '~/util/dates'
 import FormattedDate from './FormattedDate.astro'
+import { Mf2ObjectProperties } from '~/content.config'
 
 interface Props {
-    props?: Mf2Properties
+    props?: Mf2ObjectProperties
     extractedDates?: ExtractedDates,
     forceHideUpdated?: boolean
 }

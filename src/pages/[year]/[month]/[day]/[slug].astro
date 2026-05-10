@@ -1,31 +1,29 @@
 ---
+import type { GetStaticPaths } from "astro";
+import { getCollection } from "astro:content";
 import MicroformatRenderer from "~/components/microformat/MicroformatRenderer.astro";
-import { validateYearMonthDayForPath } from "~/util/url";
-import { findPost } from "~/lib/scribble/scribble";
-import {getDateParts} from "~/util/dates";
+import { getDateParts } from "~/util/dates";
+import { getFirstStringOrBlank } from "~/util/mf2-util";
 
-const { year, month, day, slug } = Astro.params
+export const getStaticPaths = (async () => {
+  const posts = await getCollection("micropub");
+  return posts.flatMap((post) => {
+    const published = getFirstStringOrBlank(post.data.properties, "published");
+    if (!published) return [];
 
-if (!validateYearMonthDayForPath(year, month, day)) {
-  throw new Error(`Invalid date parameters: ${year}-${month}-${day}`)
-}
+    const slug = getFirstStringOrBlank(post.data.properties, "mp-slug");
+    if (!slug) return [];
 
-const post = await findPost(slug!)
-if (!post) {
-  console.warn(`Post not found for slug: ${slug}`)
-  return new Response(null, { status: 404 })
-} 
+    const { year, month, day } = getDateParts(published);
 
-const createdAtRaw = post.properties['created_at'] as string[]
-if (!createdAtRaw || createdAtRaw.length === 0) {
-  console.error(`Missing created_at date for post with slug ${slug}`)
-  return new Response(null, { status: 404 })
-}
+    return [{
+      params: { year, month, day, slug },
+      props: { post: post.data },
+    }];
+  });
+}) satisfies GetStaticPaths;
 
-const { year: createdYear, month: createdMonth, day: createdDay } = getDateParts(createdAtRaw[0])
-if (createdYear !== year || createdMonth !== month || createdDay !== day) {
-  return Astro.redirect(getPermalinkUrl(post.properties))
-}
+const { post } = Astro.props;
 ---
 
 <MicroformatRenderer doc={post} />

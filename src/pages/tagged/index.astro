@@ -1,18 +1,24 @@
 ---
+import type { GetStaticPaths } from "astro";
+import { getCollection } from "astro:content";
 import Link from "~/components/util/Link.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import { listCategories } from "~/lib/scribble/scribble";
 
-const tags = await listCategories();
+const posts = await getCollection("micropub");
+const categories = [...new Set(
+  posts.flatMap(post => post.data.properties['category']
+    .filter(cat => typeof cat === 'string')
+  )
+)];
 ---
 
 <BaseLayout title="Post Tags">
     <h1>Post Tags</h1>
     {
-        tags.length > 0 ? (
+        categories.length > 0 ? (
             <ul>
-                {tags.map((tag) => (
-                    <li><Link href={`/tagged/${tag}`}>#{tag}</Link></li>
+                {categories.map((category) => (
+                    <li><Link href={`/tagged/${category}`}>#{category}</Link></li>
                 ))}
             </ul>
         ) : (

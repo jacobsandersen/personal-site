@@ -1,23 +1,43 @@
 ---
+import type { GetStaticPaths } from "astro";
+import { getCollection } from "astro:content";
 import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
+import { Mf2Object } from "~/content.config";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import { QueryParams, queryPosts } from "~/lib/scribble/scribble";
-import { validateYearForPath } from "~/util/url";
+import { getDateParts } from "~/util/dates";
+import { getFirstStringOrBlank } from "~/util/mf2-util";
+
+export const getStaticPaths = (async () => {
+  const posts = await getCollection('micropub');
+
+  const byYear = posts.reduce((acc, post) => {
+    const published = getFirstStringOrBlank(post.data.properties, 'published');
+    if (!published) {
+      return acc;
+    }
+
+    const { year } = getDateParts(published);
+    if (!acc[year]) {
+      acc[year] = [];
+    }
+    
+    acc[year].push(post.data);
+
+    return acc;
+  }, {} as Record<string, Mf2Object[]>);
+
+  return Object.entries(byYear).map(([year, posts]) => ({
+    params: { year },
+    props: { posts }
+  }));
+}) satisfies GetStaticPaths;
 
 const { year } = Astro.params;
-if (!validateYearForPath(year)) {
-    return new Response(null, { status: 404 });
-}
+const { posts } = Astro.props;
 
-const queryParams: QueryParams = {
-    type: "h-entry",
-    year: Number(year!),
-};
-
-const results = await queryPosts(queryParams);
 const title = `Posts from ${year}`;
 ---
 
 <BaseLayout title={`Posts from ${year}`}>
-    <HFeedRenderer posts={results} feedInfo={{ title, url: `/${year}` }} />
+    <HFeedRenderer posts={posts} feedInfo={{ title, url: `/${year}` }} />
 </BaseLayout>

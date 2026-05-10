@@ -1,11 +1,11 @@
-import { Mf2Properties } from "~/types/mf2-document";
+import { Mf2ObjectProperties } from "~/content.config";
 import Mf2Extractor from "./Mf2Extractor";
 import { isValidUrl } from "~/util/url";
 
 export default abstract class RemoteUrlReferenceExtractor extends Mf2Extractor {
     protected readonly remoteUrl: string
 
-    constructor(props: Mf2Properties, urlProp: string) {
+    constructor(props: Mf2ObjectProperties, urlProp: string) {
         super(props);
 
         const remoteUrls = this.props[urlProp];

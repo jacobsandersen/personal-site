@@ -1,8 +1,8 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
-import { Mf2Properties } from '~/types/mf2-document'
 import { getFirstStringOrBlank } from './mf2-util'
+import { Mf2ObjectProperties } from '~/content.config'
 
 export interface ExtractedDates {
     createdAtRaw: string,
@@ -31,10 +31,10 @@ export function parseAdhoc(date: Date, format: string): string {
     return parsed.isValid() ? parsed.format(format) : ''
 }
 
-export function extractDates(props: Mf2Properties): ExtractedDates {
-    const createdAtRaw = getFirstStringOrBlank(props, 'created_at')
+export function extractDates(props: Mf2ObjectProperties): ExtractedDates {
+    const createdAtRaw = getFirstStringOrBlank(props, 'published')
     const createdAtComponents = getParsedAndDisplay(createdAtRaw)
-    const updatedAtRaw = getFirstStringOrBlank(props, 'updated_at')
+    const updatedAtRaw = getFirstStringOrBlank(props, 'updated')
     const updatedAtComponents = getParsedAndDisplay(updatedAtRaw)
     
     return {

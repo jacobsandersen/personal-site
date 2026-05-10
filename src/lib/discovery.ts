@@ -1,4 +1,3 @@
-import { Mf2Properties } from "~/types/mf2-document";
 import { PostType } from "./content";
 import { extractPostContent, extractPostName, hasPropWithValidUrl, isValidRsvp } from "~/util/mf2-util";
 import Mf2Extractor from "./extractor/Mf2Extractor";
@@ -11,8 +10,9 @@ import PhotoMf2Extractor from "./extractor/PhotoMf2Extractor";
 import CheckinMf2Extractor from "./extractor/CheckinMf2Extractor";
 import ArticleMf2Extractor from "./extractor/ArticleMf2Extractor";
 import NoteMf2Extractor from "./extractor/NoteMf2Extractor";
+import { Mf2ObjectProperties } from "~/content.config";
 
-const determineContentBasedType = (props: Mf2Properties): PostType => {
+const determineContentBasedType = (props: Mf2ObjectProperties): PostType => {
     const postContent = extractPostContent(props)
     if (!postContent) {
         return 'note'
@@ -29,7 +29,7 @@ const determineContentBasedType = (props: Mf2Properties): PostType => {
     return trimmedPostContent.startsWith(trimmedName) ? 'note' : 'article'
 }
 
-export const discoverPostType = (props: Mf2Properties): PostType => {
+export const discoverPostType = (props: Mf2ObjectProperties): PostType => {
     if (isValidRsvp(props)) {
         return 'rsvp'
     }
@@ -61,7 +61,7 @@ export const discoverPostType = (props: Mf2Properties): PostType => {
     return determineContentBasedType(props)
 }
 
-export function getExtractorForType(type: PostType, props: Mf2Properties): Mf2Extractor {
+export function getExtractorForType(type: PostType, props: Mf2ObjectProperties): Mf2Extractor {
     switch (type) {
         case 'rsvp':
             return new RsvpMf2Extractor(props)

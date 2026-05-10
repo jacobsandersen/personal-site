@@ -1,9 +1,9 @@
+import { Mf2ObjectProperties } from "~/content.config";
 import { Rsvp } from "../content";
 import RemoteUrlReferenceExtractor from "./RemoteUrlReferenceExtractor";
-import { Mf2Properties } from "~/types/mf2-document";
 
 export default class RsvpMf2Extractor extends RemoteUrlReferenceExtractor {
-    constructor(props: Mf2Properties) {
+    constructor(props: Mf2ObjectProperties) {
         super(props, 'in-reply-to');
     }
 

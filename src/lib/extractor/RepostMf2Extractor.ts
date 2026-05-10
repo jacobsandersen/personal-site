@@ -1,9 +1,9 @@
-import { Mf2Properties } from "~/types/mf2-document";
+import { Mf2ObjectProperties } from "~/content.config";
 import { Repost } from "../content";
 import RemoteUrlReferenceExtractor from "./RemoteUrlReferenceExtractor";
 
 export default class RepostMf2Extractor extends RemoteUrlReferenceExtractor {
-    constructor(props: Mf2Properties) {
+    constructor(props: Mf2ObjectProperties) {
         super(props, 'repost-of');
     }
 

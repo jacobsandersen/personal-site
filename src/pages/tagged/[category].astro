@@ -1,19 +1,35 @@
 ---
+import type { GetStaticPaths } from "astro";
+import { getCollection } from "astro:content";
 import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
+import { Mf2Object } from "~/content.config";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import { QueryParams, queryPosts } from "~/lib/scribble/scribble";
+
+export const getStaticPaths = (async () => {
+  const posts = await getCollection("micropub");
+
+  const byCategory = posts.reduce((acc, post) => {
+    const categories = [...new Set(
+      post.data.properties['category']
+        .filter(category => typeof category === 'string')
+    )];
+
+    for (let category of categories) {
+      if (!acc[category]) acc[category] = [];
+      acc[category].push(post.data);
+    }
+
+    return acc;
+  }, {} as Record<string, Mf2Object[]>);
+
+  return Object.entries(byCategory).map(([category, posts]) => ({
+    params: { category },
+    props: { posts }
+  }));
+}) satisfies GetStaticPaths;
 
 const { category } = Astro.params;
-if (category!.toLowerCase() === "uncategorized") {
-    return Astro.redirect("/uncategorized");
-}
-
-const queryParams: QueryParams = {
-    type: "h-entry",
-    category: category!,
-};
-
-const posts = await queryPosts(queryParams);
+const { posts } = Astro.props;
 
 const title = `Posts tagged with #${category}`;
 ---

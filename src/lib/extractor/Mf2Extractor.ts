@@ -1,17 +1,17 @@
-import { Mf2Properties } from "~/types/mf2-document";
+import { Mf2ObjectProperties } from "~/content.config";
 import { extractDates, ExtractedDates } from "../../util/dates";
 import { normalizePostContent, Post, Content } from "../content";
 
 export default abstract class Mf2Extractor {
-    protected readonly props: Mf2Properties
+    protected readonly props: Mf2ObjectProperties
     private readonly dates: ExtractedDates
 
-    constructor(props: Mf2Properties) {
+    constructor(props: Mf2ObjectProperties) {
         this.props = props
         this.dates = extractDates(props)
     }
 
-    getProperties(): Mf2Properties {
+    getProperties(): Mf2ObjectProperties {
         return this.props
     }
 

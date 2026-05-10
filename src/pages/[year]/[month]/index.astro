@@ -1,35 +1,62 @@
 ---
+import type { GetStaticPaths } from "astro";
+import { getCollection } from "astro:content";
 import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
+import { Mf2Object } from "~/content.config";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import { QueryParams, queryPosts } from "~/lib/scribble/scribble";
-import { parseAdhoc } from "~/util/dates";
-import { validateMonthForPath, validateYearForPath } from "~/util/url";
+import { getDateParts, parseAdhoc } from "~/util/dates";
+import { getFirstStringOrBlank } from "~/util/mf2-util";
+
+export const getStaticPaths = (async () => {
+  const posts = await getCollection("micropub");
+
+  const byYearMonth = posts.reduce(
+    (acc, post) => {
+      const published = getFirstStringOrBlank(
+        post.data.properties,
+        "published",
+      );
+      if (!published) {
+        return acc;
+      }
+
+      const { year, month } = getDateParts(published);
+      if (!acc[year]) {
+        acc[year] = {};
+      }
+
+      if (!acc[year][month]) {
+        acc[year][month] = [];
+      }
+
+      acc[year][month].push(post.data);
+
+      return acc;
+    },
+    {} as Record<string, Record<string, Mf2Object[]>>,
+  );
+
+  return Object.entries(byYearMonth).flatMap(([year, byMonth]) => {
+    return Object.entries(byMonth).map(([month, posts]) => ({
+      params: { year, month },
+      props: { posts }
+    }));
+  });
+}) satisfies GetStaticPaths;
 
 const { year, month } = Astro.params;
-if (!validateYearForPath(year) || !validateMonthForPath(month)) {
-    return new Response(null, { status: 404 });
-}
-
-const queryParams: QueryParams = {
-    type: "h-entry",
-    year: Number(year!),
-    month: Number(month!),
-};
+const { posts } = Astro.props;
 
 const date = new Date();
-date.setFullYear(queryParams.year!);
-date.setMonth((queryParams.month ?? 1) - 1);
+date.setFullYear(Number(year));
+date.setMonth(Number(month) - 1);
 date.setDate(1);
 
 const formattedDate = parseAdhoc(date, "MMMM, YYYY");
 
-const results = await queryPosts(queryParams);
 const title = `Posts from ${formattedDate}`;
 ---
 
 <BaseLayout title={title}>
-    <HFeedRenderer
-        posts={results}
-        feedInfo={{ title, url: `/${year}/${month}` }}
-    />
+  <HFeedRenderer posts={posts} feedInfo={{ title, url: `/${year}/${month}` }} />
 </BaseLayout>

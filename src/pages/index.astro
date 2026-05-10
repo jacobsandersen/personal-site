@@ -2,14 +2,51 @@
 import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
 import LinkCard from "~/components/util/LinkCard.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import { queryPosts } from "~/lib/scribble/scribble";
 import { RenderMethod } from "~/types/mf2-rendering";
+import { getCollection } from 'astro:content';
 
-const queryParams = {
-    type: 'h-entry'
-};
+const posts = (await getCollection("micropub")).sort((a, b) => {
+  const aPublished = a.data.properties['published'][0] ?? null;
+  const aPublishedType = typeof aPublished;
+  const bPublished = b.data.properties['published'][0] ?? null;
+  const bPublishedType = typeof bPublished;
 
-const results = await queryPosts(queryParams);
+  if (aPublishedType !== 'string' || bPublishedType !== 'string') {
+    if (aPublishedType !== 'string' && bPublishedType !== 'string') {
+      return 0;
+    }
+
+    return aPublishedType !== 'string' ? 1 : - 1;
+  }
+
+  const aPublishedDt = new Date(aPublished as string);
+  const aPublishedValid = !isNaN(aPublishedDt.getTime());
+  const bPublishedDt = new Date(bPublished as string);
+  const bPublishedValid = !isNaN(bPublishedDt.getTime());
+
+  if (!aPublishedValid || !bPublishedValid) {
+    if (!aPublishedValid && !bPublishedValid) {
+      return 0;
+    }
+
+    return aPublishedValid ? -1 : 1;
+  }
+
+  return bPublishedDt.getTime() - aPublishedDt.getTime()
+})
+.filter(post => {
+  return post.data.type[0] === 'h-entry'
+})
+.filter(post => {
+  let deleted = post.data.properties['deleted']
+  if (!deleted) {
+    return true;
+  }
+
+  return !deleted[0];
+})
+.slice(0, 20)
+.map(post => post.data);
 
 const feedInfo = {
 	title: "Recent Posts",
@@ -74,7 +111,7 @@ const linkCardClass = "tw:p-2 tw:border-2 tw:border-dotted tw:rounded-md";
 		<section class="tw:col-span-6 tw:flex tw:flex-col tw:gap-y-4">
 			<h2 class="tw:text-3xl tw:font-bold">Recent Posts</h2>
 			<HFeedRenderer 
-				posts={results} 
+				posts={posts} 
 				renderMethod={RenderMethod.Minimal} 
 				feedInfo={feedInfo} 
 				class="tw:flex tw:flex-col tw:gap-y-6" 

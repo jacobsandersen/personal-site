@@ -4,16 +4,17 @@ import { glob } from 'astro/loaders';
 
 import { z } from 'astro/zod';
 
+export type Mf2Value = string | boolean | number | Record<string, unknown> | Mf2Object;
 
-type Mf2Value = string | boolean | number | Record<string, unknown> | Mf2Object;
+export type Mf2ObjectProperties = Record<string, Mf2Value[]>;
 
-type Mf2Object = {
+export type Mf2Object = {
   type: string[];
-  properties: Map<string, Mf2Value[]>;
-  children?: Mf2Object[];
+  properties: Mf2ObjectProperties;
+  children?: Mf2Object[] | null;
 };
 
-const Mf2ValueSchema: z.ZodType<Mf2Value> = z.union([
+export const Mf2ValueSchema: z.ZodType<Mf2Value> = z.union([
   z.string(), 
   z.boolean(), 
   z.number(), 
@@ -21,11 +22,11 @@ const Mf2ValueSchema: z.ZodType<Mf2Value> = z.union([
   z.lazy(() => Mf2ObjectSchema)
 ]);
 
-const Mf2ObjectSchema: z.ZodType<Mf2Object> = z.object({
+export const Mf2ObjectSchema = z.object({
   type: z.array(z.string()),
-  properties: z.map(z.string(), z.array(Mf2ValueSchema)),
+  properties: z.record(z.string(), z.array(Mf2ValueSchema)),
   get children() {
-    return z.array(Mf2ObjectSchema).optional();
+    return z.array(Mf2ObjectSchema).nullish();
   }
 });
 

@@ -1,7 +1,21 @@
 ---
+import { getCollection } from "astro:content";
+import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
+
+const posts = (await getCollection("micropub"))
+  .filter(post => {
+    const category = post.data.properties['category']
+    return !category || category.length === 0
+  })
+  .map(post => post.data);
+
+const title = `Uncategorized Posts`
 ---
 
-<BaseLayout title="Uncategorized Posts">
-    <p>Under construction</p>
+<BaseLayout title={title}>
+  <HFeedRenderer
+    posts={posts}
+    feedInfo={{ title, url: `/uncategorized` }}
+  />
 </BaseLayout>

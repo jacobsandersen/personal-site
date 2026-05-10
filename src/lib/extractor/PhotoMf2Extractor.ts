@@ -1,10 +1,10 @@
-import { Mf2Properties } from "~/types/mf2-document";
 import Mf2Extractor from "./Mf2Extractor";
 import { isValidUrl } from "~/util/url";
 import { Photo } from "../content";
+import { Mf2ObjectProperties } from "~/content.config";
 
 export default class PhotoMf2Extractor extends Mf2Extractor {
-    constructor(props: Mf2Properties) {
+    constructor(props: Mf2ObjectProperties) {
         super(props);
     }
 
