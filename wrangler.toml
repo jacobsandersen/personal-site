@@ -1,0 +1,6 @@
+name = "personal-site"
+
+compatibility_date = "2026-05-10"
+
+[assets]
+directory = "./dist"
