@@ -1,4 +1,5 @@
 import { Mf2Object } from "~/content.config";
+import { MicropubContent } from "~/lib/micropub";
 
 export enum RenderMethod {
   Minimal = "minimal",
@@ -12,12 +13,12 @@ export interface RenderProps {
 }
 
 export interface DocumentRenderProps extends RenderProps {
-    doc: Mf2Object
+    doc: MicropubContent
 }
 
 export interface FeedRenderProps extends RenderProps {
     feedInfo?: FeedInfo
-    posts: Mf2Object[],
+    posts: MicropubContent[],
     itemClass?: string;
 }
 

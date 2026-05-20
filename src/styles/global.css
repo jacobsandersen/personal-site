@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Homemade+Apple&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Sniglet:wght@400;800&display=swap');
 
 @import "tailwindcss" prefix(tw);
 
@@ -40,6 +40,7 @@
 }
 
 @theme {
-  --font-sans: "Inter", sans-serif;
-  --font-signature: "Homemade Apple", cursive;
+  --font-sans: "Noto Sans", sans-serif;
+  --font-serif: "Noto Serif", serif;
+  --font-brand: "Sniglet", cursive;
 }

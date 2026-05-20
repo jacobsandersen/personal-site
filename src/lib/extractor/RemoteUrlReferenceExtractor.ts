@@ -26,7 +26,7 @@ export default abstract class RemoteUrlReferenceExtractor extends Mf2Extractor {
     }
 
     getRemoteUrlAbbrev(): string {
-        const maxLen = 24;
+        const maxLen = 36;
         if (this.remoteUrl.length <= maxLen) {
             return this.remoteUrl;
         }

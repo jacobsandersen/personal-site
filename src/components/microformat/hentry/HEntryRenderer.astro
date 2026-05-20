@@ -1,5 +1,5 @@
 ---
-import { discoverPostType, getExtractorForType } from '~/lib/discovery'
+import { getExtractorForType } from '~/lib/discovery'
 import HEntryMinimal from './minimal/HEntryMinimal.astro'
 import HEntryPreview from './preview/HEntryPreview.astro'
 import HEntryPermalink from './permalink/HEntryPermalink.astro'
@@ -9,8 +9,7 @@ export interface Props extends DocumentRenderProps {}
 
 const { doc, renderMethod = RenderMethod.Full, class: className } = Astro.props as DocumentRenderProps
 
-const type = discoverPostType(doc.properties)
-const extractor = getExtractorForType(type, doc.properties)
+const extractor = getExtractorForType(doc.postType!, doc.entry.properties)
 ---
 
 {(() => {

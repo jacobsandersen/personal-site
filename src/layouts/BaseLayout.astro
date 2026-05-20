@@ -1,4 +1,6 @@
 ---
+import SiteHeader from "~/components/structure/SiteHeader.astro";
+import SiteFooter from "~/components/structure/SiteFooter.astro";
 import "~/styles/global.css";
 
 interface Props {
@@ -22,11 +24,11 @@ const { title } = Astro.props as Props;
 		<slot name="additionalHead" />
 		<title>{title ?? "Unnamed Page"} &ndash; Jacob Andersen</title>
 	</head>
-	<body class="tw:h-screen tw:py-2 tw:bg-blue-200 tw:dark:bg-blue-950 tw:text-blue-950 tw:dark:text-blue-200">
-		<div class="tw:h-full tw:w-full tw:flex tw:justify-center">
-			<div class="tw:h-full tw:w-3/5 tw:grid tw:grid-cols-16">
-				<slot />
-			</div>
-		</div>
+	<body class="tw:h-screen tw:max-w-4/9 tw:mx-auto tw:bg-blue-200 tw:text-blue-950">
+      <SiteHeader />
+      <main>
+        <slot />
+      </main>
+      <SiteFooter />
 	</body>
 </html>

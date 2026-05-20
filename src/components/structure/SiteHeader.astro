@@ -1,0 +1,29 @@
+---
+const { pathname } = Astro.url;
+
+interface NavLink {
+  text: string,
+  href: string,
+  activeIf: (pathname: string) => boolean
+}
+
+const navLinks: NavLink[] = [
+  { text: "the glade", href: "/", activeIf: (pathname) => pathname === '/' },
+  { text: "the workshop", href: "/workshop", activeIf: (pathname) => pathname.startsWith("/workshop") }
+]
+---
+
+<header class="tw:flex tw:justify-between tw:items-center tw:py-2 tw:mb-7 tw:border-b tw:border-dashed">
+  <h2>jacob's garden</h2>
+  <nav class="tw:text-xs">
+    <ul class="tw:inline-flex tw:gap-x-5">
+      {
+        navLinks.map((link) => (
+          <li class:list={{ "tw:font-bold": link.activeIf(pathname) }}>
+            <a href={link.href}>{link.text}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>

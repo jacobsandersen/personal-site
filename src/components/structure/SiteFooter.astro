@@ -5,40 +5,35 @@ import ExternalLink from "../util/ExternalLink.astro";
 const year = dayjs().year();
 ---
 
-<footer
-    class="tw:flex tw:justify-between tw:border-t-2 tw:border-dotted tw:py-2"
->
-    <div>
-        <p>Copyright &copy; {year} Jacob Andersen</p>
-    </div>
-    <ul class="tw:flex tw:gap-x-2 tw:text-xs">
+<footer class="tw:flex tw:justify-between tw:items-center tw:mt-7 tw:pt-2 tw:pb-4 tw:border-t tw:border-dashed tw:text-xs">
+    <p>Copyright &copy; {year} Jacob Andersen</p>
+    <nav>
+      <ul class="tw:inline-flex tw:gap-x-2">
         <li>
-            <ExternalLink
-                href="https://indieweb.org/User:Jacobandersen.dev"
-                rel="me">indieweb</ExternalLink
-            >
+          <ExternalLink href="https://indieweb.org/User:Jacobandersen.dev" rel="me">
+            indieweb
+          </ExternalLink>
         </li>
         <li>
-            <ExternalLink
-                href="https://mastodon.social/@simpleauthority"
-                rel="me">mastodon</ExternalLink
-            >
+          <ExternalLink href="https://mastodon.social/@simpleauthority" rel="me">
+            mastodon
+          </ExternalLink>
         </li>
         <li>
-            <ExternalLink
-                href="https://bsky.app/profile/jacobandersen.dev"
-                rel="me">bsky</ExternalLink
-            >
+          <ExternalLink href="https://bsky.app/profile/jacobandersen.dev" rel="me">
+            bsky
+          </ExternalLink>
         </li>
         <li>
-            <ExternalLink href="https://github.com/jacobsandersen" rel="me"
-                >github</ExternalLink
-            >
+          <ExternalLink href="https://github.com/jacobsandersen" rel="me">
+            github
+          </ExternalLink>
         </li>
         <li>
-            <ExternalLink href="mailto:jacob@jacobandersen.dev" rel="me"
-                >email</ExternalLink
-            >
+          <ExternalLink href="mailto:jacob@jacobandersen.dev" rel="me">
+            email
+          </ExternalLink>
         </li>
-    </ul>
+      </ul>
+    </nav>
 </footer>

@@ -3,119 +3,66 @@ import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
 import LinkCard from "~/components/util/LinkCard.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { RenderMethod } from "~/types/mf2-rendering";
-import { getCollection } from 'astro:content';
+import { MicropubContentLoader } from "~/lib/micropub";
 
-const posts = (await getCollection("micropub")).sort((a, b) => {
-  const aPublished = a.data.properties['published'][0] ?? null;
-  const aPublishedType = typeof aPublished;
-  const bPublished = b.data.properties['published'][0] ?? null;
-  const bPublishedType = typeof bPublished;
-
-  if (aPublishedType !== 'string' || bPublishedType !== 'string') {
-    if (aPublishedType !== 'string' && bPublishedType !== 'string') {
-      return 0;
-    }
-
-    return aPublishedType !== 'string' ? 1 : - 1;
-  }
-
-  const aPublishedDt = new Date(aPublished as string);
-  const aPublishedValid = !isNaN(aPublishedDt.getTime());
-  const bPublishedDt = new Date(bPublished as string);
-  const bPublishedValid = !isNaN(bPublishedDt.getTime());
-
-  if (!aPublishedValid || !bPublishedValid) {
-    if (!aPublishedValid && !bPublishedValid) {
-      return 0;
-    }
-
-    return aPublishedValid ? -1 : 1;
-  }
-
-  return bPublishedDt.getTime() - aPublishedDt.getTime()
-})
-.filter(post => {
-  return post.data.type[0] === 'h-entry'
-})
-.filter(post => {
-  let deleted = post.data.properties['deleted']
-  if (!deleted) {
-    return true;
-  }
-
-  return !deleted[0];
-})
-.slice(0, 20)
-.map(post => post.data);
+const posts = await MicropubContentLoader.create()
+  .hType("h-entry")
+  .excludeContentTypes(["bookmark", "rsvp"])
+  .sorted()
+  .limit(20)
+  .load();
 
 const feedInfo = {
-	title: "Recent Posts",
-	url: "/",
-	headerConfig: {
-		hidden: true
-	}
-}
-
-const linkCardTitleClass = "tw:mb-2";
-const linkCardClass = "tw:p-2 tw:border-2 tw:border-dotted tw:rounded-md";
+  title: "Recent Posts",
+  url: "/",
+  headerConfig: {
+    hidden: true,
+  },
+};
 ---
 
 <BaseLayout title="Home">
-	<main class="tw:col-span-16 tw:grid tw:grid-cols-subgrid tw:mt-4">
-		<section class="tw:col-span-10 tw:flex tw:flex-col tw:gap-y-6">
-			<div class="tw:flex tw:gap-x-8 tw:items-center">
-				<img src="/images/portrait/300.webp" alt="Jacob Andersen" class="tw:w-24 tw:h-24 tw:rounded-full tw:aspect-3/2 tw:object-cover tw:object-bottom tw:shadow tw:border-2" />
-				<h1 class="tw:text-6xl tw:font-signature">Jacob Andersen</h1>
-			</div>
-			<div class="tw:text-xl tw:leading-10 tw:tracking-tighter">
-				<p>Hello 👋</p>
-				<p>I'm Jacob. I'm a software engineer, reader, traveller, and lifelong learner.</p>
-				<p>Welcome to my digital garden. This is where I hang out on the Internet.</p>
-				<p>Take a look around and feel free to explore! Thanks for visiting. 😊</p>
-			</div>
-			<section class="tw:flex tw:flex-col tw:gap-y-4">
-				<div class="tw:flex tw:flex-col tw:gap-y-1">
-					<h2 class="tw:text-3xl tw:font-bold">Atlas</h2>
-					<p>Here are some links to help you find your way around:</p>
-				</div>
-				<nav>
-					<ul class="tw:grid tw:grid-cols-4 tw:gap-2">
-						<LinkCard 
-							title="Posts" 
-							titleLevel={3} 
-							href="/posts" 
-							description="Essays, reflections, and other writings on a variety of topics." 
-							titleClass={linkCardTitleClass}
-							class={linkCardClass}
-						/>
-						<LinkCard 
-							title="Lab" 
-							titleLevel={3} 
-							href="/lab" 
-							description="Experiments, projects, and other explorations in technology and creativity." 
-							titleClass={linkCardTitleClass}
-							class={linkCardClass}
-						/>
-						<LinkCard 
-							title="Resume" 
-							titleLevel={3} 
-							href="/resume" 
-							description="My professional experience, skills, and accomplishments." 
-							titleClass={linkCardTitleClass}
-							class={linkCardClass}
-						/>
-					</ul>
-				</nav>
-			</section>
-		</section>
-		<section class="tw:col-span-6 tw:flex tw:flex-col tw:gap-y-4">
-			<h2 class="tw:text-3xl tw:font-bold">Recent Posts</h2>
-			<HFeedRenderer 
-				posts={posts} 
-				renderMethod={RenderMethod.Minimal} 
-				feedInfo={feedInfo} 
-				class="tw:flex tw:flex-col tw:gap-y-6" 
-			/>
-		</section>
-	</main>
+  <div class="tw:flex tw:flex-col tw:gap-y-6">
+    <section>
+      <h1 class="tw:text-6xl tw:font-brand tw:mb-3">hi, i'm jacob</h1>
+      <p class="tw:tracking-wide tw:leading-7">
+        I'm a software engineer, a reader, a traveller, a learner, and more.
+        This is my little corner of the internet &mdash; a little bit of a
+        garden, a workshop, a notebook, and a storage container, all in one.
+        Feel free to take a look around.
+      </p>
+    </section>
+    <section>
+      <h2 class="tw:text-3xl tw:font-bold tw:mb-3">knick knacks</h2>
+      <div class="tw:grid tw:grid-cols-2 tw:gap-4">
+        <LinkCard href="/jams" class="tw:flex tw:flex-col tw:gap-y-2">
+          <h3 slot="title" class="tw:text-xl">jams</h3>
+          <p class="tw:text-xs"><strong>recently:</strong> <em>You Don't Dance</em> by Ryan McMullan</p>
+        </LinkCard>
+        <LinkCard href="/reading" class="tw:flex tw:flex-col tw:gap-y-2">
+          <h3 slot="title" class="tw:text-xl">reading</h3>
+          <p class="tw:text-xs"><strong>currently:</strong> Dawnshard by Brandon Sanderson</p>
+        </LinkCard>
+        <LinkCard href="/mood" class="tw:flex tw:flex-col tw:gap-y-2">
+          <h3 slot="title" class="tw:text-xl">mood</h3>
+          <p class="tw:text-xs"><strong>currently:</strong> chillin'</p>
+        </LinkCard>
+        <LinkCard href="/workshop" class="tw:flex tw:flex-col tw:gap-y-2">
+          <h3 slot="title" class="tw:text-xl">workshop</h3>
+          <p class="tw:text-xs">
+            this is where i put my projects and other stuff i'm working on
+          </p>
+        </LinkCard>
+      </div>
+    </section>
+    <section>
+      <h2 class="tw:text-3xl tw:font-bold tw:mb-3">lately</h2>
+      <HFeedRenderer
+        posts={posts}
+        renderMethod={RenderMethod.Minimal}
+        feedInfo={feedInfo}
+        class="tw:flex tw:flex-col tw:gap-y-6"
+      />
+    </section>
+  </div>
 </BaseLayout>
