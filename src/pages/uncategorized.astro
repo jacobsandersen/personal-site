@@ -1,14 +1,14 @@
 ---
-import { getCollection } from "astro:content";
 import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
+import { MicropubContentLoader } from "~/lib/micropub";
 
-const posts = (await getCollection("micropub"))
+const posts = (await MicropubContentLoader.create().load())
   .filter(post => {
-    const category = post.data.properties['category']
+    const category = post.entry.properties['category']
     return !category || category.length === 0
   })
-  .map(post => post.data);
+  .map(post => post);
 
 const title = `Uncategorized Posts`
 ---
