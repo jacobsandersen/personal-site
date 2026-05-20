@@ -108,37 +108,35 @@ export class MicropubContentLoader<HF extends HFilter = 'none', HEFM extends HEn
       data = data.filter(entry => entry.data.type && entry.data.type.length && entry.data.type[0] === this.hFilter)
     }
 
+    let typedData: [CollectionEntry<'micropub'>, PostType | undefined][] = data.map(entry => [
+      entry,
+      entry.data.type[0] === 'h-entry' ? discoverPostType(entry.data.properties) : undefined
+    ])
+
     let out: MicropubContent[] = []
     if (this.hFilter === 'h-entry') {
-      let dataToTypes: [CollectionEntry<'micropub'>, PostType][] = data.map(entry => [entry, discoverPostType(entry.data.properties)])
       if (this.contentTypeInclusions.length) {
-        dataToTypes = dataToTypes.filter(entry => this.contentTypeInclusions.includes(entry[1]))
+        typedData = typedData.filter(entry => entry[1]).filter(entry => this.contentTypeInclusions.includes(entry[1]!))
       } else if (this.contentTypeExclusions.length) {
-        dataToTypes = dataToTypes.filter(entry => !this.contentTypeExclusions.includes(entry[1]))
+        typedData = typedData.filter(entry => entry[1]).filter(entry => !this.contentTypeExclusions.includes(entry[1]!))
       }
+    }
 
-      out = dataToTypes.map(entry => ({
-        entry: entry[0].data,
-        hType: entry[0].data.type[0] as HType,
-        postType: entry[1]
-      }))
+    out = typedData.map(entry => ({
+      entry: entry[0].data,
+      hType: entry[0].data.type[0] as HType,
+      postType: entry[1]
+    }))
 
-      if (!this._includeDeleted) {
-        out = out.filter(post => {
-          let deleted = post.entry.properties["deleted"];
-          if (!deleted) {
-            return true;
-          }
+    if (!this._includeDeleted) {
+      out = out.filter(post => {
+        let deleted = post.entry.properties["deleted"];
+        if (!deleted) {
+          return true;
+        }
 
-          return !deleted[0];
-        })
-      }
-    } else {
-      out = data.map(entry => ({
-        entry: entry.data,
-        hType: entry.data.type[0] as HType,
-        postType: undefined
-      }))
+        return !deleted[0];
+      })
     }
 
     if (this._limit > 0) {
