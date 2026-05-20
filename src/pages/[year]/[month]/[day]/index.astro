@@ -3,15 +3,14 @@ import type { GetStaticPaths } from "astro";
 import { getDateParts, parseAdhoc } from "~/util/dates";
 import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import { getCollection } from "astro:content";
 import { getFirstStringOrBlank } from "~/util/mf2-util";
-import { Mf2Object } from "~/content.config";
+import { MicropubContent, MicropubContentLoader } from "~/lib/micropub";
 
 export const getStaticPaths = (async () => {
-  const posts = await getCollection("micropub");
+  const posts = await MicropubContentLoader.create().hType("h-entry").sorted().load();
 
   const byYearMonthDay = posts.reduce((acc, post) => {
-    const published = getFirstStringOrBlank(post.data.properties, "published");
+    const published = getFirstStringOrBlank(post.entry.properties, "published");
     if (!published) {
       return acc;
     }
@@ -21,10 +20,10 @@ export const getStaticPaths = (async () => {
     if (!acc[year][month]) acc[year][month] = {};
     if (!acc[year][month][day]) acc[year][month][day] = [];
 
-    acc[year][month][day].push(post.data);
+    acc[year][month][day].push(post);
 
     return acc;
-  }, {} as Record<string, Record<string, Record<string, Mf2Object[]>>>);
+  }, {} as Record<string, Record<string, Record<string, MicropubContent[]>>>);
 
   return Object.entries(byYearMonthDay).flatMap(([year, byMonthDay]) => {
     return Object.entries(byMonthDay).flatMap(([month, byDay]) => {

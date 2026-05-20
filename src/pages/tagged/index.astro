@@ -1,13 +1,12 @@
 ---
-import { getCollection } from "astro:content";
 import Link from "~/components/util/Link.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
+import { MicropubContentLoader } from "~/lib/micropub";
 
-const posts = await getCollection("micropub");
 const categories = [
   ...new Set(
-    posts.flatMap((post) =>
-      (post.data.properties["category"] ?? []).filter(
+    (await MicropubContentLoader.create().load()).flatMap((post) =>
+      (post.entry.properties["category"] ?? []).filter(
         (cat) => typeof cat === "string",
       ),
     ),

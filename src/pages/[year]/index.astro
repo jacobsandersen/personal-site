@@ -1,17 +1,16 @@
 ---
 import type { GetStaticPaths } from "astro";
-import { getCollection } from "astro:content";
 import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
-import { Mf2Object } from "~/content.config";
 import BaseLayout from "~/layouts/BaseLayout.astro";
+import { MicropubContent, MicropubContentLoader } from "~/lib/micropub";
 import { getDateParts } from "~/util/dates";
 import { getFirstStringOrBlank } from "~/util/mf2-util";
 
 export const getStaticPaths = (async () => {
-  const posts = await getCollection('micropub');
+  const posts = await MicropubContentLoader.create().hType("h-entry").sorted().load();
 
   const byYear = posts.reduce((acc, post) => {
-    const published = getFirstStringOrBlank(post.data.properties, 'published');
+    const published = getFirstStringOrBlank(post.entry.properties, 'published');
     if (!published) {
       return acc;
     }
@@ -21,10 +20,10 @@ export const getStaticPaths = (async () => {
       acc[year] = [];
     }
     
-    acc[year].push(post.data);
+    acc[year].push(post);
 
     return acc;
-  }, {} as Record<string, Mf2Object[]>);
+  }, {} as Record<string, MicropubContent[]>);
 
   return Object.entries(byYear).map(([year, posts]) => ({
     params: { year },
