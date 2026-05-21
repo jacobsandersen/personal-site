@@ -4,6 +4,8 @@ import LinkCard from "~/components/util/LinkCard.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { RenderMethod } from "~/types/mf2-rendering";
 import { MicropubContentLoader } from "~/lib/micropub";
+import NowPlaying from "~/components/react/NowPlaying";
+import NowReading from "~/components/react/NowReading";
 
 const posts = await MicropubContentLoader.create()
   .hType("h-entry")
@@ -24,7 +26,7 @@ const feedInfo = {
 <BaseLayout title="Home">
   <div class="tw:flex tw:flex-col tw:gap-y-6">
     <section>
-      <h1 class="tw:text-6xl tw:font-brand tw:mb-3">hi, i'm jacob</h1>
+      <h1 class="tw:text-6xl tw:font-brand tw:text-powder-blue tw:mb-3">hi, i'm jacob</h1>
       <p class="tw:tracking-wide tw:leading-7">
         I'm a software engineer, a reader, a traveller, a learner, and more.
         This is my little corner of the internet &mdash; a little bit of a
@@ -36,12 +38,18 @@ const feedInfo = {
       <h2 class="tw:text-3xl tw:font-bold tw:mb-3">knick knacks</h2>
       <div class="tw:grid tw:grid-cols-2 tw:gap-4">
         <LinkCard href="/jams" class="tw:flex tw:flex-col tw:gap-y-2">
-          <h3 slot="title" class="tw:text-xl">jams</h3>
-          <p class="tw:text-xs"><strong>recently:</strong> <em>You Don't Dance</em> by Ryan McMullan</p>
+          <h3 slot="title" class="tw:text-xl">reading</h3>
+          <div class="tw:contents tw:text-xs">
+            <p>no spoilers on my unreads/in-progress please!</p>
+            <NowReading client:visible />
+          </div>
         </LinkCard>
         <LinkCard href="/reading" class="tw:flex tw:flex-col tw:gap-y-2">
-          <h3 slot="title" class="tw:text-xl">reading</h3>
-          <p class="tw:text-xs"><strong>currently:</strong> Dawnshard by Brandon Sanderson</p>
+          <h3 slot="title" class="tw:text-xl">jams</h3>
+          <div class="tw:contents tw:text-xs">
+            <p>come check out the jams</p> 
+            <NowPlaying client:visible />
+          </div>
         </LinkCard>
         <LinkCard href="/mood" class="tw:flex tw:flex-col tw:gap-y-2">
           <h3 slot="title" class="tw:text-xl">mood</h3>

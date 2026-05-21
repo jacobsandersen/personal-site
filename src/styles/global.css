@@ -43,4 +43,18 @@
   --font-sans: "Noto Sans", sans-serif;
   --font-serif: "Noto Serif", serif;
   --font-brand: "Sniglet", cursive;
+  --color-ghost-white: #F7F7FF;
+  --color-powder-blue: #ADADFF;
+  --color-soft-periwinkle: #9999FF;
+  --color-coffee-bean: #1D140B;
+  --color-canary-yellow: #FFFB46;
+  --color-neon-grass: #5CFF0A;
+  --color-lime-green: #44CC00;
+}
+
+body {
+  background-color: var(--tw-color-coffee-bean);
+  background-image: url('./images/papyrus_dark.png'), url('./images/textured_paper.png');
+  background-blend-mode: soft-light, overlay;
+  color: var(--tw-color-soft-periwinkle);
 }

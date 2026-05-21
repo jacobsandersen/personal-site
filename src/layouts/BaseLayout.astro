@@ -24,7 +24,7 @@ const { title } = Astro.props as Props;
 		<slot name="additionalHead" />
 		<title>{title ?? "Unnamed Page"} &ndash; Jacob Andersen</title>
 	</head>
-	<body class="tw:h-screen tw:max-w-4/9 tw:mx-auto tw:bg-blue-200 tw:text-blue-950">
+	<body class="tw:h-screen tw:max-w-4/9 tw:mx-auto">
     <SiteHeader />
     <main>
       <slot />
