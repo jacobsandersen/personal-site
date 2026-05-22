@@ -49,7 +49,7 @@ export class MicropubContentLoader<HF extends HFilter = 'none', HEFM extends HEn
     return new MicropubContentLoader<'h-entry', 'exclusions'>(this)
   }
 
-  includeContentType(this: MicropubContentLoader<'h-entry', 'none' | 'inclusions'>, types: PostType[]): MicropubContentLoader<'h-entry', 'inclusions'> {
+  includeContentTypes(this: MicropubContentLoader<'h-entry', 'none' | 'inclusions'>, types: PostType[]): MicropubContentLoader<'h-entry', 'inclusions'> {
     this.contentTypeInclusions.push(...types)
     return new MicropubContentLoader<'h-entry', 'inclusions'>(this)
   }

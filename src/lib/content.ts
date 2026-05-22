@@ -4,9 +4,9 @@ export type Content = string | Html
 
 export type RsvpType = 'yes' | 'no' | 'maybe' | 'interested'
 
-export type PostType = 'rsvp' | 'repost' | 'like' | 'reply' | 'bookmark' | 'photo' | 'checkin' | 'note' | 'article'
+export type PostType = 'rsvp' | 'repost' | 'like' | 'reply' | 'bookmark' | 'photo' | 'checkin' | 'note' | 'article' | 'mood'
 
-export type Post = Article | Checkin | Like | Note | Photo | Reply | Repost | Rsvp | Bookmark
+export type Post = Article | Checkin | Like | Note | Photo | Reply | Repost | Rsvp | Bookmark | Mood
 
 export interface Article {
     type: 'article',
@@ -59,6 +59,12 @@ export interface Rsvp {
 export interface Bookmark {
     type: 'bookmark',
     bookmarkOf: string,
+    content: Content[]
+}
+
+export interface Mood {
+    type: 'mood',
+    mood: string,
     content: Content[]
 }
 

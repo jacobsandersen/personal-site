@@ -5,6 +5,6 @@ const nowReading = await getNowReading()
 ---
 
 { nowReading ?
-  <p>currently: <i>{nowReading.title}</i> by {nowReading.author}</p> :
+  <p><span class="tw:font-bold">currently: </span><i>{nowReading.title}</i> by {nowReading.author}</p> :
   <p>not currently reading anything (gasp!)</p>
 }

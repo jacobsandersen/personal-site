@@ -11,6 +11,7 @@ import CheckinMf2Extractor from "./extractor/CheckinMf2Extractor";
 import ArticleMf2Extractor from "./extractor/ArticleMf2Extractor";
 import NoteMf2Extractor from "./extractor/NoteMf2Extractor";
 import { Mf2ObjectProperties } from "~/content.config";
+import MoodMf2Extractor from "./extractor/MoodMf2Extractor";
 
 const determineContentBasedType = (props: Mf2ObjectProperties): PostType => {
     const postContent = extractPostContent(props)
@@ -58,6 +59,11 @@ export const discoverPostType = (props: Mf2ObjectProperties): PostType => {
         return 'checkin'
     }
 
+    // Custom post type for mood logging
+    if (props.mood) {
+        return 'mood'
+    }
+
     return determineContentBasedType(props)
 }
 
@@ -81,5 +87,7 @@ export function getExtractorForType(type: PostType, props: Mf2ObjectProperties):
             return new ArticleMf2Extractor(props)
         case 'note':
             return new NoteMf2Extractor(props)
+        case 'mood':
+            return new MoodMf2Extractor(props)
     }
 }

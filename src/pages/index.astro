@@ -6,15 +6,27 @@ import LinkCard from "~/components/util/LinkCard.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { RenderMethod } from "~/types/mf2-rendering";
 import { MicropubContentLoader } from "~/lib/micropub";
-import NowReading from "~/components/NowReading.astro";
-import NowPlaying from "~/components/NowPlaying.astro";
+import NowReading from "~/components/ssr/NowReading.astro";
+import NowPlaying from "~/components/ssr/NowPlaying.astro";
+import MoodMf2Extractor from "~/lib/extractor/MoodMf2Extractor";
 
 const posts = await MicropubContentLoader.create()
   .hType("h-entry")
-  .excludeContentTypes(["bookmark", "rsvp"])
+  .excludeContentTypes(["bookmark", "rsvp", "mood"])
   .sorted()
   .limit(20)
   .load();
+
+const latestMoodEntry = await MicropubContentLoader.create()
+  .hType("h-entry")
+  .includeContentTypes(["mood"])
+  .sorted()
+  .limit(1)
+  .load();
+
+const latestMood = latestMoodEntry.length === 1 ?
+  new MoodMf2Extractor(latestMoodEntry[0].entry.properties).getMood() :
+  "unknown";
 
 const feedInfo = {
   title: "Recent Posts",
@@ -55,7 +67,7 @@ const feedInfo = {
         </LinkCard>
         <LinkCard href="/mood" class="tw:flex tw:flex-col tw:gap-y-2">
           <h3 slot="title" class="tw:text-xl">mood</h3>
-          <p class="tw:text-xs"><strong>currently:</strong> chillin'</p>
+          <p class="tw:text-xs"><span class="tw:font-bold">most recently: </span>{latestMood}</p>
         </LinkCard>
         <LinkCard href="/workshop" class="tw:flex tw:flex-col tw:gap-y-2">
           <h3 slot="title" class="tw:text-xl">workshop</h3>

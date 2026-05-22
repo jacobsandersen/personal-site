@@ -1,0 +1,22 @@
+---
+import ContentRenderer from '~/components/content/ContentRenderer.astro'
+import StylizedQuote from '~/components/fragments/StylizedQuote.astro'
+import { Mood } from '~/lib/content'
+
+interface Props {
+  mood: Mood
+}
+
+const { mood } = Astro.props
+---
+
+<div class="tw:flex tw:flex-col tw:gap-y-2">
+  <h2 class="tw:text-xl"><b>Mood:</b> {mood.mood}</h2>
+  <div class="tw:contents">
+    <h2 class="tw:text-xl">Why?</h2>
+    { mood.content.length ?
+        <StylizedQuote class={[]}><ContentRenderer content={mood.content} /></StylizedQuote> :
+        <p>[No explanation given]</p>
+    }
+  </div>
+</div>

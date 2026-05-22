@@ -1,0 +1,15 @@
+---
+import ContentRenderer from '~/components/content/ContentRenderer.astro'
+import { Mood } from '~/lib/content'
+
+interface Props {
+    mood: Mood
+}
+
+const { mood } = Astro.props as Props
+---
+
+<div class="tw:flex tw:flex-col tw:gap-y-1">
+    <h2 class="tw:text-xl tw:font-bold">Was {mood.mood}</h2>
+    <ContentRenderer content={mood.content} preview={true} />
+</div>

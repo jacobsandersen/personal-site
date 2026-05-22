@@ -12,6 +12,7 @@ import ReplyPermalink from "./type/ReplyPermalink.astro";
 import RepostPermalink from "./type/RepostPermalink.astro";
 import RsvpPermalink from "./type/RsvpPermalink.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
+import MoodPermalink from "./type/MoodPermalink.astro";
 
 export interface Props {
     extractor: Mf2Extractor;
@@ -80,6 +81,8 @@ const content = await extractor.getPost();
                                     return (
                                         <BookmarkPermalink bookmark={content} />
                                     );
+                                case "mood":
+                                    return <MoodPermalink mood={content} />
                             }
                         })()
                     }

@@ -13,6 +13,7 @@ import RepostPreview from "./type/RepostPreview.astro";
 import RsvpPreview from "./type/RsvpPreview.astro";
 import { getPermalinkUrl } from "~/util/mf2-util";
 import Link from "~/components/util/Link.astro";
+import MoodPreview from "./type/MoodPreview.astro";
 
 export interface Props {
     extractor: Mf2Extractor;
@@ -49,6 +50,8 @@ const permalink = getPermalinkUrl(extractor.getProperties())
                         return <ReplyPreview reply={content} />;
                     case "bookmark":
                         return <BookmarkPreview bookmark={content} />;
+                    case "mood":
+                        return <MoodPreview mood={content} />;
                 }
             })()
         }

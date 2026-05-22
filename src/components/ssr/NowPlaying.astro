@@ -5,6 +5,6 @@ const nowPlaying = await getNowPlaying()
 ---
 
 { nowPlaying ?
-  <p>most recently: <i>{nowPlaying.name}</i> by {nowPlaying.artist["#text"]}</p> :
+  <p><span class="tw:font-bold">most recently: </span><i>{nowPlaying.name}</i> by {nowPlaying.artist["#text"]}</p> :
   <p>not currently listening to anything (gasp!)</p>
 }
