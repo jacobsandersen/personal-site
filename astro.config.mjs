@@ -6,6 +6,8 @@ import sitemap from '@astrojs/sitemap';
 
 import react from '@astrojs/react';
 
+import cloudflare from '@astrojs/cloudflare';
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://jacobandersen.dev",
@@ -14,5 +16,6 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
 
-  integrations: [sitemap(), react()]
+  integrations: [sitemap(), react()],
+  adapter: cloudflare()
 });
