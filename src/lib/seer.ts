@@ -1,4 +1,4 @@
-const BASE_URL = "https://seer.jacobandersen.dev"
+import { env } from "cloudflare:workers"
 
 interface SeerResp<T> {
   message: string,
@@ -26,7 +26,7 @@ export async function getNowPlaying(): Promise<NowPlaying | undefined> {
 }
 
 async function request<T>(path: string): Promise<T | undefined> {
-  const res = await fetch(`${BASE_URL}/${path}`)
+  const res = await env.SEER.fetch(path)
   if (!res.ok) {
     return undefined
   }
