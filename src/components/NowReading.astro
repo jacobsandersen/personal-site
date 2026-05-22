@@ -1,0 +1,10 @@
+---
+import { getNowReading } from "~/lib/seer";
+
+const nowReading = await getNowReading()
+---
+
+{ nowReading ?
+  <p>currently: <i>{nowReading.title}</i> by {nowReading.author}</p> :
+  <p>not currently reading anything (gasp!)</p>
+}

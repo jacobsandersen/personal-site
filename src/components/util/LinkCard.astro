@@ -7,7 +7,7 @@ export interface Props {
 const { href, class: className = "" } = Astro.props as Props
 ---
 
-<a href={href} class:list={["tw:block", "tw:border", "tw:p-2", "tw:rounded-sm", className]}>
+<a href={href} class:list={["tw:border", "tw:p-2", "tw:rounded-sm", className]}>
   <slot name="title" />
   <slot />
 </a>

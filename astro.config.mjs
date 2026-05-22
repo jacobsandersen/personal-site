@@ -10,8 +10,6 @@ import react from '@astrojs/react';
 export default defineConfig({
   site: "https://jacobandersen.dev",
 
-  compressHTML: false,
-
   vite: {
     plugins: [tailwindcss()],
   },
