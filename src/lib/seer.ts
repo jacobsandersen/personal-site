@@ -26,7 +26,7 @@ export async function getNowPlaying(): Promise<NowPlaying | undefined> {
 }
 
 async function request<T>(path: string): Promise<T | undefined> {
-  const res = await env.SEER.fetch(path)
+  const res = await env.SEER.fetch(`https://internal/${path}`)
   if (!res.ok) {
     return undefined
   }
