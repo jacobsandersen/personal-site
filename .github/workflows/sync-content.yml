@@ -1,6 +1,7 @@
 name: Sync content submodule
 
 on:
+  workflow_dispatch:
   repository_dispatch:
     types:
       - content-updated
