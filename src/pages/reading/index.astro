@@ -36,7 +36,7 @@ if (!currentlyReading) {
         <h2 class="tw:text-xl"><a href="/reading/previous/1">Previous Reads</a></h2>
         <p class="tw:text-xs">Yes! Let's talk about these!</p>
       </div>
-      <BookList books={previousReads} pageBase="/reading/previous" />
+      <BookList books={previousReads} pageBase="/reading/previous" includeLastRead={true} />
     </section>
     <section class="tw:flex tw:flex-col tw:gap-y-4">
       <div class="tw:flex tw:flex-col">
