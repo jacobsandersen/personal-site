@@ -40,6 +40,7 @@ export async function getWantToRead(page: number): Promise<HardcoverData | undef
 export async function getNowReading(): Promise<HardcoverBook | undefined> {
   const data = await request<HardcoverData>("hardcover/books?status=current&limit=1")
   if (!data || !data.books) {
+    console.log(`load current reading fail: ${data}`)
     return undefined
   }
 
