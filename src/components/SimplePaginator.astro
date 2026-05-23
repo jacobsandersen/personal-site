@@ -1,0 +1,55 @@
+---
+import { undefined } from 'astro:schema';
+
+interface Props {
+  curPage: number,
+  totalPages: number,
+  pageLink: (page: number) => string
+}
+
+const { curPage, totalPages, pageLink } = Astro.props
+
+function getPages(): (number | "ellipsis")[] {
+  const pages: (number | "ellipsis")[] = [1]
+  if (totalPages <= 7) {
+    for (let i = 2; i <= totalPages; i++) {
+      pages.push(i);
+    }
+
+    return pages;
+  }
+
+  const start = Math.max(2, curPage - 1)
+  const end = Math.min(totalPages - 1, curPage + 1)
+
+  if (start > 2) {
+    pages.push("ellipsis")
+  }
+
+  for (let i = start; i <= end; i++) {
+    pages.push(i)
+  }
+
+  if (end < totalPages - 1) {
+    pages.push("ellipsis")
+  }
+
+  pages.push(totalPages)
+
+  return pages
+}
+
+const pages = getPages()
+---
+
+<nav aria-label="pagination" class="tw:flex tw:gap-x-2 tw:text-xl tw:items-center tw:justify-center">
+  <a href={pageLink(1)} class="tw:text-2xl" title="Go to first page">&laquo;</a>
+  <a href={pageLink(Math.max(1, curPage - 1))} class="tw:text-2xl" title="Go to previous page">&lsaquo;</a>
+  {pages.map(p => 
+    p === "ellipsis" 
+      ? <span class="ellipsis">&hellip;</span>
+      : <a href={pageLink(p)} class:list={{ active: p === curPage }}>{p}</a> 
+  )}
+  <a href={pageLink(Math.min(totalPages, curPage + 1))} class="tw:text-2xl" title="Go to next page">&rsaquo;</a>
+  <a href={pageLink(totalPages)} class="tw:text-2xl" title="Go to last page">&raquo;</a>
+</nav>

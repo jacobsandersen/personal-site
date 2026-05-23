@@ -1,0 +1,34 @@
+---
+import BookList from "~/components/ssr/BookList.astro";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { getPreviousReads, getWantToRead } from "~/lib/seer";
+
+const previousReads = await getPreviousReads(1);
+const wantToRead = await getWantToRead(1);
+
+if (!previousReads || !wantToRead) {
+  return Astro.redirect("/reading");
+}
+---
+
+<BaseLayout title="Library">
+  <h1 class="tw:text-3xl tw:font-serif">The Library</h1>
+  <p>Keeping tabs? Respect.</p>
+  <hr class="tw:my-4 tw:border-dotted" />
+  <div class="tw:grid tw:grid-cols-2 tw:gap-x-12">
+    <section class="tw:flex tw:flex-col tw:gap-y-4">
+      <div class="tw:flex tw:flex-col">
+        <h2 class="tw:text-xl"><a href="/reading/previous/1">Previous Reads</a></h2>
+        <p class="tw:text-xs">Yes! Let's talk about these!</p>
+      </div>
+      <BookList books={previousReads} pageBase="/reading/previous" />
+    </section>
+    <section class="tw:flex tw:flex-col tw:gap-y-4">
+      <div class="tw:flex tw:flex-col">
+        <h2 class="tw:text-xl"><a href="/reading/wanted/1">Want To Read</a></h2>
+        <p class="tw:text-xs">Please don't spoil for these for me.</p>
+      </div>
+      <BookList books={wantToRead} pageBase="/reading/wanted" />
+    </section>
+  </div>
+</BaseLayout>
