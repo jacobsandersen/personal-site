@@ -8,8 +8,12 @@ const currentlyReading = await getNowReading();
 const previousReads = await getPreviousReads(1);
 const wantToRead = await getWantToRead(1);
 
-if (!currentlyReading || !previousReads || !wantToRead) {
-  return Astro.redirect("/");
+if (!currentlyReading) {
+  return Astro.redirect("/?readingMissingCurrent")
+} else if (!previousReads) {
+  return Astro.redirect("/?readingMissingPrevious")
+} else if (!wantToRead) {
+  return Astro.redirect("/?readingMissingWantToRead")
 }
 ---
 
