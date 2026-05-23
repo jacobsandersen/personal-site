@@ -22,11 +22,6 @@ export interface HardcoverBook {
   times_read: number
 }
 
-export interface NowReading {
-  title: string,
-  author: string
-}
-
 export interface NowPlaying {
   name: string,
   artist: {
@@ -42,16 +37,13 @@ export async function getWantToRead(page: number): Promise<HardcoverData | undef
   return request(`hardcover/books?status=wanted&limit=10&page=${page}`)
 }
 
-export async function getNowReading(): Promise<NowReading | undefined> {
+export async function getNowReading(): Promise<HardcoverBook | undefined> {
   const data = await request<HardcoverData>("hardcover/books?status=current&limit=1")
   if (!data || !data.books) {
     return undefined
   }
 
-  return {
-    title: data.books[0].title,
-    author: data.books[0].author
-  }
+  return data.books[0]
 }
 
 export async function getNowPlaying(): Promise<NowPlaying | undefined> {

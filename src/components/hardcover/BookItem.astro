@@ -1,0 +1,26 @@
+---
+import dayjs from "dayjs"
+import { HardcoverBook } from "~/lib/seer"
+
+interface Props {
+  book: HardcoverBook,
+  includeLastRead?: boolean
+  size?: string;
+  titleClass?: string;
+  subtextClass?: string;
+}
+
+const { book, includeLastRead = false, size = "36px", titleClass = "tw:text-sm", subtextClass = "tw:text-xs" } = Astro.props
+
+const lastRead = dayjs(book.last_read).format("MMMM D, YYYY")
+---
+<li class="tw:flex tw:items-center tw:gap-x-4">
+  <img src={book.image} width={size} height={size} />
+  <div class="tw:flex tw:flex-col tw:gap-y-1">
+    <div>
+      <p class:list={["tw:italic", titleClass]}>{book.title}</p>
+      <p class:list={["tw:indent-1", subtextClass]}>{book.author}</p>
+    </div>
+    {includeLastRead ? <p class:list={["tw:indent-1", subtextClass]}>Last read {lastRead} ({book.times_read} total reads)</p> : <></> }
+  </div>
+</li>

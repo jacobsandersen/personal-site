@@ -1,7 +1,7 @@
 ---
-import { getPreviousReads, HardcoverData } from "~/lib/seer";
-import BookListEntry from "~/components/hardcover/BookListEntry.astro";
+import { HardcoverData } from "~/lib/seer";
 import SimplePaginator from "~/components/SimplePaginator.astro";
+import BookItem from "../hardcover/BookItem.astro";
 
 interface Props {
   books: HardcoverData;
@@ -16,7 +16,7 @@ const colClass = `tw:grid-cols-${cols}`
 
 <div class="tw:flex tw:flex-col tw:gap-y-4">
   <ul class:list={["tw:grid", "tw:gap-y-3", colClass]}>
-    {books?.books.map((book) => <BookListEntry book={book} includeLastRead={includeLastRead} />)}
+    {books?.books.map((book) => <BookItem book={book} includeLastRead={includeLastRead} />)}
   </ul>
   <SimplePaginator
     curPage={books?.pagination.current_page ?? 1}

@@ -1,13 +1,15 @@
 ---
+import BookItem from "~/components/hardcover/BookItem.astro";
 import BookList from "~/components/ssr/BookList.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import { getPreviousReads, getWantToRead } from "~/lib/seer";
+import { getNowReading, getPreviousReads, getWantToRead } from "~/lib/seer";
 
+const currentlyReading = await getNowReading();
 const previousReads = await getPreviousReads(1);
 const wantToRead = await getWantToRead(1);
 
-if (!previousReads || !wantToRead) {
-  return Astro.redirect("/reading");
+if (!currentlyReading || !previousReads || !wantToRead) {
+  return Astro.redirect("/");
 }
 ---
 
@@ -15,7 +17,14 @@ if (!previousReads || !wantToRead) {
   <h1 class="tw:text-3xl tw:font-serif">The Library</h1>
   <p>Keeping tabs? Respect.</p>
   <hr class="tw:my-4 tw:border-dotted" />
-  <div class="tw:grid tw:grid-cols-2 tw:gap-x-12">
+  <div class="tw:grid tw:grid-cols-2 tw:gap-x-12 tw:gap-y-4">
+    <section class="tw:col-span-2 tw:flex tw:flex-col tw:gap-y-4">
+      <div class="tw:flex tw:flex-col">
+        <h2 class="tw:text-xl">Currently Reading</h2>
+        <p class="tw:text-xs">Highest priority spoiler warning! Please do not spoil this for me! &lt;3</p>
+      </div>
+      <BookItem book={currentlyReading} size="64px" titleClass="tw:text-base" subtextClass="tw:text-sm" />
+    </section>
     <section class="tw:flex tw:flex-col tw:gap-y-4">
       <div class="tw:flex tw:flex-col">
         <h2 class="tw:text-xl"><a href="/reading/previous/1">Previous Reads</a></h2>
