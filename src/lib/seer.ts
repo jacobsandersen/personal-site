@@ -48,11 +48,16 @@ export async function getNowReading(): Promise<HardcoverBook | undefined> {
 }
 
 export async function getNowPlaying(): Promise<NowPlaying | undefined> {
-  return request("lastfm/now")
+  return request("lastfm")
 }
 
 async function request<T>(path: string): Promise<T | undefined> {
-  const res = await env.SEER.fetch(`https://internal/${path}`)
+  const res = await env.SEER.fetch(`https://internal/${path}`, {
+    headers: {
+      'Authorization': `Bearer ${env.SEER_AUTH}`
+    }
+  })
+
   if (!res.ok) {
     console.log(res)
     return undefined
