@@ -1,4 +1,4 @@
-import { SEER_FIXED_AUTH, SEER_URL } from "astro:env/server"
+import { env } from "./env"
 
 interface SeerResp<T> {
   message: string,
@@ -51,9 +51,9 @@ export async function getNowPlaying(): Promise<NowPlaying | undefined> {
 }
 
 async function request<T>(path: string): Promise<T | undefined> {
-  const res = await fetch(`${SEER_URL}/${path}`, {
+  const res = await fetch(`${env.SEER_URL}/${path}`, {
     headers: {
-      'Authorization': `Bearer ${SEER_FIXED_AUTH}`
+      'Authorization': `Bearer ${env.SEER_FIXED_AUTH}`
     }
   })
 

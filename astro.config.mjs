@@ -20,14 +20,5 @@ export default defineConfig({
 
   adapter: node({
     mode: 'standalone'
-  }),
-
-  env: {
-    schema: {
-      SEER_URL: envField.string({ context: "server", access: "public", optional: false }),
-      SEER_FIXED_AUTH: envField.string({ context: "server", access: "secret", optional: false }),
-      TELEMETRY_ENABLE: envField.boolean({ context: "server", access: "public", default: false }),
-      TELEMETRY_OTEL_EXPORTER_ENDPOINT: envField.string({ context: "server", access: "public", default: "" })
-    }
-  }
+  })
 });
