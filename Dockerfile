@@ -13,6 +13,7 @@ RUN --mount=type=secret,id=github_token \
     ssh-keyscan github.com >> /root/.ssh/known_hosts && \
     TOKEN=$(cat /run/secrets/github_token) && \
     git config --global "url.https://x-access-token:${TOKEN}@github.com/.insteadOf" "git@github.com:" && \
+    git config --global "url.https://x-access-token:${TOKEN}@github.com/.insteadOf" "https://github.com/" && \
     git submodule update --init --remote --recursive
 RUN npm ci && npx astro build
 
