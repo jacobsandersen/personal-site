@@ -30,6 +30,3 @@ drizzle
 
 # sample content entry
 src/content/scribble/sample.json
-
-# cloudflare
-.wrangler/

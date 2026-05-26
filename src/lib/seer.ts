@@ -1,5 +1,4 @@
-import { env } from "cloudflare:workers"
-import NowReading from "~/components/ssr/NowReading.astro"
+import { SEER_FIXED_AUTH, SEER_URL } from "astro:env/server"
 
 interface SeerResp<T> {
   message: string,
@@ -52,9 +51,9 @@ export async function getNowPlaying(): Promise<NowPlaying | undefined> {
 }
 
 async function request<T>(path: string): Promise<T | undefined> {
-  const res = await env.SEER.fetch(`https://internal/${path}`, {
+  const res = await fetch(`${SEER_URL}/${path}`, {
     headers: {
-      'Authorization': `Bearer ${env.SEER_AUTH}`
+      'Authorization': `Bearer ${SEER_FIXED_AUTH}`
     }
   })
 
