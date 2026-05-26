@@ -21,4 +21,4 @@ FROM gcr.io/distroless/nodejs26-debian13:nonroot AS final
 COPY --from=builder /app/dist /app
 USER nonroot:nonroot
 EXPOSE 3000
-ENTRYPOINT ["/app/server/entry.mjs"]
+ENTRYPOINT ["/nodejs/bin/node", "/app/server/entry.mjs"]
