@@ -15,7 +15,7 @@ RUN --mount=type=secret,id=github_token \
     git config --global "url.https://x-access-token:${TOKEN}@github.com/.insteadOf" "git@github.com:" && \
     git config --global "url.https://x-access-token:${TOKEN}@github.com/.insteadOf" "https://github.com/" && \
     git submodule update --init --remote --recursive
-RUN npm ci && npx astro build
+RUN npm ci && npx astro build && chmod +x /app/dist/server/entry.mjs
 
 FROM gcr.io/distroless/nodejs26-debian13:nonroot AS final
 COPY --from=builder /app/dist /app
