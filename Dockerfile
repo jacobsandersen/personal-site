@@ -15,10 +15,14 @@ RUN --mount=type=secret,id=github_token \
     git config --global "url.https://x-access-token:${TOKEN}@github.com/.insteadOf" "git@github.com:" && \
     git config --global "url.https://x-access-token:${TOKEN}@github.com/.insteadOf" "https://github.com/" && \
     git submodule update --init --remote --recursive
-RUN npm ci && npx astro build && chmod +x /app/dist/server/entry.mjs
+RUN npm ci && \
+    cp -r node_modules /node_modules_prod && \
+    npx astro build && \
+    chmod +x /app/dist/server/entry.mjs
 
 FROM gcr.io/distroless/nodejs26-debian13:nonroot AS final
 COPY --from=builder /app/dist /app
+COPY --from=builder /node_modules_prod /app/node_modules
 USER nonroot:nonroot
 EXPOSE 3000
 ENTRYPOINT ["/nodejs/bin/node", "/app/server/entry.mjs"]
