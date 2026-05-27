@@ -10,4 +10,7 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production']).default('production'),
 });
 
-export const env = envSchema.parse(import.meta.env);
+export const env = envSchema.parse({
+  ...import.meta.env,
+  ...process.env
+});
