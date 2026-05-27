@@ -6,9 +6,11 @@ import BookList from "~/components/ssr/BookList.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { getNowReading, getPreviousReads, getWantToRead } from "~/lib/seer";
 
-const currentlyReading = await getNowReading();
-const previousReads = await getPreviousReads(1);
-const wantToRead = await getWantToRead(1);
+const [currentlyReading, previousReads, wantToRead] = await Promise.all([
+  getNowReading(),
+  getPreviousReads(1),
+  getWantToRead(1)
+]);
 
 if (!currentlyReading) {
   return Astro.redirect("/?readingMissingCurrent")
