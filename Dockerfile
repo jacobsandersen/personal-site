@@ -11,9 +11,8 @@ COPY . .
 RUN --mount=type=secret,id=github_token \
     mkdir -p /root/.ssh && \
     ssh-keyscan github.com >> /root/.ssh/known_hosts && \
-    TOKEN=$(cat /run/secrets/github_token) && \
-    git config --global "url.https://x-access-token:${TOKEN}@github.com/.insteadOf" "git@github.com:" && \
-    git config --global "url.https://x-access-token:${TOKEN}@github.com/.insteadOf" "https://github.com/" && \
+    TOKEN=$(cat /run/secrets/github_token | tr -d '\n\r') && \
+    git submodule set-url micropub "https://x-access-token:${TOKEN}@github.com/jacobsandersen/personal-site-content.git" && \
     git submodule update --init --remote --recursive
 RUN npm ci && \
     cp -r node_modules /node_modules_prod && \

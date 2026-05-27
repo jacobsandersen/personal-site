@@ -58,7 +58,7 @@ async function request<T>(path: string): Promise<T | undefined> {
   })
 
   if (!res.ok) {
-    console.log(res)
+    console.log("seer request failure; response:", await res.json())
     return undefined
   }
 
