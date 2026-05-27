@@ -2,9 +2,6 @@
 # check=skip=SecretsUsedInArgOrEnv
 
 FROM node:26-alpine AS builder
-ARG SEER_URL=http://dummy:3000
-ARG SEER_FIXED_AUTH=dummy
-ENV SEER_URL=$SEER_URL SEER_FIXED_AUTH=$SEER_FIXED_AUTH
 RUN apk add git openssh-client
 WORKDIR /app
 COPY . .
