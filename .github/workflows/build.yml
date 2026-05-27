@@ -3,6 +3,9 @@ name: Build
 on:
   push:
     branches: [ "main" ]
+  repository_dispatch:
+    types:
+      - build-site
 
 env:
   CARGO_TERM_COLOR: always
