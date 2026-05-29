@@ -1,0 +1,20 @@
+---
+import Breadcrumb from './Breadcrumb.astro'
+
+interface Props {
+  crumbs?: string[],
+  title: string,
+  subtitle?: string
+}
+
+const { crumbs = [], title, subtitle } = Astro.props
+---
+
+<div class="tw:contents">
+  <Breadcrumb crumbs={crumbs} />
+  <div class="tw:pt-4 pb-2">
+    <h1 class="tw:text-3xl tw:font-serif">{title}</h1>
+    { subtitle ? <p>{subtitle}</p> : <></> }
+  </div>
+  <hr class="tw:my-4 tw:border-dotted" />
+</div>

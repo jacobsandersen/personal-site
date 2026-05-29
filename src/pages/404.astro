@@ -1,10 +1,16 @@
 ---
+import PageTitle from '~/components/PageTitle.astro';
 import Link from '~/components/util/Link.astro';
 import BaseLayout from '~/layouts/BaseLayout.astro';
+
+const { pathname } = Astro.url
 ---
 
 <BaseLayout title="404 Not Found">
-    <h1>Content not found</h1>
+    <PageTitle 
+      title="Content not found"  
+      crumbs={["Home:/", `Not Found:${pathname}`]}
+    />
     <p>Whatever you were searching for, it's not here.</p>
     <Link href="/">Return to the homepage</Link>
 </BaseLayout>

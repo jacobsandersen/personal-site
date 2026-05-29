@@ -5,6 +5,7 @@ import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { getFirstStringOrBlank } from "~/util/mf2-util";
 import { MicropubContent, MicropubContentLoader } from "~/lib/micropub";
+import PageTitle from "~/components/PageTitle.astro";
 
 export const getStaticPaths = (async () => {
   const posts = await MicropubContentLoader.create().hType("h-entry").sorted().load();
@@ -37,17 +38,20 @@ export const getStaticPaths = (async () => {
 
 const { year, month, day } = Astro.params;
 const { posts } = Astro.props;
+const { pathname } = Astro.url;
 
 const date = new Date()
 date.setFullYear(Number(year))
 date.setMonth(Number(month) - 1)
 date.setDate(Number(day))
 
+const formattedMonthYear = parseAdhoc(date, 'MMMM, YYYY')
 const formattedDate = parseAdhoc(date, 'MMMM DD, YYYY')
 
 const title = `Posts from ${formattedDate}`;
 ---
 
 <BaseLayout title={title}>
-    <HFeedRenderer posts={posts} feedInfo={{title, url:`/${year}/${month}/${day}`}} />
+    <PageTitle title={title} crumbs={["Home:/", `Posts from ${year}:/${year}`, `Posts from ${formattedMonthYear}:/${year}/${month}`, `${title}:${pathname}`]} />
+    <HFeedRenderer posts={posts} feedInfo={{title, url:`/${year}/${month}/${day}`, headerConfig: { level: 2, hidden: true }}} />
 </BaseLayout>

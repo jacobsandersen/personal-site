@@ -5,9 +5,11 @@ import HEntryPreview from './preview/HEntryPreview.astro'
 import HEntryPermalink from './permalink/HEntryPermalink.astro'
 import { DocumentRenderProps, RenderMethod } from '~/types/mf2-rendering'
 
-export interface Props extends DocumentRenderProps {}
+export interface Props extends DocumentRenderProps {
+  crumbs?: string[]
+}
 
-const { doc, renderMethod = RenderMethod.Full, class: className } = Astro.props as DocumentRenderProps
+const { doc, renderMethod = RenderMethod.Full, class: className, crumbs = [] } = Astro.props as Props
 
 const extractor = getExtractorForType(doc.postType!, doc.entry.properties)
 ---
@@ -24,7 +26,7 @@ const extractor = getExtractorForType(doc.postType!, doc.entry.properties)
             )
         case RenderMethod.Full:
             return (
-                <HEntryPermalink extractor={extractor} class={className} />
+                <HEntryPermalink extractor={extractor} class={className} crumbs={crumbs} />
             )
     }
 })()}

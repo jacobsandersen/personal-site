@@ -3,9 +3,11 @@ import UnknownFormatRenderer from './UnknownFormatRenderer.astro'
 import HEntryRenderer from './hentry/HEntryRenderer.astro'
 import { DocumentRenderProps, RenderMethod } from '~/types/mf2-rendering'
 
-export interface Props extends DocumentRenderProps {}
+export interface Props extends DocumentRenderProps {
+  crumbs?: string[]
+}
 
-const { doc, renderMethod = RenderMethod.Full, class: className } = Astro.props as DocumentRenderProps
+const { doc, renderMethod = RenderMethod.Full, class: className, crumbs = [] } = Astro.props as Props
 const type = doc.entry['type'] ? (doc.entry['type'][0] as string) : 'unknown'
 
 let Renderer: typeof HEntryRenderer | 
@@ -18,4 +20,4 @@ if (type === 'h-entry') {
 }
 ---
 
-<Renderer doc={doc} renderMethod={renderMethod} class={className} />
+<Renderer doc={doc} renderMethod={renderMethod} class={className} crumbs={crumbs} />

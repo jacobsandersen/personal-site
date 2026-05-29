@@ -1,6 +1,7 @@
 ---
 import type { GetStaticPaths } from "astro";
 import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
+import PageTitle from "~/components/PageTitle.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { MicropubContent, MicropubContentLoader } from "~/lib/micropub";
 import { getDateParts } from "~/util/dates";
@@ -33,10 +34,15 @@ export const getStaticPaths = (async () => {
 
 const { year } = Astro.params;
 const { posts } = Astro.props;
+const { pathname } = Astro.url;
 
 const title = `Posts from ${year}`;
 ---
 
-<BaseLayout title={`Posts from ${year}`}>
-    <HFeedRenderer posts={posts} feedInfo={{ title, url: `/${year}` }} />
+<BaseLayout title={title}>
+  <PageTitle
+    title={title}
+    crumbs={["Home:/", `${title}:${pathname}`]} />
+    
+  <HFeedRenderer posts={posts} feedInfo={{ title, url: `/${year}`, headerConfig: { level: 2, hidden: true } }} />
 </BaseLayout>

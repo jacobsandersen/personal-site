@@ -1,5 +1,6 @@
 ---
 import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
+import PageTitle from "~/components/PageTitle.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { MicropubContentLoader } from "~/lib/micropub";
 
@@ -14,9 +15,14 @@ const title = `Uncategorized Posts`
 ---
 
 <BaseLayout title={title}>
+  <PageTitle
+    title={title}
+    subtitle="These posts are uncategorized. You should nag me to give them a home! Hopefully there's nothing here." 
+    crumbs={["Home:/", "Uncategorized:/uncategorized"]} />
+    
   <HFeedRenderer
     posts={posts}
-    feedInfo={{ title, url: `/uncategorized` }}
+    feedInfo={{ title, url: `/uncategorized`, headerConfig: { level: 2, hidden: true } }}
     class="tw:col-span-16"
     itemClass="tw:my-2"
   />

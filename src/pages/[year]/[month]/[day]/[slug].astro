@@ -1,8 +1,9 @@
 ---
 import type { GetStaticPaths } from "astro";
+import Breadcrumb from "~/components/Breadcrumb.astro";
 import MicroformatRenderer from "~/components/microformat/MicroformatRenderer.astro";
 import { MicropubContentLoader } from "~/lib/micropub";
-import { getDateParts } from "~/util/dates";
+import { getDateParts, parseAdhoc } from "~/util/dates";
 import { getFirstStringOrBlank } from "~/util/mf2-util";
 
 export const getStaticPaths = (async () => {
@@ -17,12 +18,23 @@ export const getStaticPaths = (async () => {
 
     return [{
       params: { year, month, day, slug },
-      props: { post: post },
+      props: { year, month, day, post: post },
     }];
   });
 }) satisfies GetStaticPaths;
 
-const { post } = Astro.props;
+const { year, month, day, post } = Astro.props;
+const { pathname } = Astro.url;
+
+const date = new Date()
+date.setFullYear(Number(year))
+date.setMonth(Number(month) - 1)
+date.setDate(Number(day))
+
+const formattedMonthYear = parseAdhoc(date, 'MMMM, YYYY')
+const formattedMonthDayYear = parseAdhoc(date, 'MMMM DD, YYYY')
 ---
 
-<MicroformatRenderer doc={post} />
+<MicroformatRenderer doc={post} crumbs={[
+    "Home:/", `Posts from ${year}:/${year}`, `Posts from ${formattedMonthYear}:/${year}/${month}`, `Posts from ${formattedMonthDayYear}:/${year}/${month}/${day}`, "This Post"
+  ]} />

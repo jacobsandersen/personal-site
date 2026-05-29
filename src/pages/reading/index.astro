@@ -1,7 +1,9 @@
 ---
 export const prerender = false
 
+import Breadcrumb from "~/components/Breadcrumb.astro";
 import BookItem from "~/components/hardcover/BookItem.astro";
+import PageTitle from "~/components/PageTitle.astro";
 import BookList from "~/components/ssr/BookList.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { getNowReading, getPreviousReads, getWantToRead } from "~/lib/seer";
@@ -22,9 +24,7 @@ if (!currentlyReading) {
 ---
 
 <BaseLayout title="Library">
-  <h1 class="tw:text-3xl tw:font-serif">The Library</h1>
-  <p>Keeping tabs? Respect.</p>
-  <hr class="tw:my-4 tw:border-dotted" />
+  <PageTitle title="The Library" subtitle="Keeping tabs? Respect." crumbs={["Home:/", "Reading:/reading"]} />
   <div class="tw:grid tw:grid-cols-2 tw:gap-x-12 tw:gap-y-4">
     <section class="tw:col-span-2 tw:flex tw:flex-col tw:gap-y-4">
       <div class="tw:flex tw:flex-col">

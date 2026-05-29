@@ -1,0 +1,36 @@
+---
+interface Props {
+  crumbs: string[];
+  class?: string;
+  linkClass?: string;
+  activeClass?: string;
+}
+
+const { crumbs, class: className = "", linkClass = "", activeClass = "" } = Astro.props
+
+interface PathEntry {
+  name: string;
+  link?: string;
+}
+
+const entries: PathEntry[] = crumbs.map((crumb, idx) => {
+  const [name, link] = crumb.split(":")
+  return {
+    name,
+    link
+  }
+})
+---
+
+<nav aria-label="Breadcrumb" class:list={className}>
+  <ol class="tw:flex tw:items-center">
+    {entries.map(entry => {
+      return <li class="tw:flex tw:items-center tw:not-first:before:content-['›'] tw:not-first:before:mx-2 tw:not-first:before:select-none">
+        {entry.link 
+          ? <a href={entry.link} class:list={linkClass}>{entry.name}</a>
+          : <span aria-current="page" class:list={activeClass}>{entry.name}</span>
+        }
+      </li>
+    })}
+  </ol>
+</nav>

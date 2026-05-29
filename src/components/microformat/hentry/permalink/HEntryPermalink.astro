@@ -13,13 +13,15 @@ import RepostPermalink from "./type/RepostPermalink.astro";
 import RsvpPermalink from "./type/RsvpPermalink.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import MoodPermalink from "./type/MoodPermalink.astro";
+import Breadcrumb from "~/components/Breadcrumb.astro";
 
-export interface Props {
+interface Props {
     extractor: Mf2Extractor;
     class?: string;
+    crumbs?: string[];
 }
 
-const { extractor, class: className } = Astro.props;
+const { extractor, class: className, crumbs = [] } = Astro.props as Props;
 
 const RootElem = extractor.getRootElem();
 const title = extractor.getTitle();
@@ -28,6 +30,7 @@ const content = await extractor.getPost();
 ---
 
 <BaseLayout title={title}>
+    <Breadcrumb crumbs={crumbs} />
     <RootElem class:list={["h-entry tw:col-span-12", className]}>
         <div
             class:list={[

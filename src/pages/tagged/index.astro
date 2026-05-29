@@ -1,4 +1,5 @@
 ---
+import PageTitle from "~/components/PageTitle.astro";
 import Link from "~/components/util/Link.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { MicropubContentLoader } from "~/lib/micropub";
@@ -15,20 +16,17 @@ const categories = [
 ---
 
 <BaseLayout title="Post Tags">
-  <div class="tw:col-span-16 tw:flex tw:flex-col tw:gap-y-2">
-    <h1 class="tw:text-4xl">Post Tags</h1>
-    <p class="tw:text-xl">
-      This page lists all of the tags/categories that I have ever used in making
-      a post, and links back to those posts.
-    </p>
-    <ul class="tw:flex tw:flex-col tw:gap-y-1">
-      {
-        categories.map((category) => (
-          <li>
-            <Link href={`/tagged/${category}`}>#{category}</Link>
-          </li>
-        ))
-      }
-    </ul>
-  </div>
+  <PageTitle 
+    title="Post Tags" 
+    subtitle="This page lists all of the tags/categories that I have ever used in making a post, and links back to those posts." 
+    crumbs={["Home:/", "Post Tags:/tagged"]} />
+  <ul class="tw:grid tw:grid-cols-3 tw:gap-1">
+    {
+      categories.map((category) => (
+        <li>
+          <Link href={`/tagged/${category}`}>#{category}</Link>
+        </li>
+      ))
+    }
+  </ul>
 </BaseLayout>

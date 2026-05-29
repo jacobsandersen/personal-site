@@ -1,6 +1,7 @@
 ---
 import type { GetStaticPaths } from "astro";
 import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
+import PageTitle from "~/components/PageTitle.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { MicropubContent, MicropubContentLoader } from "~/lib/micropub";
 
@@ -34,10 +35,13 @@ const title = `Posts tagged with #${category}`;
 ---
 
 <BaseLayout title={title}>
+    <PageTitle 
+      title={title} 
+      crumbs={["Home:/", "Post Tags:/tagged", `#${category}:/tagged/${category}`]} />
     <HFeedRenderer
         posts={posts}
-        feedInfo={{ title, url: `/tagged/${category}` }}
-        class="tw:col-span-16"
-        itemClass="tw:my-2"
+        feedInfo={{ title, url: `/tagged/${category}`, headerConfig: { level: 2, hidden: true } }}
+        class="tw:grid tw:grid-cols-2 tw:gap-4"
+        itemClass="tw:my-4"
     />
 </BaseLayout>

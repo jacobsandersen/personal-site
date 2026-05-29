@@ -1,8 +1,11 @@
 ---
+import PageTitle from "~/components/PageTitle.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 ---
 
 <BaseLayout title="Moodlog">
-  <h1 class="tw:text-3xl tw:font-serif">My Moodlog</h1>
+  <PageTitle
+    title="My Moodlog"
+    crumbs={["Home:/", "Moodlog:/mood"]} />
   <p>Coming soon</p>
 </BaseLayout>

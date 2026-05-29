@@ -1,6 +1,7 @@
 ---
 export const prerender = false
 
+import PageTitle from "~/components/PageTitle.astro"
 import BookList from "~/components/ssr/BookList.astro"
 import BaseLayout from "~/layouts/BaseLayout.astro"
 import {  getWantToRead } from "~/lib/seer"
@@ -15,15 +16,13 @@ const totalPages = books.pagination.total_pages
 ---
 
 <BaseLayout title=`Want to Read (Page ${normalizedPage}/${totalPages}) - The Library`>
-  <div class="tw:flex tw:flex-col tw:gap-y-4">
-    <div class="tw:flex tw:flex-col tw:gap-y-1">
-      <h1 class="tw:text-3xl">Want to Read (Page {normalizedPage} of {totalPages})</h1>
-      <p class="tw:text-sm">Please don't spoil these for me! These are in no particular order; technically, they're ordered by the date that I marked them "want to read" but this is arbitrary. I might choose any of these at any time.</p>
-    </div>
-    <BookList 
-      books={books}
-      pageBase="/reading/wanted"
-      cols={2}
-    />
-  </div>
+  <PageTitle 
+    title="Want To Read" 
+    subtitle={`Please don't spoil these for me! These are in no particular order; technically, they're ordered by the date that I marked them "want to read" but this is arbitrary. I might choose any of these at any time.`} 
+    crumbs={["Home:/", "Reading:/reading", `Want to Read (${normalizedPage}/${totalPages}):/reading/wanted/${normalizedPage}`]} />
+  <BookList 
+    books={books}
+    pageBase="/reading/wanted"
+    cols={2}
+  />
 </BaseLayout>

@@ -5,7 +5,6 @@ export interface Props extends DocumentRenderProps {}
 
 const { doc } = Astro.props as DocumentRenderProps
 ---
-
-<p>Unknown microformat type.</p>
-<p>Raw properties:</p>
-<pre>{JSON.stringify(doc, null, 2)}</pre>
+<div>
+  <p>Failed to render unknown microformat type: {doc.hType}. Please add a renderer.</p>
+</div>

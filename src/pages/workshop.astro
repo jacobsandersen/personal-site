@@ -1,7 +1,12 @@
 ---
+import PageTitle from "~/components/PageTitle.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 ---
 
 <BaseLayout title="Workshop">
-  <h1 class="tw:text-3xl tw:font-serif">The Workshop</h1>
+  <PageTitle
+    title="The Workshop"
+    subtitle="The home for bits, and bobs, and thingamajiggies"
+    crumbs={["Home:/", "The Workshop:/workshop"]} />
+  <p>Coming soon</p>
 </BaseLayout>

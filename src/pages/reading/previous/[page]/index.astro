@@ -1,6 +1,7 @@
 ---
 export const prerender = false
 
+import PageTitle from "~/components/PageTitle.astro"
 import BookList from "~/components/ssr/BookList.astro"
 import BaseLayout from "~/layouts/BaseLayout.astro"
 import { getPreviousReads } from "~/lib/seer"
@@ -15,16 +16,14 @@ const totalPages = books.pagination.total_pages
 ---
 
 <BaseLayout title=`Previous Reads (Page ${normalizedPage}/${totalPages}) - The Library`>
-  <div class="tw:flex tw:flex-col tw:gap-y-4">
-    <div>
-      <h1 class="tw:text-3xl">Previously Read (Page {normalizedPage} of {totalPages})</h1>
-      <p class="tw:text-sm">I've already read these books. That means, I'm totally open to discuss any of these with you! I might read them again some day, but no bother. If you want to talk about them, hit me up!</p>
-    </div>
-    <BookList 
-      books={books}
-      pageBase="/reading/previous"
-      cols={2}
-      includeLastRead={true}
-    />
-  </div>
+  <PageTitle 
+    title="Previous Reads" 
+    subtitle={`I've already read these books. That means, I'm totally open to discuss any of these with you! I might read them again some day, but no bother. If you want to talk about them, hit me up!`} 
+    crumbs={["Home:/", "Reading:/reading", `Previous Reads (${normalizedPage}/${totalPages}):/reading/previous/${normalizedPage}`]} />
+  <BookList 
+    books={books}
+    pageBase="/reading/previous"
+    cols={2}
+    includeLastRead={true}
+  />
 </BaseLayout>
