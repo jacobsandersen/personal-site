@@ -5,6 +5,10 @@ import { defineMiddleware } from "astro:middleware";
 import { trace, context } from "@opentelemetry/api";
 
 export const onRequest = defineMiddleware(async (ctx, next) => {
+  if (ctx.isPrerendered) {
+    return next();
+  }
+
   const tracer = trace.getTracer("astro")
 
   const headers = ctx.request.headers;

@@ -21,7 +21,8 @@ RUN npm ci && \
 
 FROM gcr.io/distroless/nodejs26-debian13:nonroot AS final
 COPY --from=builder /app/dist /app
+COPY --from=builder /app/server.mjs /app/server.mjs
 COPY --from=builder /node_modules_prod /app/node_modules
 USER nonroot:nonroot
-EXPOSE 3000
-ENTRYPOINT ["/nodejs/bin/node", "/app/server/entry.mjs"]
+EXPOSE 8080 8081
+ENTRYPOINT ["/nodejs/bin/node", "/app/server.mjs"]

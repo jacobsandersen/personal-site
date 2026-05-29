@@ -19,6 +19,6 @@ export default defineConfig({
   integrations: [sitemap(), react()],
 
   adapter: node({
-    mode: 'standalone'
+    mode: 'middleware'
   })
 });

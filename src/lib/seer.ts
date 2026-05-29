@@ -1,4 +1,5 @@
 import { env } from "./env"
+import { seerRequestsTotal, seerRequestDuration } from "./metrics"
 
 interface SeerResp<T> {
   message: string,
@@ -51,11 +52,16 @@ export async function getNowPlaying(): Promise<NowPlaying | undefined> {
 }
 
 async function request<T>(path: string): Promise<T | undefined> {
+  const end = seerRequestDuration.startTimer({ path })
+
   const res = await fetch(`${env.SEER_URL}/${path}`, {
     headers: {
       'Authorization': `Bearer ${env.SEER_FIXED_AUTH}`
     }
   })
+
+  seerRequestsTotal.inc({ path, status: res.status })
+  end()
 
   if (!res.ok) {
     console.log("seer request failure; response:", await res.json())
