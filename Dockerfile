@@ -20,7 +20,7 @@ RUN npm ci && \
     chmod +x /app/dist/server/entry.mjs
 
 FROM gcr.io/distroless/nodejs26-debian13:nonroot AS final
-COPY --from=builder /app/dist /app
+COPY --from=builder /app/dist /app/dist
 COPY --from=builder /app/server.mjs /app/server.mjs
 COPY --from=builder /node_modules_prod /app/node_modules
 USER nonroot:nonroot
