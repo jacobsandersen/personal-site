@@ -1,5 +1,6 @@
 ---
 import MicroformatRenderer from "~/components/microformat/MicroformatRenderer.astro";
+import Link from "~/components/util/Link.astro";
 import { FeedRenderProps, RenderMethod } from "~/types/mf2-rendering";
 
 interface Props extends FeedRenderProps {}
@@ -13,8 +14,10 @@ const headerClass = headerConf.class ?? "";
 ---
 
 <section class:list={["h-feed", className]}>
-    {feedInfo && <HeaderElem class:list={["tw:text-2xl", "tw:font-bold", headerClass, { "tw:hidden": headerHidden }]}><a href={feedInfo.url}>{feedInfo.title}</a></HeaderElem>}
-    {posts.map((post) => (
-        <MicroformatRenderer doc={post} renderMethod={renderMethod} class={itemClass} />
-    ))}
+    {feedInfo && <HeaderElem class:list={["tw:text-2xl", "tw:font-bold", headerClass, { "tw:hidden": headerHidden }]}><Link href={feedInfo.url}>{feedInfo.title}</Link></HeaderElem>}
+    <div class="tw:grid tw:gap-4 tw:grid-cols-1 tw:sm:grid-cols-2 tw:lg:grid-cols-3">
+      {posts.map((post) => (
+          <MicroformatRenderer doc={post} renderMethod={renderMethod} class={itemClass} />
+      ))}
+    </div>
 </section>

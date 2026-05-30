@@ -1,4 +1,6 @@
 ---
+import Link from './Link.astro';
+
 export interface Props {
   href: string;
   class?: string;
@@ -7,7 +9,7 @@ export interface Props {
 const { href, class: className = "" } = Astro.props as Props
 ---
 
-<a href={href} class:list={["tw:border", "tw:p-2", "tw:rounded-sm", className]}>
+<Link href={href} class:list={["tw:border", "tw:p-2", "tw:rounded-sm", className]} withUnderline={false}>
   <slot name="title" />
   <slot />
-</a>
+</Link>

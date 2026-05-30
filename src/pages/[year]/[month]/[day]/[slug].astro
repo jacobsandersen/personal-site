@@ -31,10 +31,9 @@ date.setFullYear(Number(year))
 date.setMonth(Number(month) - 1)
 date.setDate(Number(day))
 
-const formattedMonthYear = parseAdhoc(date, 'MMMM, YYYY')
-const formattedMonthDayYear = parseAdhoc(date, 'MMMM DD, YYYY')
+const formattedMonth = parseAdhoc(date, 'MMMM')
 ---
 
 <MicroformatRenderer doc={post} crumbs={[
-    "Home:/", `Posts from ${year}:/${year}`, `Posts from ${formattedMonthYear}:/${year}/${month}`, `Posts from ${formattedMonthDayYear}:/${year}/${month}/${day}`, "This Post"
+    "Home:/", `${year}:/${year}`, `${formattedMonth}:/${year}/${month}`, `${day}:/${year}/${month}/${day}`, "This Post"
   ]} />

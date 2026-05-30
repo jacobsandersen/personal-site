@@ -1,4 +1,6 @@
 ---
+import Link from './util/Link.astro';
+
 interface Props {
   crumbs: string[];
   class?: string;
@@ -23,11 +25,11 @@ const entries: PathEntry[] = crumbs.map((crumb, idx) => {
 ---
 
 <nav aria-label="Breadcrumb" class:list={className}>
-  <ol class="tw:flex tw:items-center">
+  <ol class="tw:flex tw:items-center tw:text-sm tw:md:text-base">
     {entries.map(entry => {
       return <li class="tw:flex tw:items-center tw:not-first:before:content-['›'] tw:not-first:before:mx-2 tw:not-first:before:select-none">
         {entry.link 
-          ? <a href={entry.link} class:list={linkClass}>{entry.name}</a>
+          ? <Link href={entry.link} class:list={linkClass} withUnderline={false}>{entry.name}</Link>
           : <span aria-current="page" class:list={activeClass}>{entry.name}</span>
         }
       </li>

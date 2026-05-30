@@ -3,8 +3,10 @@ export const prerender = false
 
 import Breadcrumb from "~/components/Breadcrumb.astro";
 import BookItem from "~/components/hardcover/BookItem.astro";
+import PageSubheading from "~/components/PageSubheading.astro";
 import PageTitle from "~/components/PageTitle.astro";
 import BookList from "~/components/ssr/BookList.astro";
+import Link from "~/components/util/Link.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { getNowReading, getPreviousReads, getWantToRead } from "~/lib/seer";
 
@@ -27,25 +29,25 @@ if (!currentlyReading) {
   <PageTitle title="The Library" subtitle="Keeping tabs? Respect." crumbs={["Home:/", "Reading:/reading"]} />
   <div class="tw:grid tw:grid-cols-2 tw:gap-x-12 tw:gap-y-4">
     <section class="tw:col-span-2 tw:flex tw:flex-col tw:gap-y-4">
-      <div class="tw:flex tw:flex-col">
-        <h2 class="tw:text-xl">Currently Reading</h2>
-        <p class="tw:text-xs">Highest priority spoiler warning! Please do not spoil this for me! &lt;3</p>
-      </div>
-      <BookItem book={currentlyReading} size="64px" titleClass="tw:text-base" subtextClass="tw:text-sm" />
+      <PageSubheading>
+        <span slot="title">Currently Reading</span>
+        <span slot="subtitle">Highest priority spoiler warning! Please do not spoil this for me. &lt;3</span>
+      </PageSubheading>
+      <BookItem book={currentlyReading} />
     </section>
-    <section class="tw:flex tw:flex-col tw:gap-y-4">
-      <div class="tw:flex tw:flex-col">
-        <h2 class="tw:text-xl"><a href="/reading/previous/1">Previous Reads</a></h2>
-        <p class="tw:text-xs">Yes! Let's talk about these!</p>
-      </div>
-      <BookList books={previousReads} pageBase="/reading/previous" includeLastRead={true} />
+    <section class="tw:col-span-2 tw:md:col-span-1 tw:flex tw:flex-col tw:gap-y-4">
+      <PageSubheading>
+        <Link href="/reading/previous/1" slot="title">Previous Reads</Link>
+        <span slot="subtitle">Yes! Let's talk about these!</span>
+      </PageSubheading>
+      <BookList books={previousReads} pageBase="/reading/previous" colClass="tw:md:grid-cols-1" includeLastRead={true} />
     </section>
-    <section class="tw:flex tw:flex-col tw:gap-y-4">
-      <div class="tw:flex tw:flex-col">
-        <h2 class="tw:text-xl"><a href="/reading/wanted/1">Want To Read</a></h2>
-        <p class="tw:text-xs">Please don't spoil for these for me.</p>
-      </div>
-      <BookList books={wantToRead} pageBase="/reading/wanted" />
+    <section class="tw:col-span-2 tw:md:col-span-1 tw:flex tw:flex-col tw:gap-y-4">
+      <PageSubheading>
+        <Link href="/reading/wanted/1" slot="title">Want To Read</Link>
+        <span slot="subtitle">Please don't spoil for these for me.</span>
+      </PageSubheading>
+      <BookList books={wantToRead} pageBase="/reading/wanted" colClass="tw:md:grid-cols-1" />
     </section>
   </div>
 </BaseLayout>

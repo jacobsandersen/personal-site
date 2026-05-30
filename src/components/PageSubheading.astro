@@ -1,0 +1,8 @@
+---
+const hasSubtitle = Astro.slots.has('subtitle')
+---
+
+<div class="tw:flex tw:flex-col">
+  <h2 class="tw:text-2xl tw:md:text-xl tw:font-serif"><slot name="title"></slot></h2>
+  { hasSubtitle && <p class="tw:text-sm tw:md:text-xs"><slot name="subtitle"></slot></p> }
+</div>

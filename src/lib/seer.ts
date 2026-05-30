@@ -16,6 +16,7 @@ export interface HardcoverData {
 
 export interface HardcoverBook {
   title: string,
+  slug: string,
   author: string,
   image: string,
   last_read: string,

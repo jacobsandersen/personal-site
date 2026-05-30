@@ -42,7 +42,7 @@ const title = `Posts from ${year}`;
 <BaseLayout title={title}>
   <PageTitle
     title={title}
-    crumbs={["Home:/", `${title}:${pathname}`]} />
+    crumbs={["Home:/", `${year}:${pathname}`]} />
     
   <HFeedRenderer posts={posts} feedInfo={{ title, url: `/${year}`, headerConfig: { level: 2, hidden: true } }} />
 </BaseLayout>

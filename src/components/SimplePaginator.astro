@@ -1,11 +1,14 @@
 ---
+import Link from './util/Link.astro';
+
 interface Props {
   curPage: number,
   totalPages: number,
+  centered?: boolean,
   pageLink: (page: number) => string
 }
 
-const { curPage, totalPages, pageLink } = Astro.props
+const { curPage, totalPages, centered = false, pageLink } = Astro.props
 
 function getPages(): (number | "ellipsis")[] {
   const pages: (number | "ellipsis")[] = [1]
@@ -40,14 +43,14 @@ function getPages(): (number | "ellipsis")[] {
 const pages = getPages()
 ---
 
-<nav aria-label="pagination" class="tw:flex tw:gap-x-2 tw:text-xl tw:items-center tw:justify-center">
-  <a href={pageLink(1)} class="tw:text-2xl" title="Go to first page">&laquo;</a>
-  <a href={pageLink(Math.max(1, curPage - 1))} class="tw:text-2xl" title="Go to previous page">&lsaquo;</a>
+<nav aria-label="pagination" class="tw:flex tw:gap-x-2 tw:text-base tw:items-center" class:list={{ "tw:justify-center": centered }}>
+  <Link href={pageLink(1)} title="Go to first page" withUnderline={false}>&laquo;</Link>
+  <Link href={pageLink(Math.max(1, curPage - 1))} title="Go to previous page" withUnderline={false}>&lsaquo;</Link>
   {pages.map(p => 
     p === "ellipsis" 
       ? <span class="ellipsis">&hellip;</span>
-      : <a href={pageLink(p)} class:list={{ active: p === curPage }}>{p}</a> 
+      : <Link href={pageLink(p)} class:list={{ "tw:font-bold": p === curPage }} withUnderline={false}>{p}</Link> 
   )}
-  <a href={pageLink(Math.min(totalPages, curPage + 1))} class="tw:text-2xl" title="Go to next page">&rsaquo;</a>
-  <a href={pageLink(totalPages)} class="tw:text-2xl" title="Go to last page">&raquo;</a>
+  <Link href={pageLink(Math.min(totalPages, curPage + 1))} title="Go to next page" withUnderline={false}>&rsaquo;</Link>
+  <Link href={pageLink(totalPages)} title="Go to last page" withUnderline={false}>&raquo;</Link>
 </nav>

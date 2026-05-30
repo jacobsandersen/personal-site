@@ -6,21 +6,28 @@ import BookItem from "../hardcover/BookItem.astro";
 interface Props {
   books: HardcoverData;
   pageBase: string;
-  cols?: number,
-  includeLastRead?: boolean
+  colClass?: string,
+  includeLastRead?: boolean,
+  centerPaginator?: boolean
 }
 
-const { books, pageBase, cols = 1, includeLastRead = false } = Astro.props;
-const colClass = `tw:grid-cols-${cols}`
+const { books, pageBase, colClass = "tw:grid-cols-1 tw:sm:grid-cols-2", includeLastRead = false, centerPaginator = false } = Astro.props;
 ---
 
-<div class="tw:flex tw:flex-col tw:gap-y-4">
-  <ul class:list={["tw:grid", "tw:gap-y-3", colClass]}>
+<div class="tw:flex tw:flex-col tw:gap-y-8">
+  <SimplePaginator
+    curPage={books?.pagination.current_page ?? 1}
+    totalPages={books?.pagination.total_pages ?? 1}
+    pageLink={(page) => `${pageBase}/${page}`}
+    centered={centerPaginator}
+  />
+  <ul class:list={["tw:grid", "tw:gap-6", colClass]}>
     {books?.books.map((book) => <BookItem book={book} includeLastRead={includeLastRead} />)}
   </ul>
   <SimplePaginator
     curPage={books?.pagination.current_page ?? 1}
     totalPages={books?.pagination.total_pages ?? 1}
     pageLink={(page) => `${pageBase}/${page}`}
+    centered={centerPaginator}
   />
 </div>

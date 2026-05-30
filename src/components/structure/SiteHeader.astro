@@ -1,4 +1,6 @@
 ---
+import Link from "../util/Link.astro";
+
 const { pathname } = Astro.url;
 
 interface NavLink {
@@ -9,18 +11,19 @@ interface NavLink {
 
 const navLinks: NavLink[] = [
   { text: "the glade", href: "/", activeIf: (pathname) => pathname === '/' },
-  { text: "the workshop", href: "/workshop", activeIf: (pathname) => pathname.startsWith("/workshop") }
+  { text: "the workshop", href: "/workshop", activeIf: (pathname) => pathname.startsWith("/workshop") },
+  { text: "tagged posts", href: "/tagged", activeIf: (pathname) => pathname.startsWith("/tagged") }
 ]
 ---
 
 <header class="tw:flex tw:justify-between tw:items-center tw:py-2 tw:mb-2 tw:border-b tw:border-dashed">
-  <h2><a href="/">jacob's garden</a></h2>
+  <h2><Link href="/" withUnderline={false}>jacob's garden</Link></h2>
   <nav class="tw:text-xs">
-    <ul class="tw:inline-flex tw:gap-x-5">
+    <ul class="tw:inline-flex tw:gap-x-3">
       {
         navLinks.map((link) => (
           <li class:list={{ "tw:font-bold": link.activeIf(pathname) }}>
-            <a href={link.href}>{link.text}</a>
+            <Link href={link.href}>{link.text}</Link>
           </li>
         ))
       }

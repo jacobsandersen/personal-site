@@ -1,4 +1,5 @@
 ---
+import Link from '~/components/util/Link.astro'
 import type Mf2Extractor from "~/lib/extractor/Mf2Extractor";
 import { getPermalinkUrl } from "~/util/mf2-util";
 
@@ -16,6 +17,6 @@ const dates = extractor.getDates();
 ---
 
 <RootElem class:list={["h-entry", className]}>
-    <p class:list={[...extractor.getTitleClasses(), "tw:text-lg"]}><a href={permalink}>{extractor.getMinimalTitle()}</a></p>
+    <p class:list={[...extractor.getTitleClasses(), "tw:text-lg"]}><Link href={permalink}>{extractor.getMinimalTitle()}</Link></p>
     <p class="dt-published tw:text-xs">{dates.createdAtDisplayTime}, {dates.createdAtDisplay}</p>
 </RootElem>

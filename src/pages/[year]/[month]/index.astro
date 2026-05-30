@@ -53,12 +53,13 @@ date.setFullYear(Number(year));
 date.setMonth(Number(month) - 1);
 date.setDate(1);
 
+const formattedMonth = parseAdhoc(date, "MMMM");
 const formattedDate = parseAdhoc(date, "MMMM, YYYY");
 
 const title = `Posts from ${formattedDate}`;
 ---
 
 <BaseLayout title={title}>
-  <PageTitle title={title} crumbs={["Home:/", `Posts from ${year}:/${year}`, `${title}:${pathname}`]} />
+  <PageTitle title={title} crumbs={["Home:/", `${year}:/${year}`, `${formattedMonth}:${pathname}`]} />
   <HFeedRenderer posts={posts} feedInfo={{ title, url: `/${year}/${month}`, headerConfig: { level: 2, hidden: true } }} />
 </BaseLayout>

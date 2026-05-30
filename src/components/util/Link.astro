@@ -3,11 +3,13 @@ interface Props {
     href: string
     rel?: string
     target?: string
-    linkProps?: Record<string, string>
-    linkClass?: string[]
+    props?: Record<string, string>
+    class?: string,
+    title?: string,
+    withUnderline?: boolean
 }
 
-const { href, rel = "", target = "", linkProps = {}, linkClass } = Astro.props as Props
+const { href, rel = "", target = "", props = {}, class: className = "", title = "", withUnderline = true } = Astro.props as Props
 ---
 
-<a href={href} rel={rel} target={target} class:list={["tw:italic", "tw:underline", "tw:decoration-dotted", "tw:hover:decoration-wavy", ...(linkClass ? linkClass : [])]} {...linkProps}><slot /></a>
+<a href={href} rel={rel} target={target} class:list={[{"tw:underline": withUnderline}, "tw:decoration-dotted", "tw:underline-offset-2", "tw:hover:invert-50", className]} title={title} {...props}><slot /></a>
