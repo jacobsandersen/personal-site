@@ -20,7 +20,7 @@
     "@opentelemetry/resources": "^2.11.0",
     "@opentelemetry/sdk-node": "^0.222.0",
     "@opentelemetry/semantic-conventions": "^1.41.1",
-    "@tailwindcss/vite": "^4.1.18",
+    "@tailwindcss/vite": "^4.3.3",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
     "astro": "^7.3.3",
@@ -34,7 +34,7 @@
     "react-dom": "^19.2.6",
     "robots-parser": "^3.0.1",
     "rxjs": "^7.8.2",
-    "tailwindcss": "^4.1.18",
+    "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
     "uuid": "^13.0.0"
   },
