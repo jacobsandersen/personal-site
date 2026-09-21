@@ -6,7 +6,6 @@ const config: CodegenConfig = {
   generates: {
     'src/lib/bastion/generated/': {
       preset: 'client',
-      plugins: ['typescript-generic-sdk'],
       config: {
         useTypeImports: true,
       }
