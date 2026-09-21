@@ -22,6 +22,6 @@ const hideUpdated = forceHideUpdated || extracted.updatedSameAsCreated()
 <div class="tw:text-xs">
     <p class="tw:flex tw:gap-x-1">
         <span><FormattedDate raw={extracted.createdAtRaw} formatted={`Published ${extracted.createdAtDisplayTime}, ${extracted.createdAtDisplay}`} hidden={false} class="dt-published" /></span>
-        <span><FormattedDate raw={extracted.updatedAtRaw} formatted={`Updated ${extracted.updatedAtDisplayTime}, ${extracted.updatedAtDisplay}`} hidden={hideUpdated} prefixMDash={true} class="dt-updated" /></em></span>
+        <span><FormattedDate raw={extracted.updatedAtRaw} formatted={`Updated ${extracted.updatedAtDisplayTime}, ${extracted.updatedAtDisplay}`} hidden={hideUpdated} prefixMDash={true} class="dt-updated" /></span>
     </p>
 </div>
