@@ -10,7 +10,13 @@ import node from '@astrojs/node';
 
 // https://astro.build/config
 export default defineConfig({
+  server: {
+    allowedHosts: ["nonfallacious-disintegrative-donny.ngrok-free.dev"],
+  },
+
   site: "https://jacobandersen.dev",
+
+  output: 'server',
 
   vite: {
     plugins: [tailwindcss()],

@@ -15,17 +15,46 @@ function getLimitOffset(page: number = 1): { limit: number, offset: number } {
   return { limit, offset }
 }
 
-async function loadPosts(page: number = 1, types: PostType[] = []): Promise<FeedQuery> {
+export async function loadPosts(page: number = 1, types: PostType[] = []): Promise<FeedQuery | undefined> {
   const { limit, offset } = getLimitOffset(page)
+
   const variables: FeedQueryVariables = {
     limit,
     offset,
     types: types.length ? types : null
   }
-  const result = await client.query<FeedQuery, FeedQueryVariables>({
+
+  const result = await client.query({
     query: FeedDocument,
     variables,
     fetchPolicy: 'no-cache'
   })
+  
+  if (result.error) {
+    console.error(result.error)
+  }
+
   return result.data
+}
+
+interface AuthProvider {
+  provider: string,
+  client_id: string,
+  authorize_url: string,
+  redirect_uri?: string
+}
+
+interface AuthProviderResponse {
+  providers: AuthProvider[]
+}
+
+export async function loadAuthProviders(): Promise<AuthProviderResponse | undefined> {
+  try {
+    const resp = await fetch(`${env.BASTION_URL}/indieauth/providers`)
+    const json = await resp.json()
+    return json as AuthProviderResponse
+  } catch (err) {
+    console.error(err)
+    return undefined
+  }
 }

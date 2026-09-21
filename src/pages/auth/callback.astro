@@ -1,0 +1,50 @@
+---
+import { z } from "astro/zod";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import PageTitle from "~/components/PageTitle.astro";
+import { env } from "~/lib/env";
+
+
+const authCallbackQuerySchema = z.object({
+  code: z.string()
+})
+
+const rawParams = Object.fromEntries(Astro.url.searchParams.entries())
+const paramParseResult = authCallbackQuerySchema.safeParse(rawParams)
+const params = paramParseResult.data
+
+let errors: string[] = []
+if (!paramParseResult.success) {
+  errors.push("Missing code parameter from downstream provider")
+}
+
+const prevState = Astro.cookies.get('auth_state')
+if (!prevState) {
+  errors.push("Missing auth state (start authorization first)")
+} else if (prevState && paramParseResult.success) {
+  Astro.cookies.delete('auth_state')
+  return Astro.redirect(`${env.BASTION_URL}/indieauth/auth/callback?state=${prevState.value}&code=${params!.code}`)
+}
+
+---
+
+<BaseLayout title="Authorizing...">
+  { errors.length === 0 ? 
+    // Success state
+    <div class="tw:flex tw:flex-col tw:gap-y-2">
+      <PageTitle title="Redirecting" subtitle="Provider authentication successful, redirecting to Bastion..." />
+      <p>Please wait, redirecting to Bastion...</p>
+    </div> :
+
+    // Error state
+    <div class="tw:flex tw:flex-col tw:gap-y-2">
+      <PageTitle title="Bad Request" subtitle="Invalid authorization callback" />
+      <p>Errors:</p>
+      <ul class="tw:list-disc tw:list-inside tw:indent-2">
+        {errors.map(error => (
+          <li>{error}</li>
+        ))}
+      </ul>
+    </div>
+  }
+</BaseLayout>

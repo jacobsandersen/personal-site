@@ -1,0 +1,65 @@
+---
+import { z } from "astro/zod";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { ClientInfo, loadIndieAuthClientInfo } from "~/lib/indieauth"
+import { loadAuthProviders } from "~/lib/bastion"
+import PageTitle from "~/components/PageTitle.astro";
+
+let clientInfo: ClientInfo = {
+    client_id: "#unknown",
+    client_name: "Unknown",
+    client_uri: "#unknown",
+    logo_uri: "#unknown"
+}
+
+const authQuerySchema = z.object({
+  me: z.url(),
+  client_id: z.url(),
+  return_to: z.url(),
+  scope: z.string().transform((val) => val.split(' ')).pipe(z.array(z.string())),
+  state: z.string()
+})
+
+const rawParams = Object.fromEntries(Astro.url.searchParams.entries())
+const paramParseResult = authQuerySchema.safeParse(rawParams)
+const params = paramParseResult.data
+if (paramParseResult.success) {
+  clientInfo = await loadIndieAuthClientInfo(params!.client_id)
+  Astro.cookies.set('auth_state', params!.state)
+}
+
+const providers = await loadAuthProviders()
+---
+
+<BaseLayout title="Authorize Application">
+  { paramParseResult.success ? 
+    // Success state
+    <div class="tw:flex tw:flex-col tw:gap-y-2">
+      <PageTitle title="Authorization Application" />
+      <p><a href={clientInfo.client_uri} target="_blank">{clientInfo.client_name}</a> wants to log in as you ({params?.me}) with the following scopes:</p> 
+      <ul class="tw:list-disc tw:list-inside tw:indent-2">
+        {params?.scope?.map(scope => (
+          <li>{scope}</li>
+        )) ?? <li><span class="tw:italic" title="The requesting application sent no scopes">None</span></li>}
+      </ul>
+      <p>If you would like to proceed, choose an authentication provider below:</p>
+      <ul class="tw:list-disc tw:list-inside tw:indent-2">
+        {providers?.providers?.map(provider => (
+          <li><a href={`${provider.authorize_url}?client_id=${provider.client_id}`}>{provider.provider}</a></li>
+        )) ?? <li><span class="tw:italic" title="Bastion returned no available auth providers">None (Error)</span></li>}
+      </ul>
+    </div> :
+
+    // Error state
+    <div class="tw:flex tw:flex-col tw:gap-y-2">
+      <PageTitle title="Bad Request" subtitle="Invalid authorization request" />
+      <p>One or more authorization request parameters are incorrect:</p>
+      <ul class="tw:list-disc tw:list-inside tw:indent-2">
+        {paramParseResult.error?.issues.map(iss => (
+          <li>{iss.path}: {iss.message}</li>
+        ))}
+      </ul>
+      <p>Please fix these parameters and try your request again.</p>
+    </div>
+  }
+</BaseLayout>
