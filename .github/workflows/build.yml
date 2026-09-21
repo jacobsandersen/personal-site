@@ -18,6 +18,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Checkout submodules
+      run: git submodule update --init --recursive
+      env:
+        GIT_CONFIG_COUNT: 1
+        GIT_CONFIG_KEY_0: url.https://x-access-token:${{ secrets.CONTENT_REPO_TOKEN }}@github.com/.insteadOf
+        GIT_CONFIG_VALUE_0: https://github.com/
+
     - name: Dependencies
       run: npm ci
       
@@ -26,6 +33,7 @@ jobs:
       env:
         SEER_URL: http://dummy:3000
         SEER_FIXED_AUTH: dummy
+        BASTION_URL: http://dummy:3000
 
   docker:
     runs-on: ubuntu-latest
