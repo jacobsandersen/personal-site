@@ -1,0 +1,46 @@
+/* eslint-disable */
+import * as types from './graphql';
+import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
+
+/**
+ * Map of all GraphQL operations in the project.
+ *
+ * This map has several performance disadvantages:
+ * 1. It is not tree-shakeable, so it will include all operations in the project.
+ * 2. It is not minifiable, so the string of a GraphQL query will be multiple times inside the bundle.
+ * 3. It does not support dead code elimination, so it will add unused operations.
+ *
+ * Therefore it is highly recommended to use the babel or swc plugin for production.
+ * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
+ */
+type Documents = {
+    "query Feed($types: [PostType!], $limit: Int = 10, $offset: Int = 0) {\n  posts(types: $types, limit: $limit, offset: $offset) {\n    id\n    slug\n    url\n    type\n    subtype\n    published\n    updated\n    name\n    summary\n    content\n    contentHtml\n    category\n    webmentionCounts {\n      total\n      reply\n      like\n      repost\n      bookmark\n      rsvp\n      mention\n    }\n  }\n}": typeof types.FeedDocument,
+};
+const documents: Documents = {
+    "query Feed($types: [PostType!], $limit: Int = 10, $offset: Int = 0) {\n  posts(types: $types, limit: $limit, offset: $offset) {\n    id\n    slug\n    url\n    type\n    subtype\n    published\n    updated\n    name\n    summary\n    content\n    contentHtml\n    category\n    webmentionCounts {\n      total\n      reply\n      like\n      repost\n      bookmark\n      rsvp\n      mention\n    }\n  }\n}": types.FeedDocument,
+};
+
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ *
+ *
+ * @example
+ * ```ts
+ * const query = graphql(`query GetUser($id: ID!) { user(id: $id) { name } }`);
+ * ```
+ *
+ * The query argument is unknown!
+ * Please regenerate the types.
+ */
+export function graphql(source: string): unknown;
+
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query Feed($types: [PostType!], $limit: Int = 10, $offset: Int = 0) {\n  posts(types: $types, limit: $limit, offset: $offset) {\n    id\n    slug\n    url\n    type\n    subtype\n    published\n    updated\n    name\n    summary\n    content\n    contentHtml\n    category\n    webmentionCounts {\n      total\n      reply\n      like\n      repost\n      bookmark\n      rsvp\n      mention\n    }\n  }\n}"): (typeof documents)["query Feed($types: [PostType!], $limit: Int = 10, $offset: Int = 0) {\n  posts(types: $types, limit: $limit, offset: $offset) {\n    id\n    slug\n    url\n    type\n    subtype\n    published\n    updated\n    name\n    summary\n    content\n    contentHtml\n    category\n    webmentionCounts {\n      total\n      reply\n      like\n      repost\n      bookmark\n      rsvp\n      mention\n    }\n  }\n}"];
+
+export function graphql(source: string) {
+  return (documents as any)[source] ?? {};
+}
+
+export type DocumentType<TDocumentNode extends DocumentNode<any, any>> = TDocumentNode extends DocumentNode<  infer TType,  any>  ? TType  : never;
