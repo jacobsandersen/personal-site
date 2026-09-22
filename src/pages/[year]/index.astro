@@ -1,41 +1,10 @@
 ---
-export const prerender = true;
-
-import type { GetStaticPaths } from "astro";
 import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
 import PageTitle from "~/components/PageTitle.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import { MicropubContent, MicropubContentLoader } from "~/lib/micropub";
-import { getDateParts } from "~/util/dates";
-import { getFirstStringOrBlank } from "~/util/mf2-util";
 
-export const getStaticPaths = (async () => {
-  const posts = await MicropubContentLoader.create().hType("h-entry").sorted().load();
+let { year } = Astro.params;
 
-  const byYear = posts.reduce((acc, post) => {
-    const published = getFirstStringOrBlank(post.entry.properties, 'published');
-    if (!published) {
-      return acc;
-    }
-
-    const { year } = getDateParts(published);
-    if (!acc[year]) {
-      acc[year] = [];
-    }
-    
-    acc[year].push(post);
-
-    return acc;
-  }, {} as Record<string, MicropubContent[]>);
-
-  return Object.entries(byYear).map(([year, posts]) => ({
-    params: { year },
-    props: { posts }
-  }));
-}) satisfies GetStaticPaths;
-
-const { year } = Astro.params;
-const { posts } = Astro.props;
 const { pathname } = Astro.url;
 
 const title = `Posts from ${year}`;

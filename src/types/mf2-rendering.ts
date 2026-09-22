@@ -1,4 +1,5 @@
 import { Mf2Object } from "~/content.config";
+import { FeedQuery } from "~/lib/bastion/generated/graphql";
 import { MicropubContent } from "~/lib/micropub";
 
 export enum RenderMethod {
@@ -18,7 +19,7 @@ export interface DocumentRenderProps extends RenderProps {
 
 export interface FeedRenderProps extends RenderProps {
     feedInfo?: FeedInfo
-    posts: MicropubContent[],
+    feed: FeedQuery,
     itemClass?: string;
 }
 
