@@ -1,13 +1,31 @@
 ---
-export const prerender = true;
-
 import PageTitle from "~/components/PageTitle.astro";
+import HFeedRenderer from "~/components/post/hfeed/HFeedRenderer.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
+import DefaultBastionClient from "~/lib/bastion";
+import { NoteType, PostMf2Type, PostType } from "~/types/bastion";
+import { RenderMethod } from "~/types/mf2-rendering";
+
+const entries = await DefaultBastionClient.posts().type(PostMf2Type.H_ENTRY).subtype(PostType.NOTE).noteType(NoteType.MOOD).query()
+
+const feedInfo = {
+  title: "Moodlog",
+  url: "/mood",
+  headerConfig: {
+    level: 2,
+    hidden: true,
+  },
+};
 ---
 
 <BaseLayout title="Moodlog">
   <PageTitle
     title="My Moodlog"
     crumbs={["Home:/", "Moodlog:/mood"]} />
-  <p>Coming soon</p>
+  <HFeedRenderer
+    feed={entries}
+    renderMethod={RenderMethod.Minimal}
+    feedInfo={feedInfo}
+    class="tw:flex tw:flex-col tw:gap-y-6"
+    gridCols={1} />
 </BaseLayout>
