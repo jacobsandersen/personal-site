@@ -53,6 +53,7 @@ class BastionFeedClient {
   private _subtypes: PostType[]
   private _tertiaryTypes: NoteType[]
   private _tags: string[]
+  private _untagged: boolean
   private _perPage: number
   private _page: number
   private _year: number|null
@@ -64,6 +65,7 @@ class BastionFeedClient {
     this._subtypes = []
     this._tertiaryTypes = []
     this._tags = []
+    this._untagged = false
     this._perPage = 10
     this._page = 1
     this._year = null
@@ -88,6 +90,11 @@ class BastionFeedClient {
 
   tag(tag: string): BastionFeedClient {
     this._tags.push(tag)
+    return this
+  }
+
+  untagged(): BastionFeedClient {
+    this._untagged = true
     return this
   }
 
@@ -131,6 +138,7 @@ class BastionFeedClient {
     url.searchParams.set("type", this._types.join(","))
     url.searchParams.set("subtype", this._subtypes.join(","))
     url.searchParams.set("tertiaryType", this._tertiaryTypes.join(","))
+    if (this._untagged) this._tags.push('none')
     url.searchParams.set("tag", this._tags.join(","))
     url.searchParams.set("limit", limit.toString())
     url.searchParams.set("offset", offset.toString())
