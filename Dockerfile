@@ -6,15 +6,8 @@ ARG SEER_URL=http://dummy:3000
 ARG SEER_FIXED_AUTH=dummy
 ARG BASTION_URL=http://dummy:3000
 ENV SEER_URL=$SEER_URL SEER_FIXED_AUTH=$SEER_FIXED_AUTH BASTION_URL=$BASTION_URL
-RUN apk add git openssh-client
 WORKDIR /app
 COPY . .
-RUN --mount=type=secret,id=github_token \
-    mkdir -p /root/.ssh && \
-    ssh-keyscan github.com >> /root/.ssh/known_hosts && \
-    TOKEN=$(cat /run/secrets/github_token | tr -d '\n\r') && \
-    git submodule set-url micropub "https://x-access-token:${TOKEN}@github.com/jacobsandersen/personal-site-content.git" && \
-    git submodule update --init --remote --recursive
 RUN npm ci && \
     cp -r node_modules /node_modules_prod && \
     npx astro build && \
