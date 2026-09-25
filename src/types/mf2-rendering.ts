@@ -1,6 +1,4 @@
-import { Mf2Object } from "~/content.config";
-import { FeedQuery } from "~/lib/bastion/generated/graphql";
-import { MicropubContent } from "~/lib/micropub";
+import { FeedDto, PostDto } from "./bastion";
 
 export enum RenderMethod {
   Minimal = "minimal",
@@ -14,12 +12,12 @@ export interface RenderProps {
 }
 
 export interface DocumentRenderProps extends RenderProps {
-    doc: MicropubContent
+    doc: PostDto
 }
 
 export interface FeedRenderProps extends RenderProps {
     feedInfo?: FeedInfo
-    feed: FeedQuery,
+    feed: FeedDto,
     itemClass?: string;
 }
 

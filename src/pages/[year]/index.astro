@@ -1,11 +1,19 @@
 ---
-import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
 import PageTitle from "~/components/PageTitle.astro";
+import HFeedRenderer from "~/components/post/hfeed/HFeedRenderer.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-
-let { year } = Astro.params;
+import DefaultBastionClient from "~/lib/bastion";
+import { PostMf2Type } from "~/types/bastion";
 
 const { pathname } = Astro.url;
+
+let { year } = Astro.params;
+let yearNum = Number.parseInt(year!, 10)
+if (Number.isNaN(yearNum)) {
+  return Astro.rewrite("/400")
+}
+
+const posts = await DefaultBastionClient.posts().type(PostMf2Type.H_ENTRY).year(yearNum).query()
 
 const title = `Posts from ${year}`;
 ---
@@ -15,5 +23,5 @@ const title = `Posts from ${year}`;
     title={title}
     crumbs={["Home:/", `${year}:${pathname}`]} />
     
-  <HFeedRenderer posts={posts} feedInfo={{ title, url: `/${year}`, headerConfig: { level: 2, hidden: true } }} />
+  <HFeedRenderer feed={posts} feedInfo={{ title, url: `/${year}`, headerConfig: { level: 2, hidden: true } }} />
 </BaseLayout>

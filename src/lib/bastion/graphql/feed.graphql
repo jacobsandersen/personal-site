@@ -1,5 +1,0 @@
-query Feed($types: [PostType!], $limit: Int = 10, $offset: Int = 0, $year: Int, $month: Int, $day: Int) {
-  posts(types: $types, limit: $limit, offset: $offset, year: $year, month: $month, day: $day) {
-    ...PostFields
-  }
-}

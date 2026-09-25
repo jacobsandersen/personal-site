@@ -2,8 +2,8 @@
 import { z } from "astro/zod";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { ClientInfo, loadIndieAuthClientInfo } from "~/lib/indieauth"
-import { loadAuthProviders } from "~/lib/bastion"
 import PageTitle from "~/components/PageTitle.astro";
+import DefaultBastionClient from "~/lib/bastion";
 
 let clientInfo: ClientInfo = {
     client_id: "#unknown",
@@ -28,7 +28,7 @@ if (paramParseResult.success) {
   Astro.cookies.set('auth_state', params!.state)
 }
 
-const providers = await loadAuthProviders()
+const providers = await DefaultBastionClient.loadAuthProviders()
 ---
 
 <BaseLayout title="Authorize Application">

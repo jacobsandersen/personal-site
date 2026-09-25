@@ -1,8 +1,10 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
-import { getFirstStringOrBlank } from './mf2-util'
-import { Mf2ObjectProperties } from '~/content.config'
+import { Mf2ObjectProperties } from '~/types/mf2'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 export interface ExtractedDates {
     createdAtRaw: string,
@@ -16,9 +18,6 @@ export interface ExtractedDates {
     updatedSameAsCreated(): boolean
 }
 
-dayjs.extend(utc)
-dayjs.extend(timezone)
-
 function getParsedAndDisplay(rawDate: string): [dayjs.Dayjs, string, string] {
     const parsed = dayjs(rawDate).tz("Asia/Manila")
     const display = parsed.isValid() ? parsed.format('MMMM D, YYYY') : ''
@@ -31,12 +30,17 @@ export function parseAdhoc(date: Date, format: string): string {
     return parsed.isValid() ? parsed.format(format) : ''
 }
 
-export function extractDates(props: Mf2ObjectProperties): ExtractedDates {
-    const createdAtRaw = getFirstStringOrBlank(props, 'published')
+function getFirstStringOrBlank(props: Mf2ObjectProperties, key: string): string {
+    const vals = props[key]
+    if (!vals || vals.length === 0) return ""
+    const first = vals[0]
+    return typeof first === 'string' ? first : ""
+}
+
+function buildExtractedDates(createdAtRaw: string, updatedAtRaw: string): ExtractedDates {
     const createdAtComponents = getParsedAndDisplay(createdAtRaw)
-    const updatedAtRaw = getFirstStringOrBlank(props, 'updated')
     const updatedAtComponents = getParsedAndDisplay(updatedAtRaw)
-    
+
     return {
         createdAtRaw,
         createdAtParsed: createdAtComponents[0],
@@ -49,6 +53,26 @@ export function extractDates(props: Mf2ObjectProperties): ExtractedDates {
         updatedSameAsCreated() {
             return this.updatedAtParsed.isSame(this.createdAtParsed)
         }
+    }
+}
+
+export function extractDates(props: Mf2ObjectProperties): ExtractedDates
+
+export function extractDates(published: string, updated: string): ExtractedDates
+
+export function extractDates(
+    arg1: Mf2ObjectProperties | string,
+    arg2?: string
+): ExtractedDates {
+    if (typeof arg1 === 'string') {
+        const published = arg1
+        const updated = arg2 ?? ""
+        return buildExtractedDates(published, updated)
+    } else {
+        const props = arg1 as Mf2ObjectProperties
+        const createdAtRaw = getFirstStringOrBlank(props, 'published')
+        const updatedAtRaw = getFirstStringOrBlank(props, 'updated')
+        return buildExtractedDates(createdAtRaw, updatedAtRaw)
     }
 }
 

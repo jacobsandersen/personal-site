@@ -1,20 +1,10 @@
 ---
-export const prerender = true;
-
 import PageTitle from "~/components/PageTitle.astro";
 import Link from "~/components/util/Link.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import { MicropubContentLoader } from "~/lib/micropub";
+import DefaultBastionClient from "~/lib/bastion";
 
-const categories = [
-  ...new Set(
-    (await MicropubContentLoader.create().load()).flatMap((post) =>
-      (post.entry.properties["category"] ?? []).filter(
-        (cat) => typeof cat === "string",
-      ),
-    ),
-  ),
-];
+const tags = await DefaultBastionClient.tags().query()
 ---
 
 <BaseLayout title="Post Tags">
@@ -24,9 +14,9 @@ const categories = [
     crumbs={["Home:/", "Post Tags:/tagged"]} />
   <ul class="tw:grid tw:grid-cols-3 tw:gap-1">
     {
-      categories.map((category) => (
+      tags.tags.map((tag) => (
         <li>
-          <Link href={`/tagged/${category}`}>#{category}</Link>
+          <Link href={`/tagged/${tag.tag}`}>#{tag.tag} ({tag.count})</Link>
         </li>
       ))
     }

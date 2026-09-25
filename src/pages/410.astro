@@ -1,0 +1,19 @@
+---
+import PageTitle from '~/components/PageTitle.astro';
+import Link from '~/components/util/Link.astro';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+
+Astro.response.status = 410
+Astro.response.statusText = 'Gone'
+
+const { pathname } = Astro.url
+---
+
+<BaseLayout title="Gone">
+    <PageTitle 
+      title="Content gone"  
+      crumbs={["Home:/", `Gone:${pathname}`]}
+    />
+    <p>Whatever you were searching for, it has been deleted. Who knows, maybe it will be back one day.</p>
+    <Link href="/">Return to the homepage</Link>
+</BaseLayout>

@@ -1,0 +1,163 @@
+---
+import PostDates from "~/components/fragments/PostDates.astro";
+import Categories from "~/components/fragments/Categories.astro";
+import ContentRenderer from "~/components/content/ContentRenderer.astro";
+import Link from "~/components/util/Link.astro";
+import ExternalLink from "~/components/util/ExternalLink.astro";
+import Map, { OpenStreetMapTileData } from "~/components/fragments/Map.astro";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Breadcrumb from "~/components/Breadcrumb.astro";
+import { createHEntryExtractor } from "~/lib/extractor";
+import type { PostDto } from "~/types/bastion";
+import { normalizePostContent } from "~/lib/content";
+
+export type Variant = 'minimal' | 'preview' | 'full'
+
+interface Props {
+    doc: PostDto
+    variant?: Variant
+    class?: string
+    crumbs?: string[]
+}
+
+const { doc, variant = 'full', class: className, crumbs = [] } = Astro.props as Props
+
+const extractor = createHEntryExtractor(doc)
+const hint = extractor.getHint()
+const dates = extractor.getDates()
+const RootElem = extractor.getRootElem()
+const title = extractor.getTitle()
+const minimalTitle = extractor.getMinimalTitle()
+const titleClasses = extractor.getTitleClasses()
+const summary = extractor.getSummary()
+const permalink = extractor.getUrl() ?? '#'
+const categories = extractor.getCategories()
+const contentRaw = extractor.getContent()
+// normalize for ContentRenderer (handles string | {html:string})
+const content = normalizePostContent(contentRaw as unknown[])
+
+// trait getters - hint is exposed, traits are independent of hint
+const likeOf = extractor.getLikeOf()
+const repostOf = extractor.getRepostOf()
+const inReplyTo = extractor.getInReplyTo()
+const bookmarkOf = extractor.getBookmarkOf()
+const photoUrls = extractor.getPhotoUrls()
+const videoUrls = extractor.getVideoUrls()
+const checkin = extractor.getCheckin()
+const mood = extractor.getMood()
+const rsvp = extractor.getRsvp()
+const rsvpEvent = extractor.getRsvpEvent()
+---
+
+{variant === 'minimal' && (
+    <RootElem class:list={["h-entry", className]}>
+        <p class:list={[...titleClasses, "tw:text-lg"]}><Link href={permalink}>{minimalTitle}</Link></p>
+        <p class="dt-published tw:text-xs">{dates.createdAtDisplayTime}, {dates.createdAtDisplay}</p>
+    </RootElem>
+)}
+
+{variant === 'preview' && (
+    <RootElem class:list={["h-entry", "tw:border-2", "tw:border-dashed", "tw:border-blue-400", "tw:dark:border-blue-900", "tw:p-3", "tw:rounded-sm", "tw:flex", "tw:flex-col", "tw:gap-y-2", className]}>
+        <div class="tw:flex tw:flex-col tw:gap-y-1">
+            <h2 class:list={["tw:text-xl tw:font-bold", ...titleClasses]}>{title}</h2>
+            <p class="tw:text-xs tw:text-gray-500">hint: {hint.subtype}{hint.tertiaryType ? `:${hint.tertiaryType}` : ''}</p>
+        </div>
+
+        <div class:list={["e-content", "tw:flex tw:flex-col tw:gap-y-2"]}>
+            {/* trait fragments - additive, independent of hint */}
+            {likeOf && <p>Like of <ExternalLink href={likeOf} showIcon={true}>{likeOf}</ExternalLink></p>}
+            {repostOf && <p>Repost of <ExternalLink href={repostOf} showIcon={true}>{repostOf}</ExternalLink></p>}
+            {inReplyTo && <p>In reply to <ExternalLink href={inReplyTo} showIcon={true}>{inReplyTo}</ExternalLink></p>}
+            {bookmarkOf && <p>Bookmark of <ExternalLink href={bookmarkOf} showIcon={true}>{bookmarkOf}</ExternalLink></p>}
+            {photoUrls.length > 0 && (
+                <div class="tw:flex tw:flex-col tw:gap-y-1">
+                    <p class="tw:text-sm tw:font-semibold">Photos ({photoUrls.length})</p>
+                    <ul class="tw:list-none tw:flex tw:flex-wrap tw:gap-2">
+                        {photoUrls.map(url => <li><a href={url} class="u-photo tw:text-blue-600 tw:underline">{url}</a></li>)}
+                    </ul>
+                </div>
+            )}
+            {videoUrls.length > 0 && (
+                <div class="tw:flex tw:flex-col tw:gap-y-1">
+                    <p class="tw:text-sm tw:font-semibold">Videos ({videoUrls.length})</p>
+                    <ul class="tw:list-none tw:flex tw:flex-col tw:gap-1">
+                        {videoUrls.map(url => <li><a href={url} class="tw:text-blue-600 tw:underline">{url}</a></li>)}
+                    </ul>
+                </div>
+            )}
+            {checkin && (
+                <div class="tw:flex tw:flex-col tw:gap-y-1">
+                    <p>Checkin at <em>{checkin.name}</em> ({checkin.latitude}, {checkin.longitude})</p>
+                    <a href={`https://www.openstreetmap.org/#map=16/${checkin.latitude}/${checkin.longitude}`} class="tw:text-blue-600 tw:underline">View on OpenStreetMap</a>
+                </div>
+            )}
+            {mood && <p>Mood: <em>{mood}</em></p>}
+            {rsvp && <p>RSVP: <em>{rsvp}</em>{rsvpEvent ? ` for ${rsvpEvent}` : ''}{inReplyTo ? ` (${inReplyTo})` : ''}</p>}
+
+            <ContentRenderer content={content} preview={true} />
+        </div>
+
+        <Link href={permalink}>Go to full post</Link>
+        <div class="tw:flex tw:justify-between">
+            <Categories categories={categories} />
+            <PostDates extractedDates={dates} forceHideUpdated={true} />
+        </div>
+    </RootElem>
+)}
+
+{variant === 'full' && (
+    <BaseLayout title={title}>
+        <Breadcrumb crumbs={crumbs} />
+        <RootElem class:list={["h-entry tw:col-span-12", className]}>
+            <div class="tw:flex tw:flex-col tw:items-center tw:gap-y-1 tw:mt-8">
+                <h1 class:list={["tw:font-serif", "tw:text-3xl", ...titleClasses]}>{title}</h1>
+                <p class="tw:text-xs tw:text-gray-500">hint: {hint.subtype}{hint.tertiaryType ? `:${hint.tertiaryType}` : ''}</p>
+                <PostDates extractedDates={dates} />
+            </div>
+            <hr class="tw:my-6 tw:border-dotted" />
+            <div class="tw:border-2 tw:border-dashed tw:border-blue-400 tw:dark:border-blue-900 tw:p-4 tw:rounded-sm">
+                {summary.length > 0 && <p class="p-summary">{summary.join(' ')}</p>}
+                <div class:list={["e-content", "tw:mb-4", "tw:flex tw:flex-col tw:gap-y-4"]}>
+                    {likeOf && <p>Like of <ExternalLink href={likeOf} showIcon={true}>{likeOf}</ExternalLink></p>}
+                    {repostOf && <p>Repost of <ExternalLink href={repostOf} showIcon={true}>{repostOf}</ExternalLink></p>}
+                    {inReplyTo && <p>In reply to <ExternalLink href={inReplyTo} showIcon={true}>{inReplyTo}</ExternalLink></p>}
+                    {bookmarkOf && <h2 class="tw:text-xl font-bold">Bookmark: <ExternalLink href={bookmarkOf} showIcon={true}>{bookmarkOf}</ExternalLink></h2>}
+                    {photoUrls.length > 0 && (
+                        <div class="tw:flex tw:flex-col tw:gap-y-2">
+                            <p class="tw:font-semibold">Photos</p>
+                            <div class="tw:grid tw:grid-cols-2 tw:gap-2">
+                                {photoUrls.map(url => <img src={url} alt="photo" class="u-photo tw:w-full tw:rounded-sm" loading="lazy" />)}
+                            </div>
+                        </div>
+                    )}
+                    {videoUrls.length > 0 && (
+                        <div class="tw:flex tw:flex-col tw:gap-y-2">
+                            <p class="tw:font-semibold">Videos</p>
+                            <ul class="tw:list-none tw:flex tw:flex-col tw:gap-1">
+                                {videoUrls.map(url => <li><video src={url} controls class="tw:w-full tw:rounded-sm" /> <a href={url} class="tw:text-xs tw:underline">{url}</a></li>)}
+                            </ul>
+                        </div>
+                    )}
+                    {checkin && (
+                        <div class="tw:flex tw:flex-col tw:gap-y-4">
+                            <div class="tw:flex tw:flex-col tw:items-center tw:justify-center tw:gap-y-2">
+                                <h2 class="tw:text-xl tw:font-bold">Checked in at <em>{checkin.name}</em></h2>
+                                <Map latitude={checkin.latitude} longitude={checkin.longitude} zoom={13} tileData={OpenStreetMapTileData} class="tw:w-full tw:h-64" />
+                            </div>
+                        </div>
+                    )}
+                    {mood && <p>Mood: <em>{mood}</em></p>}
+                    {rsvp && (
+                        <div class="tw:flex tw:flex-col tw:gap-y-2">
+                            <p>RSVP <em>{rsvp}</em> for <ExternalLink href={inReplyTo ?? '#'} showIcon={true}>{rsvpEvent ?? inReplyTo ?? 'event'}</ExternalLink></p>
+                        </div>
+                    )}
+
+                    <ContentRenderer content={content} />
+                </div>
+                <Categories categories={categories} />
+            </div>
+            <a href="/" class="u-author"></a>
+        </RootElem>
+    </BaseLayout>
+)}

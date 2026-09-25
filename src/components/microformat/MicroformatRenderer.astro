@@ -1,23 +1,6 @@
 ---
-import UnknownFormatRenderer from './UnknownFormatRenderer.astro'
-import HEntryRenderer from './hentry/HEntryRenderer.astro'
-import { DocumentRenderProps, RenderMethod } from '~/types/mf2-rendering'
-
-export interface Props extends DocumentRenderProps {
-  crumbs?: string[]
-}
-
-const { doc, renderMethod = RenderMethod.Full, class: className, crumbs = [] } = Astro.props as Props
-const type = doc.entry['type'] ? (doc.entry['type'][0] as string) : 'unknown'
-
-let Renderer: typeof HEntryRenderer | 
-              typeof UnknownFormatRenderer
-
-if (type === 'h-entry') {
-  Renderer = HEntryRenderer
-} else {
-  Renderer = UnknownFormatRenderer
-}
+import PostRenderer from "../post/PostRenderer.astro"
+import type { DocumentRenderProps } from "~/types/mf2-rendering"
+const props = Astro.props as DocumentRenderProps & { crumbs?: string[] }
 ---
-
-<Renderer doc={doc} renderMethod={renderMethod} class={className} crumbs={crumbs} />
+<PostRenderer doc={props.doc} renderMethod={props.renderMethod} class={props.class} crumbs={props.crumbs} />

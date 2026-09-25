@@ -1,58 +1,30 @@
 ---
-export const prerender = true;
-
-import type { GetStaticPaths } from "astro";
-import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
 import PageTitle from "~/components/PageTitle.astro";
+import HFeedRenderer from "~/components/post/hfeed/HFeedRenderer.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import { MicropubContent, MicropubContentLoader } from "~/lib/micropub";
-import { getDateParts, parseAdhoc } from "~/util/dates";
-import { getFirstStringOrBlank } from "~/util/mf2-util";
+import DefaultBastionClient from "~/lib/bastion";
+import { PostMf2Type } from "~/types/bastion";
+import { parseAdhoc } from "~/util/dates";
 
-export const getStaticPaths = (async () => {
-  const posts = await MicropubContentLoader.create().hType("h-entry").sorted().load();
-
-  const byYearMonth = posts.reduce(
-    (acc, post) => {
-      const published = getFirstStringOrBlank(
-        post.entry.properties,
-        "published",
-      );
-      if (!published) {
-        return acc;
-      }
-
-      const { year, month } = getDateParts(published);
-      if (!acc[year]) {
-        acc[year] = {};
-      }
-
-      if (!acc[year][month]) {
-        acc[year][month] = [];
-      }
-
-      acc[year][month].push(post);
-
-      return acc;
-    },
-    {} as Record<string, Record<string, MicropubContent[]>>,
-  );
-
-  return Object.entries(byYearMonth).flatMap(([year, byMonth]) => {
-    return Object.entries(byMonth).map(([month, posts]) => ({
-      params: { year, month },
-      props: { posts }
-    }));
-  });
-}) satisfies GetStaticPaths;
-
-const { year, month } = Astro.params;
-const { posts } = Astro.props;
 const { pathname } = Astro.url;
 
+const { year, month } = Astro.params;
+
+let yearNum = Number.parseInt(year!, 10)
+if (Number.isNaN(yearNum)) {
+  return Astro.rewrite("/400")
+}
+
+let monthNum = Number.parseInt(month!, 10)
+if (Number.isNaN(monthNum)) {
+  return Astro.rewrite("/400")
+}
+
+const posts = await DefaultBastionClient.posts().type(PostMf2Type.H_ENTRY).year(yearNum).month(monthNum).query()
+
 const date = new Date();
-date.setFullYear(Number(year));
-date.setMonth(Number(month) - 1);
+date.setFullYear(yearNum);
+date.setMonth(monthNum - 1);
 date.setDate(1);
 
 const formattedMonth = parseAdhoc(date, "MMMM");
@@ -63,5 +35,5 @@ const title = `Posts from ${formattedDate}`;
 
 <BaseLayout title={title}>
   <PageTitle title={title} crumbs={["Home:/", `${year}:/${year}`, `${formattedMonth}:${pathname}`]} />
-  <HFeedRenderer posts={posts} feedInfo={{ title, url: `/${year}/${month}`, headerConfig: { level: 2, hidden: true } }} />
+  <HFeedRenderer feed={posts} feedInfo={{ title, url: `/${year}/${month}`, headerConfig: { level: 2, hidden: true } }} />
 </BaseLayout>

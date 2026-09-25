@@ -1,29 +1,28 @@
 ---
-import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
 import LinkCard from "~/components/util/LinkCard.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { RenderMethod } from "~/types/mf2-rendering";
-import { MicropubContentLoader } from "~/lib/micropub";
 import NowReading from "~/components/ssr/NowReading.astro";
 import NowPlaying from "~/components/ssr/NowPlaying.astro";
-import MoodMf2Extractor from "~/lib/extractor/MoodMf2Extractor";
+import Mf2Extractor from "~/lib/extractor/Mf2Extractor";
+import HFeedRenderer from "~/components/post/hfeed/HFeedRenderer.astro";
+import Bastion from "~/lib/bastion"
+import {PostMf2Type, PostType, NoteType} from "~/types/bastion"
 
-const posts = await MicropubContentLoader.create()
-  .hType("h-entry")
-  .excludeContentTypes(["bookmark", "rsvp", "mood"])
-  .sorted()
-  .limit(20)
-  .load();
+const posts = await Bastion.posts()
+  .type(PostMf2Type.H_ENTRY)
+  .perPage(20)
+  .query()
 
-const latestMoodEntry = await MicropubContentLoader.create()
-  .hType("h-entry")
-  .includeContentTypes(["mood"])
-  .sorted()
-  .limit(1)
-  .load();
+const { items: moodEntries } = await Bastion.posts()
+  .type(PostMf2Type.H_ENTRY)
+  .subtype(PostType.NOTE)
+  .noteType(NoteType.MOOD)
+  .perPage(1)
+  .query()
 
-const latestMood = latestMoodEntry.length === 1 ?
-  new MoodMf2Extractor(latestMoodEntry[0].entry.properties).getMood() :
+const latestMood = moodEntries.length === 1 ?
+  new Mf2Extractor(moodEntries[0]).getMood() ?? "unknown" :
   "unknown";
 
 const feedInfo = {
@@ -79,7 +78,7 @@ const feedInfo = {
     <section>
       <h2 class="tw:text-3xl tw:font-bold tw:mb-3">lately</h2>
       <HFeedRenderer
-        posts={posts}
+        feed={posts}
         renderMethod={RenderMethod.Minimal}
         feedInfo={feedInfo}
         class="tw:flex tw:flex-col tw:gap-y-6"

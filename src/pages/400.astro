@@ -1,0 +1,19 @@
+---
+import PageTitle from '~/components/PageTitle.astro';
+import Link from '~/components/util/Link.astro';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+
+Astro.response.status = 400
+Astro.response.statusText = 'Bad request'
+
+const { pathname } = Astro.url
+---
+
+<BaseLayout title="Bad Request">
+    <PageTitle 
+      title="Bad request"  
+      crumbs={["Home:/", `Gone:${pathname}`]}
+    />
+    <p>Your request was rejected by the server. Please check your URL parameters. If you don't know why you're seeing this, please report it to me!</p>
+    <Link href="/">Return to the homepage</Link>
+</BaseLayout>

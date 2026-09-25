@@ -1,32 +1,21 @@
 ---
-export const prerender = true;
-
-import type { GetStaticPaths } from "astro";
-import Breadcrumb from "~/components/Breadcrumb.astro";
 import MicroformatRenderer from "~/components/microformat/MicroformatRenderer.astro";
-import { MicropubContentLoader } from "~/lib/micropub";
-import { getDateParts, parseAdhoc } from "~/util/dates";
-import { getFirstStringOrBlank } from "~/util/mf2-util";
+import DefaultBastionClient from "~/lib/bastion";
+import { parseAdhoc } from "~/util/dates";
+import { isPostGone } from "~/types/bastion"
 
-export const getStaticPaths = (async () => {
-  return (await MicropubContentLoader.create().hType("h-entry").sorted().load()).flatMap((post) => {
-    const published = getFirstStringOrBlank(post.entry.properties, "published");
-    if (!published) return [];
-
-    const slug = getFirstStringOrBlank(post.entry.properties, "mp-slug");
-    if (!slug) return [];
-
-    const { year, month, day } = getDateParts(published);
-
-    return [{
-      params: { year, month, day, slug },
-      props: { year, month, day, post: post },
-    }];
-  });
-}) satisfies GetStaticPaths;
-
-const { year, month, day, post } = Astro.props;
 const { pathname } = Astro.url;
+
+const { year, month, day } = Astro.props;
+
+const post = await DefaultBastionClient.post().url(Astro.url.toString()).query()
+if (!post) {
+  return Astro.rewrite("/404")
+}
+
+if (isPostGone(post)) {
+  return Astro.rewrite("/410")
+}
 
 const date = new Date()
 date.setFullYear(Number(year))
@@ -36,6 +25,10 @@ date.setDate(Number(day))
 const formattedMonth = parseAdhoc(date, 'MMMM')
 ---
 
-<MicroformatRenderer doc={post} crumbs={[
+<MicroformatRenderer 
+  doc={post} 
+  crumbs={[
     "Home:/", `${year}:/${year}`, `${formattedMonth}:/${year}/${month}`, `${day}:/${year}/${month}/${day}`, "This Post"
-  ]} />
+  ]} 
+/>
+

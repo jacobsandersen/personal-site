@@ -1,37 +1,17 @@
 ---
-export const prerender = true;
-
-import type { GetStaticPaths } from "astro";
 import HFeedRenderer from "~/components/microformat/hfeed/HFeedRenderer.astro";
 import PageTitle from "~/components/PageTitle.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import { MicropubContent, MicropubContentLoader } from "~/lib/micropub";
-
-export const getStaticPaths = (async () => {
-  const posts = await MicropubContentLoader.create().load();
-
-  const byCategory = posts.reduce((acc, post) => {
-    const categories = [...new Set(
-      (post.entry.properties['category'] ?? [])
-        .filter(category => typeof category === 'string')
-    )];
-
-    for (let category of categories) {
-      if (!acc[category]) acc[category] = [];
-      acc[category].push(post);
-    }
-
-    return acc;
-  }, {} as Record<string, MicropubContent[]>);
-
-  return Object.entries(byCategory).map(([category, posts]) => ({
-    params: { category },
-    props: { posts }
-  }));
-}) satisfies GetStaticPaths;
+import DefaultBastionClient from "~/lib/bastion";
+import { PostMf2Type } from "~/types/bastion";
 
 const { category } = Astro.params;
-const { posts } = Astro.props;
+if (!category) {
+  return Astro.redirect("/400")
+}
+
+const posts = await DefaultBastionClient.posts().type(PostMf2Type.H_ENTRY).tag(category).query()
+console.log(posts)
 
 const title = `Posts tagged with #${category}`;
 ---
@@ -41,7 +21,7 @@ const title = `Posts tagged with #${category}`;
       title={title} 
       crumbs={["Home:/", "Post Tags:/tagged", `#${category}:/tagged/${category}`]} />
     <HFeedRenderer
-        posts={posts}
+        feed={posts}
         feedInfo={{ title, url: `/tagged/${category}`, headerConfig: { level: 2, hidden: true } }}
         class="tw:grid tw:grid-cols-2 tw:gap-4"
         itemClass="tw:my-4"

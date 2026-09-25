@@ -1,0 +1,31 @@
+---
+import UnknownFormatRenderer from './UnknownFormatRenderer.astro'
+import HEntry from './hentry/HEntry.astro'
+import { DocumentRenderProps, RenderMethod } from '~/types/mf2-rendering'
+
+export interface Props extends DocumentRenderProps {
+  crumbs?: string[]
+}
+
+const { doc, renderMethod = RenderMethod.Full, class: className, crumbs = [] } = Astro.props as Props
+
+let Renderer: typeof HEntry | typeof UnknownFormatRenderer
+let variant: 'minimal' | 'preview' | 'full' = 'full'
+
+if (doc.type === 'h-entry') {
+  Renderer = HEntry
+  switch (renderMethod) {
+    case RenderMethod.Minimal: variant = 'minimal'; break;
+    case RenderMethod.Preview: variant = 'preview'; break;
+    case RenderMethod.Full: variant = 'full'; break;
+  }
+} else {
+  Renderer = UnknownFormatRenderer
+}
+---
+
+{doc.type === 'h-entry' ? (
+  <HEntry doc={doc} variant={variant} class={className} crumbs={crumbs} />
+) : (
+  <UnknownFormatRenderer doc={doc} renderMethod={renderMethod} class={className} />
+)}
