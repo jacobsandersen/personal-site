@@ -1,0 +1,24 @@
+---
+import PageSubheading from "~/components/PageSubheading.astro";
+import PageTitle from "~/components/PageTitle.astro";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="About">
+  <PageTitle 
+    title="About" 
+    crumbs={["Home:/", "About:/about"]}
+  />
+
+  <section class="tw:flex tw:flex-col tw:gap-y-4">
+    <hgroup>
+      <h2 class="tw:text-2xl">Aliases</h2>
+      <p class="tw:text-base">Names I also go by on the Internet</p>
+    </hgroup>
+    <ul class="tw:list-disc tw:list-outside tw:pl-4 tw:flex tw:flex-col tw:gap-y-2">
+      <li><span class="tw:font-bold">simple(authority)</span>: Discord and some other online communities, namely Minecraft related. Don't ask the origin, it is truly just a random name. It's also the name of a security software I believe, which is unrelated to my usage.</li>
+      <li><span class="tw:font-bold">Arkita</span>: (Old School) RuneScape and some other RPG games.</li>
+      <li><span class="tw:font-bold">OraBrush</span>: I don't use it anymore. I just really liked <a href="https://orabrush.com/">OraBrushes</a>.</li>
+    </ul>
+  </section>
+</BaseLayout>

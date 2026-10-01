@@ -10,5 +10,19 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
     title="The Workshop"
     subtitle="The home for bits, and bobs, and thingamajiggies"
     crumbs={["Home:/", "The Workshop:/workshop"]} />
-  <p>Coming soon</p>
+  
+  <div class="tw:flex tw:flex-col tw:gap-y-6">
+    <p>This is the workshop — home to experimentation. It might be empty, or it might be packed with things. Not yet sure!</p>
+
+    <section class="tw:flex tw:flex-col tw:gap-y-4">
+      <hgroup>
+        <h2 class="tw:text-2xl">Itches</h2>
+        <p class="tw:text-base">Things I want to do, in no particular order</p>
+      </hgroup>
+      <ul class="tw:list-disc tw:list-outside tw:pl-4 tw:flex tw:flex-col tw:gap-y-2">
+        <li>Finish reading my book (Wind and Truth, presently...)</li>
+        <li>Work on my (this) website</li>
+      </ul>
+    </section>
+  </div>
 </BaseLayout>

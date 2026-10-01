@@ -1,0 +1,41 @@
+---
+import PageTitle from "~/components/PageTitle.astro";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Travels">
+  <PageTitle
+    title="Travels"
+    crumbs={["Home:/", "Travels:/travels"]}
+  />
+
+  <div class="tw:flex tw:flex-col tw:gap-y-4">
+    <p>In my family, I'm easily the one who has traveled the most. And yet, I feel I haven't traveled enough. One day I'll add pictures to the mix, but for now I'll just list where I've been.</p>
+    <ul class="tw:list-disc tw:list-inside tw:flex tw:flex-col tw:gap-y-2">
+      <li>
+        <span>USA (born and raised)</span>
+        <ul class="tw:list-disc tw:list-inside tw:indent-4 tw:flex tw:flex-col tw:gap-y-2">
+          <li>California (born and raised)</li>
+          <li>Nevada</li>
+          <li>Pennsylvania</li>
+          <li>New York</li>
+          <li>New Jersey</li>
+          <li>Florida</li>
+        </ul>
+      </li>
+      <li>Philippines (current location)</li>
+      <li>Spain</li>
+      <li>France</li>
+      <li>
+        <span>Indonesia</span>
+        <ul class="tw:list-disc tw:list-inside tw:indent-4 tw:flex tw:flex-col tw:gap-y-2">
+          <li>Bali</li>
+        </ul>
+      </li>
+      <li>Vietnam</li>
+      <li>China (transit)</li>
+      <li>Singapore (transit)</li>
+      <li>Mexico</li>
+    </ul>
+  </div>
+</BaseLayout>
