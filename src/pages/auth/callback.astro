@@ -23,7 +23,7 @@ if (!prevState) {
   errors.push("Missing auth state (start authorization first)")
 } else if (prevState && paramParseResult.success) {
   Astro.cookies.delete('auth_state')
-  return Astro.redirect(`${env.BASTION_URL}/indieauth/auth/callback?state=${prevState.value}&code=${params!.code}`)
+  return Astro.redirect(`${env.BASTION_PUBLIC_URL}/indieauth/auth/callback?state=${prevState.value}&code=${params!.code}`)
 }
 
 ---
