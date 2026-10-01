@@ -1,12 +1,10 @@
 ---
-import MicroformatRenderer from "~/components/microformat/MicroformatRenderer.astro";
 import DefaultBastionClient from "~/lib/bastion";
 import { parseAdhoc } from "~/util/dates";
 import { isPostGone } from "~/types/bastion"
+import PostRenderer from "~/components/post/PostRenderer.astro";
 
-const { pathname } = Astro.url;
-
-const { year, month, day } = Astro.props;
+const { year, month, day } = Astro.params;
 
 const post = await DefaultBastionClient.post().url(Astro.url.toString()).query()
 if (!post) {
@@ -25,7 +23,7 @@ date.setDate(Number(day))
 const formattedMonth = parseAdhoc(date, 'MMMM')
 ---
 
-<MicroformatRenderer 
+<PostRenderer 
   doc={post} 
   crumbs={[
     "Home:/", `${year}:/${year}`, `${formattedMonth}:/${year}/${month}`, `${day}:/${year}/${month}/${day}`, "This Post"

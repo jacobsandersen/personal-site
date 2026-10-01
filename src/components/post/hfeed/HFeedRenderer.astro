@@ -4,29 +4,40 @@ import { RenderMethod } from "~/types/mf2-rendering";
 import PostRenderer from "../PostRenderer.astro";
 import type { FeedDto } from "~/types/bastion";
 
-interface Props {
-  feed: FeedDto
-  feedInfo?: { title: string, url: string, headerConfig?: { hidden?: boolean, level?: number, class?: string } }
-  renderMethod?: RenderMethod
-  class?: string
-  itemClass?: string
-  gridCols?: number
+export interface FeedInfo {
+  title: string, 
+  url: string, 
+  headerConfig?: { 
+    hidden?: boolean, 
+    level?: number, 
+    class?: string 
+  }
 }
 
-const { feedInfo, renderMethod = RenderMethod.Preview, feed, class: className, itemClass, gridCols } = Astro.props as Props;
+interface Props {
+  feed: FeedDto
+  feedInfo?: FeedInfo
+  renderMethod?: RenderMethod
+  class?: string
+  containerClass?: string
+  itemClass?: string
+}
+
+const { feedInfo, renderMethod = RenderMethod.Preview, feed, class: className, containerClass, itemClass } = Astro.props as Props;
 const headerConf = feedInfo?.headerConfig ?? { level: 1, class: "" };
 const headerHidden = headerConf.hidden ?? false;
 const headerLevel = Math.min(Math.max(headerConf.level ?? 1, 1), 6)
 const HeaderElem = `h${headerLevel}`;
 const headerClass = headerConf.class ?? "";
-const gridClass = gridCols ? `tw:grid-cols-${gridCols}` : "tw:grid-cols-1 tw:sm:grid-cols-2 tw:lg:grid-cols-3"
+let finalContainerClass = containerClass ? containerClass : "tw:flex tw:flex-col tw:gap-y-6"
 ---
 
 <section class:list={["h-feed", className]}>
     {feedInfo && <HeaderElem class:list={["tw:text-2xl", "tw:font-bold", headerClass, { "tw:hidden": headerHidden }]}><Link href={feedInfo.url}>{feedInfo.title}</Link></HeaderElem>}
-    <div class="tw:grid tw:gap-4" class:list={gridClass}>
+    <div class:list={finalContainerClass}>
       {feed.items.map((post) => (
           <PostRenderer doc={post} renderMethod={renderMethod} class={itemClass} />
       ))}
     </div>
+    <slot name="feed-paginator" />
 </section>

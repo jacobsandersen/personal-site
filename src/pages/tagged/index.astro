@@ -1,10 +1,14 @@
 ---
 import PageTitle from "~/components/PageTitle.astro";
+import SimplePaginator from "~/components/SimplePaginator.astro";
 import Link from "~/components/util/Link.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import DefaultBastionClient from "~/lib/bastion";
+import DefaultBastionClient, { determinePageInfo } from "~/lib/bastion";
+import { getPaginatorData } from "~/util/page";
 
-const tags = await DefaultBastionClient.tags().query()
+const paginatorData = getPaginatorData(Astro.url)
+const tags = await DefaultBastionClient.tags().page(paginatorData.page).query()
+const pageInfo = determinePageInfo(tags.pagination)
 ---
 
 <BaseLayout title="Post Tags">
@@ -12,13 +16,19 @@ const tags = await DefaultBastionClient.tags().query()
     title="Post Tags" 
     subtitle="This page lists all of the tags/categories that I have ever used in making a post, and links back to those posts." 
     crumbs={["Home:/", "Post Tags:/tagged"]} />
-  <ul class="tw:grid tw:grid-cols-3 tw:gap-1">
-    {
-      tags.tags.map((tag) => (
-        <li>
-          <Link href={`/tagged/${tag.tag}`}>#{tag.tag} ({tag.count})</Link>
-        </li>
-      ))
-    }
-  </ul>
+  <div class="tw:flex tw:flex-col tw:gap-y-4">
+    {pageInfo.total > 1 && <SimplePaginator curPage={pageInfo.current} totalPages={pageInfo.total} pageLink={paginatorData.pageLink} /> }
+
+    <ul class="tw:grid tw:grid-cols-3 tw:gap-1">
+      {
+        tags.tags.map((tag) => (
+          <li>
+            <Link href={`/tagged/${tag.tag}`}>#{tag.tag} ({tag.count})</Link>
+          </li>
+        ))
+      }
+    </ul>
+    
+    {pageInfo.total > 1 && <SimplePaginator curPage={pageInfo.current} totalPages={pageInfo.total} pageLink={paginatorData.pageLink} /> }
+  </div>
 </BaseLayout>

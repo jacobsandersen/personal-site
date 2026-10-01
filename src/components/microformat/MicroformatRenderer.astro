@@ -1,6 +1,0 @@
----
-import PostRenderer from "../post/PostRenderer.astro"
-import type { DocumentRenderProps } from "~/types/mf2-rendering"
-const props = Astro.props as DocumentRenderProps & { crumbs?: string[] }
----
-<PostRenderer doc={props.doc} renderMethod={props.renderMethod} class={props.class} crumbs={props.crumbs} />

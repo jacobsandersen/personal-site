@@ -1,5 +1,15 @@
-import { FeedDto, NoteType, PostDto, PostGoneDto, PostMf2Type, PostType, TagListDto } from '~/types/bastion';
+import { BastionPageInfo, BastionPagination, FeedDto, NoteType, PostDto, PostGoneDto, PostMf2Type, PostType, TagListDto } from '~/types/bastion';
 import { env } from '../env';
+import { bastionRequestDuration, bastionRequestsTotal } from '../metrics';
+
+export function determinePageInfo(pagination: BastionPagination): BastionPageInfo {
+  const { count, offset, limit } = pagination
+
+  let current = Math.floor(offset / limit) + 1
+  let total = Math.ceil(count / limit)
+
+  return { current, total }
+}
 
 function getLimitOffset(page: number = 1, perPage: number = 10): { limit: number, offset: number } {
   if (page < 1) page = 1
@@ -11,6 +21,19 @@ function getLimitOffset(page: number = 1, perPage: number = 10): { limit: number
 
 function buildBastionUrl(route: string): URL {
   return new URL(`${env.BASTION_URL}/${route}`)
+}
+
+async function doFetch(url: URL): Promise<Response> {
+  const path = url.pathname
+
+  const end = bastionRequestDuration.startTimer({ path })
+
+  const resp = await fetch(url)
+
+  bastionRequestsTotal.inc({ path, status: resp.status })
+  end()
+
+  return resp
 }
 
 interface AuthProvider {
@@ -146,7 +169,7 @@ class BastionFeedClient {
     if (this._month) url.searchParams.set("month", this._month.toString())
     if (this._day) url.searchParams.set("day", this._day.toString())
 
-    const resp = await fetch(url)
+    const resp = await doFetch(url)
     if (!resp.ok) {
       throw new Error(`Bastion feed query failed: ${resp.status} ${resp.statusText}`)
     }
@@ -189,7 +212,7 @@ class BastionPostClient {
       throw new Error("Either _url or _slug must specified to query for a Bastion post")
     }
 
-    const resp = await fetch(url)
+    const resp = await doFetch(url)
     if (!resp.ok) {
       if (resp.status === 404) {
         return null
@@ -235,7 +258,7 @@ class BastionTagClient {
     url.searchParams.set('limit', limit.toString())
     url.searchParams.set('offset', offset.toString())
 
-    const resp = await fetch(url)
+    const resp = await doFetch(url)
     if (!resp.ok) {
       throw new Error(`Bastion tag query failed: ${resp.status} ${resp.statusText}`)
     }

@@ -1,4 +1,3 @@
-import { string } from "astro:schema";
 import { Mf2ObjectProperties } from "./mf2";
 
 export interface WebmentionCountsDto {
@@ -100,6 +99,11 @@ export interface BastionPagination {
   offset: number,
   count: number,
   hasMore: boolean
+}
+
+export interface BastionPageInfo {
+  current: number,
+  total: number
 }
 
 export interface FeedDto {

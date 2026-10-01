@@ -1,10 +1,11 @@
 ---
 import PageTitle from "~/components/PageTitle.astro";
-import HFeedRenderer from "~/components/post/hfeed/HFeedRenderer.astro";
+import PaginatedFeed from "~/components/post/hfeed/PaginatedFeed.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import DefaultBastionClient from "~/lib/bastion";
+import DefaultBastionClient, { determinePageInfo } from "~/lib/bastion";
 import { PostMf2Type } from "~/types/bastion";
 import { parseAdhoc } from "~/util/dates";
+import { getPaginatorData } from "~/util/page";
 
 const { pathname } = Astro.url;
 
@@ -20,7 +21,9 @@ if (Number.isNaN(monthNum)) {
   return Astro.rewrite("/400")
 }
 
-const posts = await DefaultBastionClient.posts().type(PostMf2Type.H_ENTRY).year(yearNum).month(monthNum).query()
+const paginatorData = getPaginatorData(Astro.url)
+const posts = await DefaultBastionClient.posts().type(PostMf2Type.H_ENTRY).year(yearNum).month(monthNum).page(paginatorData.page).query()
+const pageInfo = determinePageInfo(posts.pagination)
 
 const date = new Date();
 date.setFullYear(yearNum);
@@ -35,5 +38,10 @@ const title = `Posts from ${formattedDate}`;
 
 <BaseLayout title={title}>
   <PageTitle title={title} crumbs={["Home:/", `${year}:/${year}`, `${formattedMonth}:${pathname}`]} />
-  <HFeedRenderer feed={posts} feedInfo={{ title, url: `/${year}/${month}`, headerConfig: { level: 2, hidden: true } }} />
+  <PaginatedFeed 
+    feed={posts} 
+    feedInfo={{ title, url: `/${year}/${month}`, headerConfig: { level: 2, hidden: true } }} 
+    pageInfo={pageInfo}
+    pageLink={paginatorData.pageLink}
+  />
 </BaseLayout>

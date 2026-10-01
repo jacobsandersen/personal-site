@@ -1,0 +1,27 @@
+---
+import SimplePaginator from "~/components/SimplePaginator.astro";
+import HFeedRenderer from "./HFeedRenderer.astro";
+import type { FeedInfo } from "./HFeedRenderer.astro"
+import { BastionPageInfo, FeedDto } from "~/types/bastion";
+
+interface Props {
+  feed: FeedDto,
+  feedInfo: FeedInfo
+  pageInfo: BastionPageInfo
+  pageLink: (page: number) => string
+}
+
+const { pageInfo, pageLink, feed, feedInfo } = Astro.props as Props
+
+---
+
+<div class="tw:flex tw:flex-col tw:gap-y-4">
+  {pageInfo.total > 1 && <SimplePaginator curPage={pageInfo.current} totalPages={pageInfo.total} pageLink={pageLink} /> }
+
+  <HFeedRenderer
+    feed={feed}
+    feedInfo={feedInfo}
+  />
+
+  {pageInfo.total > 1 && <SimplePaginator curPage={pageInfo.current} totalPages={pageInfo.total} pageLink={pageLink} /> }
+</div>

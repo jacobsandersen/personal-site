@@ -10,8 +10,9 @@ interface NavLink {
 }
 
 const navLinks: NavLink[] = [
-  { text: "the glade", href: "/", activeIf: (pathname) => pathname === '/' },
-  { text: "the workshop", href: "/workshop", activeIf: (pathname) => pathname.startsWith("/workshop") },
+  { text: "home", href: "/", activeIf: (pathname) => pathname === '/' },
+  { text: "workshop", href: "/workshop", activeIf: (pathname) => pathname.startsWith("/workshop") },
+  { text: "reading", href: "/reading", activeIf: (pathname) => pathname.startsWith("/reading") },
   { text: "tagged posts", href: "/tagged", activeIf: (pathname) => pathname.startsWith("/tagged") }
 ]
 ---
