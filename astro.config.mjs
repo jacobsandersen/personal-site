@@ -16,7 +16,7 @@ export default defineConfig({
 
   // site: "https://nonfallacious-disintegrative-donny.ngrok-free.dev",
 
-  site: "https://new.jacobandersen.dev",
+  site: "https://jacobandersen.dev",
 
   output: 'server',
 
