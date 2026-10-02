@@ -16,7 +16,7 @@ const authQuerySchema = z.object({
   me: z.url(),
   client_id: z.url(),
   return_to: z.url(),
-  scope: z.string().transform((val) => val.split(' ')).pipe(z.array(z.string())),
+  scope: z.string().default('').transform((val) => val.split(' ')).pipe(z.array(z.string())),
   state: z.string()
 })
 
