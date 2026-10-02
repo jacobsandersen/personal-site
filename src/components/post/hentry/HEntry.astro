@@ -181,7 +181,7 @@ const rsvpEvent = extractor.getRsvpEvent()
                 <ul class="tw:list-disc tw:list-inside">
                   {webmentions.map(wm => (
                     <li>
-                      <span><a href={wm.targetUrl}>{wm.interaction} from {wm.authorName ?? 'Unknown'} on {parseRaw(wm.verifiedAt)}</a></span>
+                      <span><a href={wm.sourceUrl}>{wm.interaction} from {wm.authorName ?? 'Unknown'} on {parseRaw(wm.verifiedAt)}</a></span>
                     </li>
                   ))}
                 </ul>
