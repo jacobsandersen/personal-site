@@ -9,6 +9,7 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 import Breadcrumb from "~/components/Breadcrumb.astro";
 import { createHEntryExtractor } from "~/lib/extractor";
 import type { PostDto } from "~/types/bastion";
+import { parseRaw } from "~/util/dates"
 
 export type Variant = 'minimal' | 'preview' | 'full'
 
@@ -34,6 +35,8 @@ const categories = extractor.getCategories()
 const content = extractor.getContent()
 const url = extractor.getUrl() ?? Astro.url.toString()
 const syndications = extractor.getSyndications()
+const webmentionCounts = extractor.getWebmentionCounts()
+const webmentions = extractor.getWebmentions()
 
 // trait getters - hint is exposed, traits are independent of hint
 const likeOf = extractor.getLikeOf()
@@ -157,7 +160,7 @@ const rsvpEvent = extractor.getRsvpEvent()
                 {syndications.length > 0 && 
                 <div>
                   <p>Also on:</p>
-                  <ul>
+                  <ul class="tw:list-disc tw:list-inside">
                     {syndications.map(syn => (
                       <li><ExternalLink href={syn.url} showIcon={true}>{syn.name}</ExternalLink></li>
                     ))}
@@ -170,6 +173,19 @@ const rsvpEvent = extractor.getRsvpEvent()
                 <a href="/" rel="author">Jacob Andersen</a>
                 <img class="u-photo" fetchpriority="low" src="/images/avatar/150x150.webp" alt="robotic avatar image" />
               </span>
+            </div>
+            <hr class="tw:my-6 tw:border-dotted" />
+            <div>
+              <h2 class="tw:text-xl">Webmentions</h2>
+              {webmentions.length >= 0 ? (
+                <ul class="tw:list-disc tw:list-inside">
+                  {webmentions.map(wm => (
+                    <li>
+                      <span><a href={wm.targetUrl}>{wm.interaction} from {wm.authorName ?? 'Unknown'} on {parseRaw(wm.verifiedAt)}</a></span>
+                    </li>
+                  ))}
+                </ul>
+              ) : <p>None yet. Send me one! &lt;3</p>}
             </div>
         </RootElem>
     </BaseLayout>

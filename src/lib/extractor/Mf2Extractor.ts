@@ -1,4 +1,4 @@
-import { PostDto, SyndicationDto } from "~/types/bastion";
+import { PostDto, SyndicationDto, WebmentionCountsDto, WebmentionDto } from "~/types/bastion";
 import { Mf2ObjectProperties } from "~/types/mf2";
 import { isValidUrl } from "~/util/url";
 import { extractDates, ExtractedDates } from "~/util/dates";
@@ -61,6 +61,14 @@ export default class Mf2Extractor {
 
     getSyndications(): SyndicationDto[] {
       return this.doc.syndications ?? []
+    }
+
+    getWebmentionCounts(): WebmentionCountsDto {
+      return this.doc.webmentionCounts
+    }
+
+    getWebmentions(): WebmentionDto[] {
+      return this.doc.webmentions ?? []
     }
     
     getUrl(): string | undefined {

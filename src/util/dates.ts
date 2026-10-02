@@ -25,6 +25,15 @@ function getParsedAndDisplay(rawDate: string): [dayjs.Dayjs, string, string] {
     return [parsed, display, displayTime]
 }
 
+export function parseRaw(rawDate: string): string {
+  return parseAdhocStr(rawDate, 'MMMM D, YYYY')
+}
+
+export function parseAdhocStr(rawDate: string, format: string): string {
+    const parsed = dayjs(rawDate).tz("Asia/Manila")
+    return parsed.isValid() ? parsed.format(format) : ''
+}
+
 export function parseAdhoc(date: Date, format: string): string {
     const parsed = dayjs(date).tz("Asia/Manila")
     return parsed.isValid() ? parsed.format(format) : ''
