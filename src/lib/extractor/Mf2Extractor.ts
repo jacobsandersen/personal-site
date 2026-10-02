@@ -12,11 +12,13 @@ export interface HEntryHint {
 export default class Mf2Extractor {
     protected readonly doc: PostDto
     private readonly dates: ExtractedDates
+    isHtml: boolean
 
     constructor(doc: PostDto) {
         this.doc = doc
         // Bastion already extracts published/updated from props, so use doc fields directly
         this.dates = extractDates(doc.published ?? "", doc.updated ?? "")
+        this.isHtml = false
     }
 
     // --- core accessors ---
@@ -46,6 +48,7 @@ export default class Mf2Extractor {
 
     getContent(): string[] {
         if (this.doc.contentHtml.length) {
+          this.isHtml = true
           return this.doc.contentHtml
         } else if (this.doc.content.length) {
           return this.doc.content
@@ -55,7 +58,7 @@ export default class Mf2Extractor {
 
         return []
     }
-
+    
     getUrl(): string | undefined {
       return this.doc.url
     }

@@ -9,7 +9,6 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 import Breadcrumb from "~/components/Breadcrumb.astro";
 import { createHEntryExtractor } from "~/lib/extractor";
 import type { PostDto } from "~/types/bastion";
-import { normalizePostContent } from "~/lib/content";
 
 export type Variant = 'minimal' | 'preview' | 'full'
 
@@ -32,9 +31,7 @@ const titleClasses = extractor.getTitleClasses()
 const summary = extractor.getSummary()
 const permalink = extractor.getUrl() ?? '#'
 const categories = extractor.getCategories()
-const contentRaw = extractor.getContent()
-// normalize for ContentRenderer (handles string | {html:string})
-const content = normalizePostContent(contentRaw as unknown[])
+const content = extractor.getContent()
 
 // trait getters - hint is exposed, traits are independent of hint
 const likeOf = extractor.getLikeOf()
@@ -94,7 +91,7 @@ const rsvpEvent = extractor.getRsvpEvent()
             {mood && <p>Mood: <em>{mood}</em></p>}
             {rsvp && <p>RSVP: <em>{rsvp}</em>{rsvpEvent ? ` for ${rsvpEvent}` : ''}{inReplyTo ? ` (${inReplyTo})` : ''}</p>}
 
-            <ContentRenderer content={content} preview={true} />
+            <ContentRenderer content={content} html={extractor.isHtml} preview={true} />
         </div>
 
         <Link href={permalink}>Go to full post</Link>
@@ -153,7 +150,7 @@ const rsvpEvent = extractor.getRsvpEvent()
                         </div>
                     )}
 
-                    <ContentRenderer content={content} />
+                    <ContentRenderer content={content} html={extractor.isHtml} />
                 </div>
                 <Categories categories={categories} />
             </div>
