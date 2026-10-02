@@ -8,6 +8,7 @@ import Mf2Extractor from "~/lib/extractor/Mf2Extractor";
 import HFeedRenderer from "~/components/post/hfeed/HFeedRenderer.astro";
 import Bastion from "~/lib/bastion"
 import {PostMf2Type, PostType, NoteType} from "~/types/bastion"
+import { env } from "~/lib/env";
 
 const posts = await Bastion.posts()
   .type(PostMf2Type.H_ENTRY)
@@ -37,14 +38,17 @@ const feedInfo = {
 
 <BaseLayout title="Home">
   <div class="tw:flex tw:flex-col tw:gap-y-6">
-    <section class="tw:pt-4">
-      <h1 class="tw:text-6xl tw:font-brand tw:text-powder-blue tw:mb-4">hi, i'm jacob</h1>
-      <p class="tw:tracking-wide tw:leading-7">
-        I'm a software engineer, a reader, a traveller, a learner, and more.
-        This is my little corner of the internet &mdash; a little bit of a
-        garden, a workshop, a notebook, and a storage container, all in one.
-        Feel free to take a look around.
-      </p>
+    <section class="h-card tw:pt-4 tw:flex tw:gap-x-4">
+      <div>
+        <h1 class="tw:text-6xl tw:font-brand tw:text-powder-blue tw:mb-4">hi, i'm <a href={env.PUBLIC_URL} class="u-url" rel="me"><span class="p-name"><span class="p-given-name">jacob</span><span class="tw:hidden">&nbsp;</span><span class="p-family-name tw:hidden">andersen</span></span></a></h1>
+        <p class="p-note tw:tracking-wide tw:leading-7">
+          I'm a software engineer, a reader, a traveller, a learner, and more.
+          This is my little corner of the internet &mdash; a little bit of a
+          garden, a workshop, a notebook, and a storage container, all in one.
+          Feel free to take a look around.
+        </p>
+      </div>
+      <img class="u-photo tw:w-36" src="/images/avatar.webp" alt="robotic avatar image" />
     </section>
     <section>
       <h2 class="tw:text-3xl tw:font-bold tw:mb-3">knick knacks</h2>
@@ -82,7 +86,6 @@ const feedInfo = {
         renderMethod={RenderMethod.Minimal}
         feedInfo={feedInfo}
         class="tw:flex tw:flex-col tw:gap-y-6"
-        gridCols={1}
       />
     </section>
   </div>
