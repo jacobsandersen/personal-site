@@ -62,10 +62,10 @@ const rsvpEvent = extractor.getRsvpEvent()
 
         <div class:list={["e-content", "tw:flex tw:flex-col tw:gap-y-2"]}>
             {/* trait fragments - additive, independent of hint */}
-            {likeOf && <p>Like of <ExternalLink href={likeOf} showIcon={true}>{likeOf}</ExternalLink></p>}
-            {repostOf && <p>Repost of <ExternalLink href={repostOf} showIcon={true}>{repostOf}</ExternalLink></p>}
-            {inReplyTo && <p>In reply to <ExternalLink href={inReplyTo} showIcon={true}>{inReplyTo}</ExternalLink></p>}
-            {bookmarkOf && <p>Bookmark of <ExternalLink href={bookmarkOf} showIcon={true}>{bookmarkOf}</ExternalLink></p>}
+            {likeOf && <p>Like of <ExternalLink href={likeOf} showIcon={true} linkClass="u-like-of">{likeOf}</ExternalLink></p>}
+            {repostOf && <p>Repost of <ExternalLink href={repostOf} showIcon={true} linkClass="u-repost-of">{repostOf}</ExternalLink></p>}
+            {inReplyTo && <p>In reply to <ExternalLink href={inReplyTo} showIcon={true} linkClass="u-in-reply-to">{inReplyTo}</ExternalLink></p>}
+            {bookmarkOf && <p>Bookmark of <ExternalLink href={bookmarkOf} showIcon={true} linkClass="u-bookmark-of">{bookmarkOf}</ExternalLink></p>}
             {photoUrls.length > 0 && (
                 <div class="tw:flex tw:flex-col tw:gap-y-1">
                     <p class="tw:text-sm tw:font-semibold">Photos ({photoUrls.length})</p>
@@ -115,10 +115,10 @@ const rsvpEvent = extractor.getRsvpEvent()
             <div class="tw:border-2 tw:border-dashed tw:border-blue-400 tw:dark:border-blue-900 tw:p-4 tw:rounded-sm">
                 {summary.length > 0 && <p class="p-summary">{summary.join(' ')}</p>}
                 <div class:list={["e-content", "tw:mb-4", "tw:flex tw:flex-col tw:gap-y-4"]}>
-                    {likeOf && <p>Like of <ExternalLink href={likeOf} showIcon={true}>{likeOf}</ExternalLink></p>}
-                    {repostOf && <p>Repost of <ExternalLink href={repostOf} showIcon={true}>{repostOf}</ExternalLink></p>}
-                    {inReplyTo && <p>In reply to <ExternalLink href={inReplyTo} showIcon={true}>{inReplyTo}</ExternalLink></p>}
-                    {bookmarkOf && <h2 class="tw:text-xl font-bold">Bookmark: <ExternalLink href={bookmarkOf} showIcon={true}>{bookmarkOf}</ExternalLink></h2>}
+                    {likeOf && <p>Like of <ExternalLink href={likeOf} showIcon={true} linkClass="u-like-of">{likeOf}</ExternalLink></p>}
+                    {repostOf && <p>Repost of <ExternalLink href={repostOf} showIcon={true} linkClass="u-repost-of">{repostOf}</ExternalLink></p>}
+                    {inReplyTo && <p>In reply to <ExternalLink href={inReplyTo} showIcon={true} linkClass="u-in-reply-to">{inReplyTo}</ExternalLink></p>}
+                    {bookmarkOf && <h2 class="tw:text-xl font-bold">Bookmark: <ExternalLink href={bookmarkOf} showIcon={true} linkClass="u-bookmark-of">{bookmarkOf}</ExternalLink></h2>}
                     {photoUrls.length > 0 && (
                         <div class="tw:flex tw:flex-col tw:gap-y-2">
                             <p class="tw:font-semibold">Photos</p>

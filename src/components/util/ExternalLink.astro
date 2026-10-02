@@ -7,11 +7,11 @@ interface Props {
     rel?: string
     linkProps?: Record<string, string>
     showIcon?: boolean
-    linkClass?: string[]
-    iconClass?: string[]
+    linkClass?: string
+    iconClass?: string
 }
 
 const { href, rel = "", linkProps = {}, showIcon = false, linkClass, iconClass } = Astro.props as Props
 ---
 
-<Link href={href} rel={rel} target="_blank" linkProps={linkProps} linkClass={linkClass}><slot /></Link>{showIcon && <LucideExternalLink class:list={["tw:inline tw:size-4 tw:align-middle tw:ml-1", ...(iconClass ? iconClass : [])]} />}
+<Link href={href} rel={rel} target="_blank" props={linkProps} class={linkClass}><slot /></Link>{showIcon && <LucideExternalLink class:list={["tw:inline tw:size-4 tw:align-middle tw:ml-1", ...(iconClass ? iconClass : [])]} />}
