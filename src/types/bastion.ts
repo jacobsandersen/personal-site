@@ -32,6 +32,12 @@ export interface WebmentionDto {
   verifiedAt: string
 }
 
+export interface SyndicationDto {
+  uid: string,
+  name: string,
+  url: string
+}
+
 export enum PostMf2Type {
   H_ENTRY = "h_entry",
   H_CARD = "h_card",
@@ -78,7 +84,8 @@ export interface PostDto {
   category: string[],
   properties: Mf2ObjectProperties,
   webmentionCounts: WebmentionCountsDto,
-  webmentions?: WebmentionDto[]
+  webmentions?: WebmentionDto[],
+  syndications?: SyndicationDto[]
 }
 
 export interface PostGoneDto {

@@ -32,6 +32,8 @@ const summary = extractor.getSummary()
 const permalink = extractor.getUrl() ?? '#'
 const categories = extractor.getCategories()
 const content = extractor.getContent()
+const url = extractor.getUrl() ?? Astro.url.toString()
+const syndications = extractor.getSyndications()
 
 // trait getters - hint is exposed, traits are independent of hint
 const likeOf = extractor.getLikeOf()
@@ -49,7 +51,7 @@ const rsvpEvent = extractor.getRsvpEvent()
 {variant === 'minimal' && (
     <RootElem class:list={["h-entry", className]}>
         <p class:list={[...titleClasses, "tw:text-lg"]}><Link href={permalink}>{minimalTitle}</Link></p>
-        <p class="dt-published tw:text-xs">{dates.createdAtDisplayTime}, {dates.createdAtDisplay}</p>
+        <p class="dt-published tw:text-xs"><a href={url} class="u-url">{dates.createdAtDisplayTime}, {dates.createdAtDisplay}</a></p>
     </RootElem>
 )}
 
@@ -97,7 +99,7 @@ const rsvpEvent = extractor.getRsvpEvent()
         <Link href={permalink}>Go to full post</Link>
         <div class="tw:flex tw:justify-between">
             <Categories categories={categories} />
-            <PostDates extractedDates={dates} forceHideUpdated={true} />
+            <PostDates postLink={url} extractedDates={dates} forceHideUpdated={true} />
         </div>
     </RootElem>
 )}
@@ -109,12 +111,12 @@ const rsvpEvent = extractor.getRsvpEvent()
             <div class="tw:flex tw:flex-col tw:items-center tw:gap-y-1 tw:mt-8">
                 <h1 class:list={["tw:font-serif", "tw:text-3xl", ...titleClasses]}>{title}</h1>
                 <p class="tw:text-xs tw:text-gray-500">hint: {hint.subtype}{hint.tertiaryType ? `:${hint.tertiaryType}` : ''}</p>
-                <PostDates extractedDates={dates} />
+                <PostDates postLink={url} extractedDates={dates} />
             </div>
             <hr class="tw:my-6 tw:border-dotted" />
-            <div class="tw:border-2 tw:border-dashed tw:border-blue-400 tw:dark:border-blue-900 tw:p-4 tw:rounded-sm">
+            <div class="tw:border-2 tw:border-dashed tw:border-blue-400 tw:dark:border-blue-900 tw:p-4 tw:rounded-sm tw:flex tw:flex-col tw:gap-y-4">
                 {summary.length > 0 && <p class="p-summary">{summary.join(' ')}</p>}
-                <div class:list={["e-content", "tw:mb-4", "tw:flex tw:flex-col tw:gap-y-4"]}>
+                <div class:list={["e-content", "tw:flex tw:flex-col tw:gap-y-4"]}>
                     {likeOf && <p>Like of <ExternalLink href={likeOf} showIcon={true} linkClass="u-like-of">{likeOf}</ExternalLink></p>}
                     {repostOf && <p>Repost of <ExternalLink href={repostOf} showIcon={true} linkClass="u-repost-of">{repostOf}</ExternalLink></p>}
                     {inReplyTo && <p>In reply to <ExternalLink href={inReplyTo} showIcon={true} linkClass="u-in-reply-to">{inReplyTo}</ExternalLink></p>}
@@ -152,9 +154,23 @@ const rsvpEvent = extractor.getRsvpEvent()
 
                     <ContentRenderer content={content} html={extractor.isHtml} />
                 </div>
+                {syndications.length > 0 && 
+                <div>
+                  <p>Also on:</p>
+                  <ul>
+                    {syndications.map(syn => (
+                      <li><ExternalLink href={syn.url} showIcon={true}>{syn.name}</ExternalLink></li>
+                    ))}
+                  </ul>
+                </div>}
                 <Categories categories={categories} />
             </div>
-            <a href="/" class="u-author"></a>
+            <div class="tw:hidden">
+              <span class="p-author h-card">
+                <a href="/" rel="author">Jacob Andersen</a>
+                <img class="u-photo" fetchpriority="low" src="/images/avatar/150x150.webp" alt="robotic avatar image" />
+              </span>
+            </div>
         </RootElem>
     </BaseLayout>
 )}

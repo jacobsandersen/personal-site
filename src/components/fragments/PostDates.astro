@@ -5,11 +5,12 @@ import { Mf2ObjectProperties } from '~/types/mf2'
 
 interface Props {
     props?: Mf2ObjectProperties
-    extractedDates?: ExtractedDates,
+    postLink: string
+    extractedDates?: ExtractedDates
     forceHideUpdated?: boolean
 }
 
-const { props, extractedDates, forceHideUpdated = false } = Astro.props
+const { props, postLink, extractedDates, forceHideUpdated = false } = Astro.props
 
 const extracted = props ? extractDates(props) : extractedDates
 if (!extracted) {
@@ -21,7 +22,7 @@ const hideUpdated = forceHideUpdated || extracted.updatedSameAsCreated()
 
 <div class="tw:text-xs">
     <p class="tw:flex tw:gap-x-1">
-        <span><FormattedDate raw={extracted.createdAtRaw} formatted={`Published ${extracted.createdAtDisplayTime}, ${extracted.createdAtDisplay}`} hidden={false} class="dt-published" /></span>
+        <span><a href={postLink} class="u-url"><FormattedDate raw={extracted.createdAtRaw} formatted={`Published ${extracted.createdAtDisplayTime}, ${extracted.createdAtDisplay}`} hidden={false} class="dt-published" /></a></span>
         <span><FormattedDate raw={extracted.updatedAtRaw} formatted={`Updated ${extracted.updatedAtDisplayTime}, ${extracted.updatedAtDisplay}`} hidden={hideUpdated} prefixMDash={true} class="dt-updated" /></span>
     </p>
 </div>

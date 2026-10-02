@@ -13,12 +13,12 @@ const { categories } = Astro.props as Props;
         categories.length ? (
             categories.map((category) => (
                 <li class="tw:hover:underline tw:decoration-wavy">
-                    <Link href={`/tagged/${category}`}>#{category}</Link>
+                    <Link href={`/tagged/${category}`} class="p-category">#{category}</Link>
                 </li>
             ))
         ) : (
             <li class="tw:hover:underline tw:decoration-wavy">
-                <Link href={`/uncategorized`}>#uncategorized</Link>
+                <Link href={`/uncategorized`} class="p-category">#uncategorized</Link>
             </li>
         )
     }
