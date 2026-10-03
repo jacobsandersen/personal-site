@@ -38,15 +38,22 @@ const providers = await DefaultBastionClient.loadAuthProviders()
       <PageTitle title="Authorization Application" />
       <p><a href={clientInfo.client_uri} target="_blank">{clientInfo.client_name}</a> wants to log in as you ({params?.me}) with the following scopes:</p> 
       <ul class="tw:list-disc tw:list-inside tw:indent-2">
-        {params?.scope?.map(scope => (
-          <li>{scope}</li>
-        )) ?? <li><span class="tw:italic" title="The requesting application sent no scopes">None</span></li>}
+        {
+          params!.scope.length > 0 
+            ? params!.scope.map(scope => (
+              <li>{scope}</li>
+            ))
+            : <li><span class="tw:italic" title="The requesting application sent no scopes">None</span></li>
+        }
       </ul>
       <p>If you would like to proceed, choose an authentication provider below:</p>
       <ul class="tw:list-disc tw:list-inside tw:indent-2">
-        {providers?.providers?.map(provider => (
-          <li><a href={`${provider.authorize_url}?client_id=${provider.client_id}`}>{provider.provider}</a></li>
-        )) ?? <li><span class="tw:italic" title="Bastion returned no available auth providers">None (Error)</span></li>}
+        {
+          providers.providers.map(provider => (
+            <li><a href={`${provider.authorize_url}?client_id=${provider.client_id}`}>{provider.provider}</a></li>
+          )) 
+          ?? <li><span class="tw:italic" title="Bastion returned no available auth providers">None (Error)</span></li>
+        }
       </ul>
     </div> :
 

@@ -21,6 +21,7 @@ const { title } = Astro.props as Props;
 		<link rel="pgpkey" href="/gpg.pub.txt" />
 		<link rel="authorization_endpoint" href=`${env.BASTION_PUBLIC_URL}/indieauth/auth` />
 		<link rel="token_endpoint" href=`${env.BASTION_PUBLIC_URL}/indieauth/token` />
+    <link rel="indieauth-metadata" href=`${env.BASTION_PUBLIC_URL}/.well-known/oauth-authorization-server` />
 		<link rel="micropub" href=`${env.BASTION_PUBLIC_URL}/micropub` />
     <link rel="webmention" href=`${env.BASTION_PUBLIC_URL}/webmention` />
 		<slot name="additionalHead" />

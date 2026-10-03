@@ -177,7 +177,7 @@ const rsvpEvent = extractor.getRsvpEvent()
             <hr class="tw:my-6 tw:border-dotted" />
             <div>
               <h2 class="tw:text-xl">Webmentions</h2>
-              {webmentions.length >= 0 ? (
+              {webmentions.length > 0 ? (
                 <ul class="tw:list-disc tw:list-inside">
                   {webmentions.map(wm => (
                     <li>
