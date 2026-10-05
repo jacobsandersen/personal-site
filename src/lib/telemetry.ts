@@ -8,10 +8,13 @@ import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 if (env.TELEMETRY_ENABLE) {
   const sdk = new NodeSDK({
     resource: resourceFromAttributes({
-      [ATTR_SERVICE_NAME]: "astro"
+      [ATTR_SERVICE_NAME]: "herald"
     }),
     traceExporter: new OTLPTraceExporter({
-      url: env.TELEMETRY_OTEL_EXPORTER_ENDPOINT
+      url: env.TELEMETRY_OTEL_EXPORTER_ENDPOINT,
+      headers: {
+        'api-key': env.TELEMETRY_OTEL_API_KEY
+      }
     })
   });
 

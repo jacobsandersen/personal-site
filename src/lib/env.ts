@@ -1,13 +1,14 @@
 import { z } from 'zod';
 
 const envSchema = z.object({
-  SEER_URL: z.url(),
-  SEER_FIXED_AUTH: z.string(),
-  BASTION_URL: z.preprocess((v) => (v === "" ? undefined : v), z.url().default("http://dummy:3000")),
-  BASTION_PUBLIC_URL: z.preprocess((v) => (v === "" ? undefined : v), z.url().default("http://dummy.org")),
-  PUBLIC_URL: z.preprocess((v) => (v === "" ? undefined : v), z.url().default("http://example.org")),
+  SEER_URL: z.url().default("http://example.org"),
+  SEER_FIXED_AUTH: z.string().default(""),
+  BASTION_URL: z.url().default("http://example.org"),
+  BASTION_PUBLIC_URL: z.url().default("http://example.org"),
+  PUBLIC_URL: z.url().default("http://example.org"),
   TELEMETRY_ENABLE: z.coerce.boolean().default(false),
-  TELEMETRY_OTEL_EXPORTER_ENDPOINT: z.url().optional(),
+  TELEMETRY_OTEL_EXPORTER_ENDPOINT: z.url().default("http://example.org"),
+  TELEMETRY_OTEL_API_KEY: z.string().default(""),
   HOST: z.string().default('0.0.0.0'),
   PORT: z.coerce.number().default(4321),
   NODE_ENV: z.enum(['development', 'production']).default('production'),

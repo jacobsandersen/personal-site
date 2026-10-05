@@ -1,11 +1,6 @@
 # syntax=docker/dockerfile:1
-# check=skip=SecretsUsedInArgOrEnv
 
 FROM node:26-alpine AS builder
-ARG SEER_URL=http://dummy:3000
-ARG SEER_FIXED_AUTH=dummy
-ARG BASTION_URL=http://dummy:3000
-ENV SEER_URL=$SEER_URL SEER_FIXED_AUTH=$SEER_FIXED_AUTH BASTION_URL=$BASTION_URL
 WORKDIR /app
 COPY . .
 RUN npm ci && \
