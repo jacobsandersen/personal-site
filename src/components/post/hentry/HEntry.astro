@@ -23,7 +23,7 @@ interface Props {
 const { doc, variant = 'full', class: className, crumbs = [] } = Astro.props as Props
 
 const extractor = createHEntryExtractor(doc)
-const hint = extractor.getHint()
+const type = extractor.getType()
 const dates = extractor.getDates()
 const RootElem = extractor.getRootElem()
 const title = extractor.getTitle()
@@ -62,7 +62,7 @@ const rsvpEvent = extractor.getRsvpEvent()
     <RootElem class:list={["h-entry", "tw:border-2", "tw:border-dashed", "tw:border-blue-400", "tw:dark:border-blue-900", "tw:p-3", "tw:rounded-sm", "tw:flex", "tw:flex-col", "tw:gap-y-2", className]}>
         <div class="tw:flex tw:flex-col tw:gap-y-1">
             <h2 class:list={["tw:text-xl tw:font-bold", ...titleClasses]}>{title}</h2>
-            <p class="tw:text-xs tw:text-gray-500">hint: {hint.subtype}{hint.tertiaryType ? `:${hint.tertiaryType}` : ''}</p>
+            <p class="tw:text-xs tw:text-gray-500">hint: {type}</p>
         </div>
 
         <div class:list={["e-content", "tw:flex tw:flex-col tw:gap-y-2"]}>
@@ -113,7 +113,7 @@ const rsvpEvent = extractor.getRsvpEvent()
         <RootElem class:list={["h-entry tw:col-span-12", className]}>
             <div class="tw:flex tw:flex-col tw:items-center tw:gap-y-1 tw:mt-8">
                 <h1 class:list={["tw:font-serif", "tw:text-3xl", ...titleClasses]}>{title}</h1>
-                <p class="tw:text-xs tw:text-gray-500">hint: {hint.subtype}{hint.tertiaryType ? `:${hint.tertiaryType}` : ''}</p>
+                <p class="tw:text-xs tw:text-gray-500">hint: {type}</p>
                 <PostDates postLink={url} extractedDates={dates} />
             </div>
             <hr class="tw:my-6 tw:border-dotted" />

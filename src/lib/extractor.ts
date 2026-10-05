@@ -1,13 +1,12 @@
 import Mf2Extractor from "./extractor/Mf2Extractor";
-import type { HEntryHint } from "./extractor/Mf2Extractor";
 import { PostDto } from "~/types/bastion";
 
 export function createHEntryExtractor(doc: PostDto): Mf2Extractor {
-  if (doc.type !== 'h-entry') {
+  if (doc.h !== 'h-entry') {
     throw new Error("non h-entry does not use extractor system")
   }
-  if (!doc.subtype) {
-    throw new Error("h-entry missing subtype hint")
+  if (!doc.type) {
+    throw new Error("h-entry missing type hint")
   }
   return new Mf2Extractor(doc)
 }
@@ -17,6 +16,5 @@ export function determineExtractor(doc: PostDto): Mf2Extractor {
   return createHEntryExtractor(doc)
 }
 
-export type { HEntryHint };
 export { Mf2Extractor };
 export default Mf2Extractor;

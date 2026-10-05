@@ -4,11 +4,6 @@ import { isValidUrl } from "~/util/url";
 import { extractDates, ExtractedDates } from "~/util/dates";
 import { CheckinData } from "../content";
 
-export interface HEntryHint {
-    subtype: string;
-    tertiaryType: string | null;
-}
-
 export default class Mf2Extractor {
     protected readonly doc: PostDto
     private readonly dates: ExtractedDates
@@ -23,23 +18,23 @@ export default class Mf2Extractor {
 
     // --- core accessors ---
 
+    getType(): string {
+      if (!this.doc.type) {
+        throw new Error("h-entry missing type")
+      }
+
+      return this.doc.type
+    }
+
     getProperties(): Mf2ObjectProperties {
         return this.doc.properties
     }
 
     getRootElem(): string {
-        if (this.getHint().subtype === 'article') {
+        if (this.getType() === 'article') {
             return 'article'
         }
         return 'div'
-    }
-
-    getHint(): HEntryHint {
-        // HEntry.astro is only instantiated when doc.type === 'h-entry',
-        // so subtype is never null. tertiaryType is only non-null when subtype === 'note'.
-        const subtype = this.doc.subtype as string
-        const tertiaryType = (this.doc.tertiaryType ?? null) as string | null
-        return { subtype, tertiaryType }
     }
 
     getSummary(): string[] {
@@ -133,8 +128,7 @@ export default class Mf2Extractor {
     // --- title helpers ---
 
     getTitle(): string {
-        const hint = this.getHint()
-        switch (hint.subtype) {
+        switch (this.getType()) {
             case 'article':
                 return this.getName() ?? 'Untitled Article'
             case 'reply': {
@@ -162,32 +156,29 @@ export default class Mf2Extractor {
             }
             case 'rsvp':
                 return `RSVP for ${this.getRsvpEvent() ?? this.abbrevUrl(this.getInReplyTo() ?? 'an event')}`
+            case 'bookmark': {
+                const target = this.getBookmarkOf()
+                return target ? `Bookmarked ${this.abbrevUrl(target)}` : 'Bookmarked a post'
+            }
+            case 'checkin': {
+                const checkin = this.getCheckin()
+                return checkin ? `Checked in at ${checkin.name}` : 'Checked in'
+            }
+            case 'mood': {
+                const mood = this.getMood()
+                return mood ? `Logged his mood as "${mood}"` : 'Logged his mood'
+            }
             case 'note': {
-                switch (hint.tertiaryType) {
-                    case 'bookmark': {
-                        const target = this.getBookmarkOf()
-                        return target ? `Bookmarked ${this.abbrevUrl(target)}` : 'Bookmarked a post'
-                    }
-                    case 'checkin': {
-                        const checkin = this.getCheckin()
-                        return checkin ? `Checked in at ${checkin.name}` : 'Checked in'
-                    }
-                    case 'mood': {
-                        const mood = this.getMood()
-                        return mood ? `Logged his mood as "${mood}"` : 'Logged his mood'
-                    }
-                    default:
-                        return 'Posted a note'
-                }
+                return 'Posted a note'
             }
             default:
-                return this.getName() ?? `Posted a ${hint.subtype}`
+                return this.getName() ?? `Posted a ${this.getType()}`
         }
     }
 
     getMinimalTitle(): string {
-        const hint = this.getHint()
-        if (hint.subtype === 'rsvp') {
+        const type = this.getType()
+        if (type === 'rsvp') {
             const rsvp = this.getRsvp()
             const abbrev = this.abbrevUrl(this.getInReplyTo() ?? '')
             if (rsvp) {
@@ -195,14 +186,14 @@ export default class Mf2Extractor {
             }
             return abbrev
         }
-        if (hint.subtype === 'note' && hint.tertiaryType === 'mood') {
+        if (type === 'mood') {
             return 'Logged his mood'
         }
         return this.getTitle()
     }
 
     getTitleClasses(): string[] {
-        if (this.getHint().subtype === 'article') {
+        if (this.getType() === 'article') {
             return ['p-name']
         }
         return []
@@ -292,7 +283,6 @@ export default class Mf2Extractor {
     // keep for backwards compat if any code calls getPost; now returns trait bag
     async getPost(): Promise<Record<string, unknown>> {
         return {
-            hint: this.getHint(),
             content: this.getContent(),
             likeOf: this.getLikeOf(),
             repostOf: this.getRepostOf(),
