@@ -4,7 +4,7 @@ import { handler as astroHandler } from './dist/server/entry.mjs'
 
 
 const mainApp = express()
-mainApp.use(express.static('dist/client/'))
+mainApp.use(express.static('dist/client/', { dotfiles: 'allow' }))
 mainApp.use(astroHandler)
 
 mainApp.listen(8080, () => console.log("Main astro server listening on port 8080"))
