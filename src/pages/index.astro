@@ -7,18 +7,17 @@ import NowPlaying from "~/components/ssr/NowPlaying.astro";
 import Mf2Extractor from "~/lib/extractor/Mf2Extractor";
 import HFeedRenderer from "~/components/post/hfeed/HFeedRenderer.astro";
 import Bastion from "~/lib/bastion"
-import {PostMf2Type, PostType, NoteType} from "~/types/bastion"
+import {PostMf2Type, PostType} from "~/types/bastion"
 import { env } from "~/lib/env";
 
 const posts = await Bastion.posts()
-  .type(PostMf2Type.H_ENTRY)
+  .h(PostMf2Type.ENTRY)
   .perPage(20)
   .query()
 
 const { items: moodEntries } = await Bastion.posts()
-  .type(PostMf2Type.H_ENTRY)
-  .subtype(PostType.NOTE)
-  .noteType(NoteType.MOOD)
+  .h(PostMf2Type.ENTRY)
+  .type(PostType.MOOD)
   .perPage(1)
   .query()
 

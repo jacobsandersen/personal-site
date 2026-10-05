@@ -12,7 +12,7 @@ if (!category) {
 }
 
 const paginatorData = getPaginatorData(Astro.url)
-const posts = await DefaultBastionClient.posts().type(PostMf2Type.H_ENTRY).tag(category).page(paginatorData.page).query()
+const posts = await DefaultBastionClient.posts().h(PostMf2Type.ENTRY).tag(category).page(paginatorData.page).query()
 const pageInfo = determinePageInfo(posts.pagination)
 
 const title = `Posts tagged with #${category}`;

@@ -6,7 +6,7 @@ import DefaultBastionClient, { determinePageInfo } from "~/lib/bastion";
 import { PostMf2Type } from "~/types/bastion";
 import { getPage, getPageLinkFn } from "~/util/page"
 
-const posts = await DefaultBastionClient.posts().type(PostMf2Type.H_ENTRY).untagged().page(getPage(Astro.url)).query()
+const posts = await DefaultBastionClient.posts().h(PostMf2Type.ENTRY).untagged().page(getPage(Astro.url)).query()
 const pageInfo = determinePageInfo(posts.pagination)
 
 const title = `Uncategorized Posts`

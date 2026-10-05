@@ -3,7 +3,6 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 import PageTitle from "~/components/PageTitle.astro";
 import DefaultBastionClient, { determinePageInfo } from "~/lib/bastion";
 import { PostMf2Type } from "~/types/bastion";
-import HFeedRenderer from "~/components/post/hfeed/HFeedRenderer.astro";
 import { parseAdhoc } from "~/util/dates";
 import { getPaginatorData } from "~/util/page";
 import PaginatedFeed from "~/components/post/hfeed/PaginatedFeed.astro";
@@ -28,7 +27,7 @@ if (Number.isNaN(dayNum)) {
 }
 
 const paginatorData = getPaginatorData(Astro.url)
-const posts = await DefaultBastionClient.posts().type(PostMf2Type.H_ENTRY).year(yearNum).month(monthNum).day(dayNum).page(paginatorData.page).query()
+const posts = await DefaultBastionClient.posts().h(PostMf2Type.ENTRY).year(yearNum).month(monthNum).day(dayNum).page(paginatorData.page).query()
 const pageInfo = determinePageInfo(posts.pagination)
 
 const date = new Date()

@@ -1,4 +1,4 @@
-import { BastionPageInfo, BastionPagination, FeedDto, NoteType, PostDto, PostGoneDto, PostMf2Type, PostType, TagListDto } from '~/types/bastion';
+import { BastionPageInfo, BastionPagination, FeedDto, PostDto, PostGoneDto, PostMf2Type, PostType, TagListDto } from '~/types/bastion';
 import { env } from '../env';
 import { bastionRequestDuration, bastionRequestsTotal } from '../metrics';
 
@@ -72,9 +72,8 @@ export class BastionClient {
 }
 
 class BastionFeedClient {
-  private _types: PostMf2Type[]
-  private _subtypes: PostType[]
-  private _tertiaryTypes: NoteType[]
+  private _hs: PostMf2Type[]
+  private _types: PostType[]
   private _tags: string[]
   private _untagged: boolean
   private _perPage: number
@@ -84,9 +83,8 @@ class BastionFeedClient {
   private _day: number|null
 
   constructor() {
+    this._hs = []
     this._types = []
-    this._subtypes = []
-    this._tertiaryTypes = []
     this._tags = []
     this._untagged = false
     this._perPage = 10
@@ -96,18 +94,13 @@ class BastionFeedClient {
     this._day = null
   }
 
-  type(type: PostMf2Type): BastionFeedClient {
+  h(h: PostMf2Type): BastionFeedClient {
+    this._hs.push(h)
+    return this
+  }
+
+  type(type: PostType): BastionFeedClient {
     this._types.push(type)
-    return this
-  }
-
-  subtype(subtype: PostType): BastionFeedClient {
-    this._subtypes.push(subtype)
-    return this
-  }
-
-  noteType(noteType: NoteType): BastionFeedClient {
-    this._tertiaryTypes.push(noteType)
     return this
   }
 
@@ -158,9 +151,8 @@ class BastionFeedClient {
     let { limit, offset } = getLimitOffset(this._page, this._perPage)
 
     let url = buildBastionUrl("api/posts")
+    url.searchParams.set("h", this._hs.join(","))
     url.searchParams.set("type", this._types.join(","))
-    url.searchParams.set("subtype", this._subtypes.join(","))
-    url.searchParams.set("tertiaryType", this._tertiaryTypes.join(","))
     if (this._untagged) this._tags.push('none')
     url.searchParams.set("tag", this._tags.join(","))
     url.searchParams.set("limit", limit.toString())

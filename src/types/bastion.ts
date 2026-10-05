@@ -39,15 +39,15 @@ export interface SyndicationDto {
 }
 
 export enum PostMf2Type {
-  H_ENTRY = "h_entry",
-  H_CARD = "h_card",
-  H_FEED = "h_feed",
-  H_EVENT = "h_event",
-  H_CITE = "h_cite",
-  H_REVIEW = "h_review",
-  H_PRODUCT = "h_product",
-  H_ITEM = "h_item",
-  H_RECIPE = "h_recipe"
+  ENTRY = "entry",
+  CARD = "card",
+  FEED = "feed",
+  EVENT = "event",
+  CITE = "cite",
+  REVIEW = "review",
+  PRODUCT = "product",
+  ITEM = "item",
+  RECIPE = "recipe"
 }
 
 export enum PostType {
@@ -58,23 +58,18 @@ export enum PostType {
   LIKE = "like",
   VIDEO = "video",
   PHOTO = "photo",
-  RSVP = "rsvp"
-}
-
-export enum NoteType {
+  RSVP = "rsvp",
   BOOKMARK = "bookmark",
   CHECKIN = "checkin",
   MOOD = "mood",
-  NONE = "none"
 }
 
 export interface PostDto {
   id: string,
   slug: string,
   url: string,
-  type: string,
-  subtype?: string,
-  tertiaryType?: string,
+  h: string,
+  type?: string,
   published: string,
   updated: string,
   name?: string,

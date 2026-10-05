@@ -22,7 +22,7 @@ if (Number.isNaN(monthNum)) {
 }
 
 const paginatorData = getPaginatorData(Astro.url)
-const posts = await DefaultBastionClient.posts().type(PostMf2Type.H_ENTRY).year(yearNum).month(monthNum).page(paginatorData.page).query()
+const posts = await DefaultBastionClient.posts().h(PostMf2Type.ENTRY).year(yearNum).month(monthNum).page(paginatorData.page).query()
 const pageInfo = determinePageInfo(posts.pagination)
 
 const date = new Date();

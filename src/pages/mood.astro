@@ -3,10 +3,10 @@ import PageTitle from "~/components/PageTitle.astro";
 import HFeedRenderer from "~/components/post/hfeed/HFeedRenderer.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import DefaultBastionClient from "~/lib/bastion";
-import { NoteType, PostMf2Type, PostType } from "~/types/bastion";
+import { PostMf2Type, PostType } from "~/types/bastion";
 import { RenderMethod } from "~/types/mf2-rendering";
 
-const entries = await DefaultBastionClient.posts().type(PostMf2Type.H_ENTRY).subtype(PostType.NOTE).noteType(NoteType.MOOD).query()
+const entries = await DefaultBastionClient.posts().h(PostMf2Type.ENTRY).type(PostType.MOOD).query()
 
 const feedInfo = {
   title: "Moodlog",

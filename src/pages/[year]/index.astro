@@ -1,6 +1,5 @@
 ---
 import PageTitle from "~/components/PageTitle.astro";
-import HFeedRenderer from "~/components/post/hfeed/HFeedRenderer.astro";
 import PaginatedFeed from "~/components/post/hfeed/PaginatedFeed.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import DefaultBastionClient, { determinePageInfo } from "~/lib/bastion";
@@ -16,7 +15,7 @@ if (Number.isNaN(yearNum)) {
 }
 
 const paginatorData = getPaginatorData(Astro.url)
-const posts = await DefaultBastionClient.posts().type(PostMf2Type.H_ENTRY).year(yearNum).page(paginatorData.page).query()
+const posts = await DefaultBastionClient.posts().h(PostMf2Type.ENTRY).year(yearNum).page(paginatorData.page).query()
 const pageInfo = determinePageInfo(posts.pagination)
 
 const title = `Posts from ${year}`;
