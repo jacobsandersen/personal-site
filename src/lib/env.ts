@@ -1,3 +1,4 @@
+import { uuidv4 } from 'astro:schema';
 import { z } from 'zod';
 
 const envSchema = z.object({
@@ -7,6 +8,7 @@ const envSchema = z.object({
   BASTION_PUBLIC_URL: z.url().default("http://example.org"),
   PUBLIC_URL: z.url().default("http://example.org"),
   TELEMETRY_ENABLE: z.coerce.boolean().default(false),
+  TELEMETRY_APP_ID: z.string().default("herald-default"),
   TELEMETRY_OTEL_EXPORTER_ENDPOINT: z.url().default("http://example.org"),
   TELEMETRY_OTEL_API_KEY: z.string().default(""),
   HOST: z.string().default('0.0.0.0'),
