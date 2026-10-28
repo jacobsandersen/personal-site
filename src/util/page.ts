@@ -24,7 +24,9 @@ export function getPage(url: URL): number {
 
 export function getPageLinkFn(url: URL): (page: number) => string {
   return (page: number): string => {
-    url.searchParams.set('page', page.toString())
-    return url.toString()
+    const params = new URLSearchParams(url.searchParams)
+    params.set('page', page.toString())
+    const query = params.toString()
+    return query ? `${url.pathname}?${query}` : url.pathname
   }
 }
