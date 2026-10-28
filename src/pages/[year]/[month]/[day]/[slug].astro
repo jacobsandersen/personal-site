@@ -3,10 +3,11 @@ import DefaultBastionClient from "~/lib/bastion";
 import { parseAdhoc } from "~/util/dates";
 import { isPostGone } from "~/types/bastion"
 import PostRenderer from "~/components/post/PostRenderer.astro";
+import { env } from "~/lib/env";
 
 const { year, month, day } = Astro.params;
 
-const post = await DefaultBastionClient.post().url(Astro.url.toString()).query()
+const post = await DefaultBastionClient.post().url(`${env.PUBLIC_URL}${Astro.url.pathname}`).query()
 if (!post) {
   return Astro.rewrite("/404")
 }

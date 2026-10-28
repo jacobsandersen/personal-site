@@ -8,6 +8,7 @@ import Map, { OpenStreetMapTileData } from "~/components/fragments/Map.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import Breadcrumb from "~/components/Breadcrumb.astro";
 import { createHEntryExtractor } from "~/lib/extractor";
+import { env } from "~/lib/env";
 import type { PostDto } from "~/types/bastion";
 import { parseRaw } from "~/util/dates"
 
@@ -33,7 +34,7 @@ const summary = extractor.getSummary()
 const permalink = extractor.getUrl() ?? '#'
 const categories = extractor.getCategories()
 const content = extractor.getContent()
-const url = extractor.getUrl() ?? Astro.url.toString()
+const url = extractor.getUrl() ?? `${env.PUBLIC_URL}${Astro.url.pathname}`
 const syndications = extractor.getSyndications()
 const webmentionCounts = extractor.getWebmentionCounts()
 const webmentions = extractor.getWebmentions()

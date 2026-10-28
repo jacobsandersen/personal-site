@@ -18,6 +18,18 @@ export default defineConfig({
 
   site: "https://jacobandersen.dev",
 
+  security: {
+    // Astro only trusts the request Host header for Astro.url when it matches
+    // an allowed domain. Without this, Astro.url falls back to localhost,
+    // which breaks canonical permalink lookups and generated links behind the
+    // reverse proxy.
+    allowedDomains: [
+      { hostname: 'jacobandersen.dev' },
+      { hostname: 'staging.jacobandersen.dev' },
+      { hostname: 'localhost' },
+    ],
+  },
+
   output: 'server',
 
   vite: {
