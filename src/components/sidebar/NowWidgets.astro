@@ -1,0 +1,56 @@
+---
+import { getNowPlaying, getNowReading } from "~/lib/seer";
+import { getLatestMood } from "~/lib/mood";
+import Link from "../util/Link.astro";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = "" } = Astro.props as Props;
+
+const [reading, playing, mood] = await Promise.all([
+  getNowReading(),
+  getNowPlaying(),
+  getLatestMood()
+]);
+
+// undefined means the lookup failed: omit the row rather than claim "nothing".
+const rows = [
+  reading !== undefined && {
+    label: "reading",
+    href: "/reading",
+    value: reading ? { title: reading.title, by: reading.author } : null,
+    idle: "nothing right now"
+  },
+  playing !== undefined && {
+    label: "listening",
+    href: "/jams",
+    value: { title: playing.name, by: playing.artist["#text"] },
+    idle: "nothing right now"
+  },
+  mood !== undefined && {
+    label: "mood",
+    href: "/mood",
+    value: mood ? { title: mood, by: undefined } : null,
+    idle: "unknown"
+  }
+].filter((row) => row !== false);
+---
+
+{rows.length > 0 && (
+  <section aria-label="Now" class:list={["tw:flex tw:flex-col tw:gap-y-3", className]}>
+    {rows.map((row) => (
+      <div class="tw:min-w-0 tw:wrap-break-word">
+        <Link href={row.href} withUnderline={false} class="tw:block tw:text-xs tw:font-bold tw:uppercase tw:tracking-wider tw:opacity-70">{row.label}</Link>
+        {row.value ? (
+          <p>
+            {row.value.by !== undefined ? <><i>{row.value.title}</i> by {row.value.by}</> : row.value.title}
+          </p>
+        ) : (
+          <p class="tw:opacity-70">{row.idle}</p>
+        )}
+      </div>
+    ))}
+  </section>
+)}

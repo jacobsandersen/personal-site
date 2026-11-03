@@ -1,0 +1,79 @@
+---
+import { env } from "~/lib/env";
+import Link from "../util/Link.astro";
+import NowWidgets from "../sidebar/NowWidgets.astro";
+
+const { pathname } = Astro.url;
+
+interface NavLink {
+  text: string,
+  href: string,
+  activeIf: (pathname: string) => boolean
+}
+
+const navLinks: NavLink[] = [
+  { text: "home", href: "/", activeIf: (pathname) => pathname === '/' },
+  { text: "workshop", href: "/workshop", activeIf: (pathname) => pathname.startsWith("/workshop") },
+  { text: "reading", href: "/reading", activeIf: (pathname) => pathname.startsWith("/reading") },
+  { text: "travels", href: "/travels", activeIf: (pathname) => pathname.startsWith("/travels") },
+  { text: "about", href: "/about", activeIf: (pathname) => pathname.startsWith("/about") },
+  { text: "tags", href: "/tagged", activeIf: (pathname) => pathname.startsWith("/tagged") }
+]
+
+const isHome = pathname === "/";
+---
+
+<aside class="tw:pb-4 tw:mb-4 tw:border-b tw:border-dashed tw:md:mb-0 tw:md:pb-0 tw:md:border-b-0 tw:md:border-r">
+<div class="tw:flex tw:flex-col tw:gap-y-5 tw:md:sticky tw:md:top-6 tw:md:max-h-[calc(100vh-3rem)] tw:md:overflow-y-auto tw:md:pb-6">
+  <section class="h-card tw:flex tw:flex-col tw:gap-y-3 tw:md:pr-6">
+    <div class="tw:flex tw:items-center tw:gap-x-3">
+      <div class="tw:flex-none tw:h-14 tw:w-14 tw:overflow-hidden tw:rounded-full tw:border-2 tw:border-solid tw:border-soft-periwinkle">
+        <img
+          class="u-photo tw:h-full tw:w-full tw:object-cover tw:origin-[44%_49%] tw:scale-250 tw:rounded-full"
+          src="/images/portrait/150.webp"
+          srcset="/images/portrait/150.webp 150w, /images/portrait/300.webp 300w"
+          sizes="56px"
+          width="56"
+          height="56"
+          alt="portrait of jacob"
+        />
+      </div>
+      <p class="tw:text-[1.4rem] tw:leading-tight tw:whitespace-nowrap tw:font-brand tw:text-powder-blue">
+        <a href={env.PUBLIC_URL} class="u-url u-uid" rel="me">
+          <span class="p-name"><span class="p-given-name">jacob</span> <span class="p-family-name">andersen</span></span>
+        </a>
+      </p>
+    </div>
+    <p class:list={["p-note tw:text-base tw:text-pretty", { "tw:max-md:sr-only": !isHome }]}>
+      Hello, I'm Jacob. I'm a software engineer, a reader, a traveller, a learner, and more.
+      This is my little corner of the internet &mdash; a little bit of a
+      garden, a workshop, a notebook, and a storage container, all in one.
+      Feel free to take a look around.
+    </p>
+  </section>
+  <nav aria-label="Primary" class="tw:md:border-t tw:md:border-dashed tw:md:pt-4">
+    <ul class="tw:md:pr-6 tw:grid tw:grid-cols-3 tw:gap-1 tw:md:flex tw:md:flex-col tw:md:gap-y-0.5">
+      {
+        navLinks.map((link) => {
+          const active = link.activeIf(pathname);
+          return (
+            <li>
+              <Link
+                href={link.href}
+                withUnderline={!active}
+                props={active ? { "aria-current": "page" } : {}}
+                class:list={[
+                  "tw:block tw:text-center tw:text-sm tw:py-1 tw:border tw:border-dashed tw:rounded-md",
+                  "tw:md:text-left tw:md:text-base tw:md:px-2 tw:md:border-y-0 tw:md:border-r-0 tw:md:border-l-[3px] tw:md:border-solid tw:md:rounded-none",
+                  active ? "tw:font-bold tw:text-powder-blue tw:bg-powder-blue/15 tw:border-powder-blue tw:md:bg-transparent tw:md:border-l-powder-blue" : "tw:md:border-l-transparent"
+                ]}
+              >{link.text}</Link>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </nav>
+  <NowWidgets class="tw:max-md:hidden tw:md:border-t tw:md:border-dashed tw:md:pt-4 tw:md:pr-6" />
+</div>
+</aside>

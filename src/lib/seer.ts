@@ -38,42 +38,57 @@ export async function getWantToRead(page: number): Promise<HardcoverData | undef
   return request(`hardcover/books?status=wanted&limit=10&page=${page}`)
 }
 
-export async function getNowReading(): Promise<HardcoverBook | undefined> {
+/**
+ * Resolves to the book currently being read, `null` when the request succeeded
+ * but nothing is being read, or `undefined` when the request failed.
+ */
+export async function getNowReading(): Promise<HardcoverBook | null | undefined> {
   const data = await request<HardcoverData>("hardcover/books?status=current&limit=1")
   if (!data || !data.books) {
-    console.log(`load current reading fail: ${data}`)
+    console.error("load current reading fail: no data returned from seer")
     return undefined
   }
 
-  return data.books[0]
+  return data.books[0] ?? null
 }
 
 export async function getNowPlaying(): Promise<NowPlaying | undefined> {
   return request("lastfm")
 }
 
+const REQUEST_TIMEOUT_MS = 2000
+
 async function request<T>(path: string): Promise<T | undefined> {
   const end = seerRequestDuration.startTimer({ path })
 
-  const res = await fetch(`${env.SEER_URL}/${path}`, {
-    headers: {
-      'Authorization': `Bearer ${env.SEER_FIXED_AUTH}`
+  try {
+    const res = await fetch(`${env.SEER_URL}/${path}`, {
+      headers: {
+        'Authorization': `Bearer ${env.SEER_FIXED_AUTH}`
+      },
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS)
+    })
+
+    seerRequestsTotal.inc({ path, status: res.status })
+
+    if (!res.ok) {
+      console.error(`seer request failure (${res.status}); response:`, await res.text())
+      return undefined
     }
-  })
 
-  seerRequestsTotal.inc({ path, status: res.status })
-  end()
+    const data = (await res.json()) as SeerResp<T>
+    if (data.message !== "success") {
+      console.error(`Error while fetching data from seer: ${data.message}`)
+      return undefined
+    }
 
-  if (!res.ok) {
-    console.log("seer request failure; response:", await res.json())
+    return data.data
+  } catch (err) {
+    const timedOut = err instanceof Error && (err.name === "TimeoutError" || err.name === "AbortError")
+    seerRequestsTotal.inc({ path, status: timedOut ? "timeout" : "error" })
+    console.error(`seer request to ${path} failed:`, err)
     return undefined
+  } finally {
+    end()
   }
-
-  const data = (await res.json()) as SeerResp<T>
-  if (data.message !== "success") {
-    console.error(`Error while fetching data from seer: ${data.message}`)
-    return undefined
-  }
-
-  return data.data
 }
