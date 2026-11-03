@@ -1,0 +1,27 @@
+---
+import { isHttpUrl } from "~/util/url";
+
+interface Props {
+  /** Third-party data: only http(s) photos are loaded. */
+  photo?: string;
+  name: string;
+  /** Tailwind size utility, e.g. "tw:size-8" */
+  size?: string;
+  class?: string;
+}
+
+const { photo, name, size = "tw:size-8", class: className } = Astro.props as Props;
+const safePhoto = photo && isHttpUrl(photo) ? photo : undefined;
+const initial = (name.trim()[0] ?? "?").toUpperCase();
+---
+
+{
+  safePhoto ? (
+    <img src={safePhoto} alt="" loading="lazy" class:list={[size, "tw:shrink-0 tw:rounded-full tw:object-cover", className]} />
+  ) : (
+    <span
+      aria-hidden="true"
+      class:list={[size, "tw:inline-flex tw:shrink-0 tw:items-center tw:justify-center tw:rounded-full tw:bg-soft-periwinkle/30 tw:text-xs tw:font-bold", className]}
+    >{initial}</span>
+  )
+}

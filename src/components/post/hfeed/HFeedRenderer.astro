@@ -17,13 +17,12 @@ export interface FeedInfo {
 interface Props {
   feed: FeedDto
   feedInfo?: FeedInfo
-  renderMethod?: RenderMethod
   class?: string
   containerClass?: string
   itemClass?: string
 }
 
-const { feedInfo, renderMethod = RenderMethod.Preview, feed, class: className, containerClass, itemClass } = Astro.props as Props;
+const { feedInfo, feed, class: className, containerClass, itemClass } = Astro.props as Props;
 const headerConf = feedInfo?.headerConfig ?? { level: 1, class: "" };
 const headerHidden = headerConf.hidden ?? false;
 const headerLevel = Math.min(Math.max(headerConf.level ?? 1, 1), 6)
@@ -36,7 +35,7 @@ let finalContainerClass = containerClass ? containerClass : "tw:flex tw:flex-col
     {feedInfo && <HeaderElem class:list={["tw:text-2xl", "tw:font-bold", headerClass, { "tw:hidden": headerHidden }]}><Link href={feedInfo.url}>{feedInfo.title}</Link></HeaderElem>}
     <div class:list={finalContainerClass}>
       {feed.items.map((post) => (
-          <PostRenderer doc={post} renderMethod={renderMethod} class={itemClass} />
+          <PostRenderer doc={post} renderMethod={RenderMethod.Feed} class={itemClass} />
       ))}
     </div>
     <slot name="feed-paginator" />

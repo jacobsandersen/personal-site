@@ -1,12 +1,13 @@
 ---
 import PageTitle from "~/components/PageTitle.astro";
-import HFeedRenderer from "~/components/post/hfeed/HFeedRenderer.astro";
+import PaginatedFeed from "~/components/post/hfeed/PaginatedFeed.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import DefaultBastionClient from "~/lib/bastion";
+import DefaultBastionClient, { determinePageInfo } from "~/lib/bastion";
 import { PostMf2Type, PostType } from "~/types/bastion";
-import { RenderMethod } from "~/types/mf2-rendering";
+import { getPage, getPageLinkFn } from "~/util/page";
 
-const entries = await DefaultBastionClient.posts().h(PostMf2Type.ENTRY).type(PostType.MOOD).query()
+const entries = await DefaultBastionClient.posts().h(PostMf2Type.ENTRY).type(PostType.MOOD).page(getPage(Astro.url)).query()
+const pageInfo = determinePageInfo(entries.pagination)
 
 const feedInfo = {
   title: "Moodlog",
@@ -22,10 +23,10 @@ const feedInfo = {
   <PageTitle
     title="My Moodlog"
     crumbs={["Home:/", "Moodlog:/mood"]} />
-  <HFeedRenderer
+  <PaginatedFeed
     feed={entries}
-    renderMethod={RenderMethod.Preview}
     feedInfo={feedInfo}
-    class="tw:flex tw:flex-col tw:gap-y-6"
+    pageInfo={pageInfo}
+    pageLink={getPageLinkFn(Astro.url)}
   />
 </BaseLayout>

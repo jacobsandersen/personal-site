@@ -3,10 +3,12 @@ import { env } from '../env';
 import { bastionRequestDuration, bastionRequestsTotal } from '../metrics';
 
 export function determinePageInfo(pagination: BastionPagination): BastionPageInfo {
-  const { count, offset, limit } = pagination
+  // `count` is the number of items in this response; `total` is the overall
+  // number of matching items.
+  const { total: totalItems, offset, limit } = pagination
 
   let current = Math.floor(offset / limit) + 1
-  let total = Math.ceil(count / limit)
+  let total = Math.max(1, Math.ceil(totalItems / limit))
 
   return { current, total }
 }

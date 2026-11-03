@@ -5,9 +5,6 @@ export function createHEntryExtractor(doc: PostDto): Mf2Extractor {
   if (doc.h !== 'h-entry') {
     throw new Error("non h-entry does not use extractor system")
   }
-  if (!doc.type) {
-    throw new Error("h-entry missing type hint")
-  }
   return new Mf2Extractor(doc)
 }
 

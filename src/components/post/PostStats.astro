@@ -1,0 +1,50 @@
+---
+import { LucideBookmark, LucideCalendarCheck, LucideHeart, LucideRepeat2 } from "@lucide/astro";
+import type Mf2Extractor from "~/lib/extractor/Mf2Extractor";
+import { WebmentionInteraction } from "~/types/bastion";
+import Facepile from "./Facepile.astro";
+
+interface Props {
+  extractor: Mf2Extractor;
+  /** Link target for the comment count (the permalink's #comments anchor). */
+  commentsHref: string;
+}
+
+const { extractor, commentsHref } = Astro.props as Props;
+const counts = extractor.getReactionCounts();
+const comments = extractor.getCommentCount();
+const reactionTypes = [
+  WebmentionInteraction.LIKE,
+  WebmentionInteraction.REPOST,
+  WebmentionInteraction.BOOKMARK,
+  WebmentionInteraction.RSVP,
+];
+const reactions = extractor.getWebmentions().filter((wm) => reactionTypes.includes(wm.interaction));
+const items = [
+  { icon: LucideHeart, label: "likes", count: counts.like },
+  { icon: LucideRepeat2, label: "reposts", count: counts.repost },
+  { icon: LucideBookmark, label: "bookmarks", count: counts.bookmark },
+  { icon: LucideCalendarCheck, label: "RSVPs", count: counts.rsvp },
+];
+---
+
+{
+  (
+    <div class="tw:flex tw:min-h-6 tw:flex-wrap tw:items-center tw:justify-between tw:gap-x-4 tw:gap-y-2 tw:text-sm">
+      <div class="tw:flex tw:items-center tw:gap-x-3">
+        <Facepile reactions={reactions} />
+        <ul class="tw:flex tw:items-center tw:gap-x-3">
+          {items.map(({ icon: Icon, label, count }) => (
+            <li class:list={["tw:flex tw:items-center tw:gap-x-1", count > 0 ? "tw:opacity-85" : "tw:opacity-40"]} title={`${count} ${label}`}>
+              <Icon class="tw:size-4" aria-hidden="true" />
+              <span>{count}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <a href={commentsHref} class:list={["tw:hover:underline", comments > 0 ? "tw:opacity-85" : "tw:opacity-40"]}>
+        {comments} {comments === 1 ? "comment" : "comments"}
+      </a>
+    </div>
+  )
+}

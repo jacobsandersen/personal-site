@@ -1,5 +1,4 @@
 ---
-import Link from './util/Link.astro';
 
 interface Props {
   curPage: number,
@@ -8,7 +7,7 @@ interface Props {
   pageLink: (page: number) => string
 }
 
-const { curPage, totalPages, centered = false, pageLink } = Astro.props
+const { curPage, totalPages, centered = true, pageLink } = Astro.props
 
 function getPages(): (number | "ellipsis")[] {
   const pages: (number | "ellipsis")[] = [1]
@@ -41,16 +40,31 @@ function getPages(): (number | "ellipsis")[] {
 }
 
 const pages = getPages()
+
+const itemBase = "tw:inline-flex tw:items-center tw:justify-center tw:min-w-8 tw:h-8 tw:px-2 tw:rounded-md tw:border tw:border-soft-periwinkle/40 tw:select-none"
+const itemHover = "tw:hover:bg-soft-periwinkle/20 tw:transition-colors"
 ---
 
-<nav aria-label="pagination" class="tw:flex tw:gap-x-2 tw:text-base tw:items-center" class:list={{ "tw:justify-center": centered }}>
-  <Link href={pageLink(1)} title="Go to first page" withUnderline={false}>&laquo;</Link>
-  <Link href={pageLink(Math.max(1, curPage - 1))} title="Go to previous page" withUnderline={false}>&lsaquo;</Link>
-  {pages.map(p => 
-    p === "ellipsis" 
-      ? <span class="ellipsis">&hellip;</span>
-      : <Link href={pageLink(p)} class:list={{ "tw:font-bold": p === curPage }} withUnderline={false}>{p}</Link> 
+<nav aria-label="pagination" class="tw:flex tw:flex-wrap tw:gap-1.5 tw:text-sm tw:items-center" class:list={{ "tw:justify-center": centered }}>
+  {[
+    { label: "\u00AB", title: "Go to first page", page: 1, disabled: curPage <= 1 },
+    { label: "\u2039", title: "Go to previous page", page: Math.max(1, curPage - 1), disabled: curPage <= 1 },
+  ].map(c => c.disabled
+    ? <span class:list={[itemBase, "tw:opacity-30"]} aria-hidden="true">{c.label}</span>
+    : <a href={pageLink(c.page)} title={c.title} class={`${itemBase} ${itemHover}`}>{c.label}</a>
   )}
-  <Link href={pageLink(Math.min(totalPages, curPage + 1))} title="Go to next page" withUnderline={false}>&rsaquo;</Link>
-  <Link href={pageLink(totalPages)} title="Go to last page" withUnderline={false}>&raquo;</Link>
+  {pages.map(p =>
+    p === "ellipsis"
+      ? <span class:list={[itemBase, "tw:opacity-50"]} aria-hidden="true">&hellip;</span>
+      : p === curPage
+        ? <span class:list={[itemBase, "tw:font-bold tw:bg-powder-blue tw:text-coffee-bean tw:border-powder-blue"]} aria-current="page">{p}</span>
+        : <a href={pageLink(p)} title={`Go to page ${p}`} class={`${itemBase} ${itemHover}`}>{p}</a>
+  )}
+  {[
+    { label: "\u203A", title: "Go to next page", page: Math.min(totalPages, curPage + 1), disabled: curPage >= totalPages },
+    { label: "\u00BB", title: "Go to last page", page: totalPages, disabled: curPage >= totalPages },
+  ].map(c => c.disabled
+    ? <span class:list={[itemBase, "tw:opacity-30"]} aria-hidden="true">{c.label}</span>
+    : <a href={pageLink(c.page)} title={c.title} class={`${itemBase} ${itemHover}`}>{c.label}</a>
+  )}
 </nav>

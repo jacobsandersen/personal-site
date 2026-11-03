@@ -1,0 +1,41 @@
+---
+// The ONLY place post-type branching lives. Everything that is the same for
+// every post (title, dates, tags, syndication, webmentions) is in PostFrame.
+import type Mf2Extractor from "~/lib/extractor/Mf2Extractor";
+import { PostType } from "~/types/bastion";
+import { RenderMethod } from "~/types/mf2-rendering";
+import PostContent from "./PostContent.astro";
+import TargetCard from "./TargetCard.astro";
+import PhotoBody from "./types/PhotoBody.astro";
+import VideoBody from "./types/VideoBody.astro";
+import CheckinBody from "./types/CheckinBody.astro";
+
+interface Props {
+  extractor: Mf2Extractor;
+  renderMethod: RenderMethod;
+}
+
+const { extractor, renderMethod } = Astro.props as Props;
+const type = extractor.getType();
+
+// Types whose defining feature is a link to another URL.
+const contexts: Partial<Record<PostType, { label: string; href: string | null; linkClass: string }>> = {
+  [PostType.REPLY]: { label: "In reply to", href: extractor.getInReplyTo(), linkClass: "u-in-reply-to" },
+  [PostType.REPOST]: { label: "Reposted", href: extractor.getRepostOf(), linkClass: "u-repost-of" },
+  [PostType.LIKE]: { label: "Liked", href: extractor.getLikeOf(), linkClass: "u-like-of" },
+  [PostType.BOOKMARK]: { label: "Bookmarked", href: extractor.getBookmarkOf(), linkClass: "u-bookmark-of" },
+  [PostType.RSVP]: { label: "RSVP to", href: extractor.getInReplyTo(), linkClass: "u-in-reply-to" },
+};
+const context = contexts[type];
+const rsvp = extractor.getRsvp();
+const mood = extractor.getMood();
+const checkin = extractor.getCheckin();
+---
+
+<PostContent extractor={extractor} renderMethod={renderMethod} />
+{context?.href && <TargetCard label={context.label} href={context.href} linkClass={context.linkClass} />}
+{type === PostType.RSVP && rsvp && <data class="p-rsvp" value={rsvp} hidden>{rsvp}</data>}
+{type === PostType.PHOTO && <PhotoBody photos={extractor.getPhotos()} />}
+{type === PostType.VIDEO && <VideoBody videos={extractor.getVideoUrls()} />}
+{type === PostType.MOOD && mood && <data class="p-mood" value={mood} hidden>{mood}</data>}
+{type === PostType.CHECKIN && checkin && <CheckinBody checkin={checkin} />}

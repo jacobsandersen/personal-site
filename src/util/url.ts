@@ -22,3 +22,13 @@ export function validateDayForPath(day?: string): boolean {
 export function validateYearMonthDayForPath(year?: string, month?: string, day?: string): boolean {
     return validateYearForPath(year) && validateMonthForPath(month) && validateDayForPath(day)
 }
+
+/** True only for http(s) URLs. Use for untrusted values (e.g. webmention authors) rendered into href/src. */
+export function isHttpUrl(urlString: string): boolean {
+    try {
+        const { protocol } = new URL(urlString);
+        return protocol === 'http:' || protocol === 'https:';
+    } catch {
+        return false;
+    }
+}

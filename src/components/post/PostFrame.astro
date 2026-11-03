@@ -1,0 +1,104 @@
+---
+// The single card every post is rendered in. The per-type body is the slot.
+import type Mf2Extractor from "~/lib/extractor/Mf2Extractor";
+import { env } from "~/lib/env";
+import { RenderMethod } from "~/types/mf2-rendering";
+import PostAuthor from "./PostAuthor.astro";
+import PostStats from "./PostStats.astro";
+import SyndicationLinks from "./SyndicationLinks.astro";
+import Reactions from "./Reactions.astro";
+import Comments from "./Comments.astro";
+import WebmentionForm from "./WebmentionForm.astro";
+
+interface Props {
+  extractor: Mf2Extractor;
+  renderMethod: RenderMethod;
+  class?: string;
+}
+
+const { extractor, renderMethod, class: className } = Astro.props as Props;
+const headline = extractor.getHeadline();
+const summary = extractor.getSummary();
+const dates = extractor.getDates();
+const permalink = extractor.getUrl() ?? `${env.PUBLIC_URL}${Astro.url.pathname}`;
+const permalinkPath = extractor.getPermalinkPath() ?? Astro.url.pathname;
+const commentsHref = `${permalinkPath}#comments`;
+const syndications = extractor.getSyndications();
+const categories = extractor.getCategories();
+const isFeed = renderMethod === RenderMethod.Feed;
+
+const published = dates.createdAtParsed.format("MMM D, YYYY [at] HH:mm");
+// "Edited 14:30" on the same day, otherwise "Edited Nov 4, 2026".
+const edited = !dates.updatedSameAsCreated()
+  ? dates.updatedAtParsed.isSame(dates.createdAtParsed, "day")
+    ? `Edited ${dates.updatedAtParsed.format("HH:mm")}`
+    : `Edited ${dates.updatedAtParsed.format("MMM D, YYYY")}`
+  : null;
+---
+
+<article
+  class:list={[
+    "h-entry tw:col-span-12 tw:flex tw:flex-col tw:gap-y-3 tw:rounded-xl tw:border tw:border-soft-periwinkle/25 tw:bg-white/[0.03] tw:p-4 tw:pt-3",
+    className,
+  ]}
+>
+  <PostAuthor />
+
+  <header class="tw:mb-1.5 tw:flex tw:flex-col tw:gap-y-0.5">
+  <h2 class:list={["tw:text-lg tw:font-semibold", headline.isTitle && "p-name"]}>
+    {
+      isFeed ? (
+        <a href={permalinkPath} class="tw:no-underline tw:hover:underline tw:decoration-dotted tw:underline-offset-2">
+          {headline.text}
+        </a>
+      ) : (
+        headline.text
+      )
+    }
+  </h2>
+
+  <div class="tw:flex tw:flex-wrap tw:items-center tw:justify-between tw:gap-x-4 tw:gap-y-1 tw:text-xs tw:opacity-80">
+    <p>
+      <a href={permalink} class="u-url tw:no-underline tw:hover:underline tw:decoration-dotted tw:underline-offset-2">
+        <time class="dt-published" datetime={dates.createdAtRaw}>{published}</time>
+      </a>
+      {edited && (
+        <>
+          {" "}&middot;{" "}
+          <time class="dt-updated" datetime={dates.updatedAtRaw}>{edited}</time>
+        </>
+      )}
+    </p>
+    <SyndicationLinks syndications={syndications} />
+  </div>
+  </header>
+
+  {summary.length > 0 && <p class="p-summary tw:italic">{summary.join(" ")}</p>}
+
+  <slot />
+
+  {
+    categories.length > 0 && (
+      <ul class="tw:flex tw:flex-wrap tw:gap-x-3 tw:text-sm tw:opacity-80">
+        {categories.map((category) => (
+          <li>
+            <a href={`/tagged/${category}`} class="p-category tw:no-underline tw:hover:underline tw:decoration-wavy">#{category}</a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
+  <div class="tw:flex tw:flex-col tw:gap-y-4 tw:border-t tw:border-soft-periwinkle/20 tw:pt-3">
+    <PostStats extractor={extractor} commentsHref={commentsHref} />
+    {isFeed ? (
+      <Comments extractor={extractor} limit={2} allHref={commentsHref} />
+    ) : (
+      <>
+        <Reactions extractor={extractor} />
+        <Comments extractor={extractor} />
+        <WebmentionForm extractor={extractor} />
+      </>
+    )}
+  </div>
+</article>

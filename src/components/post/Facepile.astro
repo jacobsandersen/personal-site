@@ -1,0 +1,41 @@
+---
+import type { WebmentionDto } from "~/types/bastion";
+import WebmentionAvatar from "./WebmentionAvatar.astro";
+
+interface Props {
+  /** Reaction webmentions (like/repost/bookmark/RSVP). */
+  reactions: WebmentionDto[];
+  max?: number;
+}
+
+const { reactions, max = 5 } = Astro.props as Props;
+
+// One face per person, even if they liked and reposted.
+const seen = new Set<string>();
+const people = reactions.filter((wm) => {
+  const key = wm.authorUrl ?? wm.authorName ?? wm.sourceUrl;
+  if (seen.has(key)) return false;
+  seen.add(key);
+  return true;
+});
+const shown = people.slice(0, max);
+const extra = people.length - shown.length;
+const label = (wm: WebmentionDto) => wm.authorName ?? new URL(wm.sourceUrl).host;
+---
+
+{
+  shown.length > 0 && (
+    <ul class="tw:flex tw:items-center" aria-label={people.map(label).join(", ")}>
+      {shown.map((wm) => (
+        <li class="tw:-ml-1.5 tw:first:ml-0" title={label(wm)}>
+          <WebmentionAvatar photo={wm.authorPhoto} name={label(wm)} size="tw:size-7" class="tw:ring-2 tw:ring-coffee-bean" />
+        </li>
+      ))}
+      {extra > 0 && (
+        <li class="tw:-ml-1.5 tw:inline-flex tw:size-7 tw:items-center tw:justify-center tw:rounded-full tw:bg-soft-periwinkle/30 tw:text-xs tw:ring-2 tw:ring-coffee-bean">
+          +{extra}
+        </li>
+      )}
+    </ul>
+  )
+}

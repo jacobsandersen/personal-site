@@ -1,0 +1,66 @@
+---
+import type Mf2Extractor from "~/lib/extractor/Mf2Extractor";
+import { WebmentionInteraction, type WebmentionDto } from "~/types/bastion";
+import { parseRaw } from "~/util/dates";
+import { isHttpUrl } from "~/util/url";
+import WebmentionAvatar from "./WebmentionAvatar.astro";
+
+interface Props {
+  extractor: Mf2Extractor;
+  /**
+   * Preview mode (feeds): show only the latest `limit` comments, no heading or
+   * empty state, and a link to the rest. Omit for the full permalink section.
+   */
+  limit?: number;
+  allHref?: string;
+}
+
+const { extractor, limit, allHref } = Astro.props as Props;
+const preview = limit !== undefined;
+// Comments are replies and mentions, oldest first.
+const all = extractor
+  .getWebmentions()
+  .filter((wm) => wm.interaction === WebmentionInteraction.REPLY || wm.interaction === WebmentionInteraction.MENTION)
+  .sort((a, b) => a.verifiedAt.localeCompare(b.verifiedAt));
+const comments = preview ? all.slice(-limit) : all;
+// The feed carries counts for every post; the list only matters when present.
+const total = preview ? extractor.getCommentCount() : all.length;
+const hidden = total - comments.length;
+
+// Third-party data: render text only, and link over http(s) only.
+const safeUrl = (url?: string) => (url && isHttpUrl(url) ? url : undefined);
+const authorLabel = (wm: WebmentionDto) => wm.authorName ?? new URL(wm.sourceUrl).host;
+---
+
+{
+  (!preview || comments.length > 0) && (
+    <section id={preview ? undefined : "comments"} aria-label="Comments" class="tw:flex tw:flex-col tw:gap-y-3 tw:scroll-mt-4">
+      {!preview && (
+        <h2 class="tw:text-lg tw:font-bold">Comments</h2>
+      )}
+      {comments.length > 0 ? (
+        <ul class="tw:flex tw:flex-col tw:gap-y-3">
+          {comments.map((wm) => (
+            <li class="tw:flex tw:gap-x-2">
+              <WebmentionAvatar photo={wm.authorPhoto} name={authorLabel(wm)} size="tw:size-8" />
+              <div class="tw:min-w-0 tw:rounded-2xl tw:bg-soft-periwinkle/10 tw:px-3 tw:py-2">
+                <p class="tw:text-sm">
+                  <a href={safeUrl(wm.authorUrl) ?? safeUrl(wm.sourceUrl)} class="tw:font-bold tw:no-underline">{authorLabel(wm)}</a>{" "}
+                  <a href={safeUrl(wm.sourceUrl)} class="tw:text-xs tw:opacity-70 tw:no-underline tw:hover:underline">
+                    {wm.interaction === WebmentionInteraction.MENTION ? "mentioned this" : "replied"} &middot; {parseRaw(wm.verifiedAt)}
+                  </a>
+                </p>
+                {wm.contentText.length > 0 && <p class="tw:break-words">{wm.contentText.join(" ")}</p>}
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="tw:text-sm tw:opacity-70">No comments yet. Send me a webmention!</p>
+      )}
+      {preview && hidden > 0 && allHref && (
+        <a href={allHref} class="tw:text-sm tw:opacity-80 tw:hover:underline">View all {total} comments</a>
+      )}
+    </section>
+  )
+}

@@ -37,14 +37,14 @@ if (!currentlyReading) {
         <Link href="/reading/previous/1" slot="title">Previous Reads</Link>
         <span slot="subtitle">Yes! Let's talk about these!</span>
       </PageSubheading>
-      <BookList books={previousReads} pageBase="/reading/previous" colClass="tw:md:grid-cols-1" includeLastRead={true} />
+      <BookList books={previousReads} pageBase="/reading/previous" colClass="tw:md:grid-cols-1" includeLastRead={true} showPaginator={false} />
     </section>
     <section class="tw:col-span-2 tw:md:col-span-1 tw:flex tw:flex-col tw:gap-y-4">
       <PageSubheading>
         <Link href="/reading/wanted/1" slot="title">Want To Read</Link>
         <span slot="subtitle">Please don't spoil for these for me.</span>
       </PageSubheading>
-      <BookList books={wantToRead} pageBase="/reading/wanted" colClass="tw:md:grid-cols-1" />
+      <BookList books={wantToRead} pageBase="/reading/wanted" colClass="tw:md:grid-cols-1" showPaginator={false} />
     </section>
   </div>
 </BaseLayout>

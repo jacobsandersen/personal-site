@@ -1,9 +1,8 @@
 import { FeedDto, PostDto } from "./bastion";
 
 export enum RenderMethod {
-  Minimal = "minimal",
-  Preview = "preview",
-  Full = "full"
+  Feed = "feed",
+  Permalink = "permalink"
 }
 
 export interface RenderProps {
