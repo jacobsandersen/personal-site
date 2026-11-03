@@ -100,6 +100,7 @@ export interface BastionPagination {
   limit: number,
   offset: number,
   count: number,
+  total: number,
   hasMore: boolean
 }
 

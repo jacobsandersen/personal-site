@@ -1,0 +1,24 @@
+---
+import Carousel from "./Carousel.astro";
+
+interface Props {
+  videos: string[];
+}
+
+const { videos } = Astro.props as Props;
+---
+
+{videos.length === 1 && <video src={videos[0]} controls preload="metadata" class="u-video tw:-mx-4 tw:w-[calc(100%+2rem)] tw:bg-black" />}
+{
+  videos.length > 1 && (
+    <div class="tw:-mx-4">
+      <Carousel label="Videos" count={videos.length}>
+        {videos.map((url) => (
+          <div data-slide class="tw:w-full tw:shrink-0 tw:snap-center tw:bg-black">
+            <video src={url} controls preload="metadata" class="u-video tw:aspect-video tw:w-full" />
+          </div>
+        ))}
+      </Carousel>
+    </div>
+  )
+}

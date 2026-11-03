@@ -1,0 +1,20 @@
+---
+import Map, { OpenStreetMapTileData } from "~/components/fragments/Map.astro";
+import type { CheckinData } from "~/lib/content";
+
+interface Props {
+  checkin: CheckinData;
+}
+
+const { checkin } = Astro.props as Props;
+---
+
+<div class="tw:-mx-4">
+  <Map
+    latitude={checkin.latitude}
+    longitude={checkin.longitude}
+    zoom={13}
+    tileData={OpenStreetMapTileData}
+    class="tw:w-full tw:h-64"
+  />
+</div>

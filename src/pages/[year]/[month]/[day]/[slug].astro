@@ -2,6 +2,8 @@
 import DefaultBastionClient from "~/lib/bastion";
 import { parseAdhoc } from "~/util/dates";
 import { isPostGone } from "~/types/bastion"
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Breadcrumb from "~/components/Breadcrumb.astro";
 import PostRenderer from "~/components/post/PostRenderer.astro";
 import { env } from "~/lib/env";
 
@@ -24,10 +26,12 @@ date.setDate(Number(day))
 const formattedMonth = parseAdhoc(date, 'MMMM')
 ---
 
-<PostRenderer 
-  doc={post} 
-  crumbs={[
-    "Home:/", `${year}:/${year}`, `${formattedMonth}:/${year}/${month}`, `${day}:/${year}/${month}/${day}`, "This Post"
-  ]} 
-/>
-
+<BaseLayout title={post.name ?? `Post on ${year}-${month}-${day}`}>
+  <Breadcrumb
+    class="tw:col-span-12 tw:mb-4"
+    crumbs={[
+      "Home:/", `${year}:/${year}`, `${formattedMonth}:/${year}/${month}`, `${day}:/${year}/${month}/${day}`, "This Post"
+    ]}
+  />
+  <PostRenderer doc={post} />
+</BaseLayout>

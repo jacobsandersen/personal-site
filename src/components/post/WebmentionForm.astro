@@ -1,0 +1,48 @@
+---
+// Permalink-only: lets people without a webmention sender submit the URL of
+// their response. Posts to /webmention (src/pages/webmention.ts).
+import type Mf2Extractor from "~/lib/extractor/Mf2Extractor";
+import { env } from "~/lib/env";
+
+interface Props {
+  extractor: Mf2Extractor;
+}
+
+const { extractor } = Astro.props as Props;
+const target = extractor.getUrl() ?? `${env.PUBLIC_URL}${Astro.url.pathname}`;
+
+const messages = {
+  sent: "Thanks! I got your link and will check it shortly. It shows up here once it's verified.",
+  invalid:
+    "That link couldn't be accepted. Make sure it's a public page that links to this post.",
+  unavailable: "I couldn't reach the webmention service. Please try again in a bit.",
+} as const;
+const flag = Astro.url.searchParams.get("webmention");
+const notice = flag && flag in messages ? messages[flag as keyof typeof messages] : undefined;
+---
+
+<section id="send-webmention" aria-label="Send a webmention" class="tw:flex tw:flex-col tw:gap-y-2 tw:scroll-mt-4">
+  <h2 class="tw:text-lg tw:font-bold">Respond from your own site</h2>
+  <p class="tw:text-sm tw:opacity-80">
+    Have you replied to, liked or written about this post? Enter the URL of your response and I'll be notified.
+  </p>
+  <form method="post" action="/webmention" class="tw:flex tw:flex-wrap tw:gap-2">
+    <input type="hidden" name="target" value={target} />
+    <label for="webmention-source" class="tw:sr-only">URL of your response</label>
+    <input
+      id="webmention-source"
+      type="url"
+      name="source"
+      required
+      placeholder="https://example.com/my-response"
+      class="tw:min-w-0 tw:flex-1 tw:rounded-lg tw:border tw:border-soft-periwinkle/30 tw:bg-soft-periwinkle/10 tw:px-3 tw:py-1.5 tw:text-sm tw:placeholder:text-soft-periwinkle/50"
+    />
+    <button
+      type="submit"
+      class="tw:rounded-lg tw:border tw:border-soft-periwinkle/40 tw:bg-soft-periwinkle/15 tw:px-4 tw:py-1.5 tw:text-sm tw:font-semibold tw:hover:bg-soft-periwinkle/25"
+    >
+      Send
+    </button>
+  </form>
+  {notice && <p role="status" class="tw:text-sm">{notice}</p>}
+</section>

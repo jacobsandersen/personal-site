@@ -1,4 +1,3 @@
-import { uuidv4 } from 'astro:schema';
 import { z } from 'zod';
 
 const envSchema = z.object({

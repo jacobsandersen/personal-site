@@ -1,0 +1,45 @@
+---
+import { LucideBookmark, LucideCalendarCheck, LucideHeart, LucideRepeat2 } from "@lucide/astro";
+import type Mf2Extractor from "~/lib/extractor/Mf2Extractor";
+import { WebmentionInteraction, type WebmentionDto } from "~/types/bastion";
+import { isHttpUrl } from "~/util/url";
+import WebmentionAvatar from "./WebmentionAvatar.astro";
+
+interface Props {
+  extractor: Mf2Extractor;
+}
+
+const { extractor } = Astro.props as Props;
+const webmentions = extractor.getWebmentions();
+
+const safeUrl = (url?: string) => (url && isHttpUrl(url) ? url : undefined);
+const authorLabel = (wm: WebmentionDto) => wm.authorName ?? new URL(wm.sourceUrl).host;
+
+const groups = [
+  { interaction: WebmentionInteraction.LIKE, label: "Likes", icon: LucideHeart },
+  { interaction: WebmentionInteraction.REPOST, label: "Reposts", icon: LucideRepeat2 },
+  { interaction: WebmentionInteraction.BOOKMARK, label: "Bookmarks", icon: LucideBookmark },
+  { interaction: WebmentionInteraction.RSVP, label: "RSVPs", icon: LucideCalendarCheck },
+]
+  .map((group) => ({ ...group, items: webmentions.filter((wm) => wm.interaction === group.interaction) }))
+  .filter((group) => group.items.length > 0);
+---
+
+{
+  groups.length > 0 && (
+    <section aria-label="Reactions" class="tw:flex tw:flex-col tw:gap-y-3">
+      {groups.map(({ label, icon: Icon, items }) => (
+        <div class="tw:flex tw:flex-wrap tw:items-center tw:gap-2">
+          <span class="tw:flex tw:items-center tw:gap-x-1 tw:text-sm tw:opacity-80">
+            <Icon class="tw:size-4" aria-hidden="true" /> {label}
+          </span>
+          {items.map((wm) => (
+            <a href={safeUrl(wm.authorUrl) ?? safeUrl(wm.sourceUrl)} title={authorLabel(wm)} class="tw:inline-block tw:no-underline">
+              <WebmentionAvatar photo={wm.authorPhoto} name={authorLabel(wm)} />
+            </a>
+          ))}
+        </div>
+      ))}
+    </section>
+  )
+}

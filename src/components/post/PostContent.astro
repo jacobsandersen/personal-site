@@ -1,0 +1,31 @@
+---
+import ContentRenderer from "~/components/content/ContentRenderer.astro";
+import type Mf2Extractor from "~/lib/extractor/Mf2Extractor";
+import { PostType } from "~/types/bastion";
+import { RenderMethod } from "~/types/mf2-rendering";
+
+interface Props {
+  extractor: Mf2Extractor;
+  renderMethod: RenderMethod;
+}
+
+const { extractor, renderMethod } = Astro.props as Props;
+const content = extractor.getContent();
+// Long-form articles are clipped in feeds; everything else renders in full.
+const preview =
+  renderMethod === RenderMethod.Feed && extractor.getType() === PostType.ARTICLE;
+const permalinkPath = extractor.getPermalinkPath();
+---
+
+{
+  content.length > 0 && (
+    <div class="tw:flex tw:flex-col tw:gap-y-2">
+      <div class="e-content tw:flex tw:flex-col tw:gap-y-4">
+        <ContentRenderer content={content} html={extractor.isHtml} preview={preview} />
+      </div>
+      {preview && permalinkPath && (
+        <a href={permalinkPath} class="tw:text-sm tw:underline tw:decoration-dotted tw:underline-offset-2">Read more</a>
+      )}
+    </div>
+  )
+}

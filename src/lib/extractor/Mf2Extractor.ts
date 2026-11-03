@@ -1,57 +1,73 @@
-import { PostDto, SyndicationDto, WebmentionCountsDto, WebmentionDto } from "~/types/bastion";
+import { PostDto, PostType, SyndicationDto, WebmentionCountsDto, WebmentionDto, WebmentionInteraction } from "~/types/bastion";
 import { Mf2ObjectProperties } from "~/types/mf2";
 import { isValidUrl } from "~/util/url";
 import { extractDates, ExtractedDates } from "~/util/dates";
 import { CheckinData } from "../content";
 
+const KNOWN_TYPES = new Set<string>(Object.values(PostType))
+
 export default class Mf2Extractor {
     protected readonly doc: PostDto
     private readonly dates: ExtractedDates
-    isHtml: boolean
+    private resolvedType?: PostType
 
     constructor(doc: PostDto) {
         this.doc = doc
         // Bastion already extracts published/updated from props, so use doc fields directly
         this.dates = extractDates(doc.published ?? "", doc.updated ?? "")
-        this.isHtml = false
     }
 
     // --- core accessors ---
 
-    getType(): string {
-      if (!this.doc.type) {
-        throw new Error("h-entry missing type")
-      }
+    /**
+     * Resolves the post type. Uses Bastion's type hint when it is a known type,
+     * otherwise infers it from properties using the same ordered rules Bastion
+     * uses for discovery. Never throws.
+     */
+    getType(): PostType {
+        if (!this.resolvedType) {
+            const hint = this.doc.type as PostType | undefined
+            this.resolvedType = hint && KNOWN_TYPES.has(hint) ? hint : this.inferType()
+        }
 
-      return this.doc.type
+        return this.resolvedType
+    }
+
+    private inferType(): PostType {
+        const props = this.getProperties()
+        const has = (name: string) => (props[name] ?? []).length > 0
+
+        if (this.getRsvp()) return PostType.RSVP
+        if (this.getInReplyTo()) return PostType.REPLY
+        if (this.getRepostOf()) return PostType.REPOST
+        if (this.getLikeOf()) return PostType.LIKE
+        if (this.getVideoUrls().length > 0) return PostType.VIDEO
+        if (this.getPhotoUrls().length > 0) return PostType.PHOTO
+        if (this.getBookmarkOf()) return PostType.BOOKMARK
+        if (has('checkin') && this.getCheckin()) return PostType.CHECKIN
+        if (this.getMood()) return PostType.MOOD
+
+        const name = this.getName()?.trim()
+        const body = [...this.doc.content, ...this.doc.summary].find(v => v.trim().length > 0)?.trim()
+        if (name && body && !body.startsWith(name)) return PostType.ARTICLE
+
+        return PostType.NOTE
     }
 
     getProperties(): Mf2ObjectProperties {
         return this.doc.properties
     }
 
-    getRootElem(): string {
-        if (this.getType() === 'article') {
-            return 'article'
-        }
-        return 'div'
-    }
-
     getSummary(): string[] {
       return this.doc.summary
     }
 
-    getContent(): string[] {
-        if (this.doc.contentHtml.length) {
-          this.isHtml = true
-          return this.doc.contentHtml
-        } else if (this.doc.content.length) {
-          return this.doc.content
-        } else if (this.doc.summary.length) {
-          return this.doc.summary
-        }
+    get isHtml(): boolean {
+        return this.doc.contentHtml.length > 0
+    }
 
-        return []
+    getContent(): string[] {
+        return this.isHtml ? this.doc.contentHtml : this.doc.content
     }
 
     getSyndications(): SyndicationDto[] {
@@ -63,11 +79,23 @@ export default class Mf2Extractor {
     }
 
     getWebmentions(): WebmentionDto[] {
-      return this.doc.webmentions ?? []
+      // Bastion serializes the interaction as its enum name ("REPLY"); normalize
+      // so comparisons against WebmentionInteraction hold either way.
+      return (this.doc.webmentions ?? []).map((wm) => ({
+        ...wm,
+        interaction: String(wm.interaction).toLowerCase() as WebmentionInteraction,
+      }))
     }
     
     getUrl(): string | undefined {
       return this.doc.url
+    }
+
+    /** In-site path of the permalink (works behind the reverse proxy). */
+    getPermalinkPath(): string | undefined {
+      const url = this.doc.url
+      if (!url || !isValidUrl(url)) return undefined
+      return new URL(url).pathname
     }
 
     getCategories(): string[] {
@@ -125,78 +153,74 @@ export default class Mf2Extractor {
         return this.getFirstString('name')
     }
 
-    // --- title helpers ---
+    // --- title & headline ---
 
-    getTitle(): string {
+    /**
+     * The real title (Bastion `name`), for any post type: micropub clients can
+     * send one with a photo, bookmark, etc. Drives `p-name`. A name that merely
+     * repeats the start of the body is mf2's implied name, not a title.
+     */
+    getTitle(): string | null {
+        const name = this.getName()?.trim()
+        if (!name) return null
+        if (this.getType() === PostType.ARTICLE) return name
+
+        const body = [...this.doc.content, ...this.doc.summary].find(v => v.trim().length > 0)?.trim()
+        return body && body.startsWith(name) ? null : name
+    }
+
+    /**
+     * Headline shown on every post. Only a real title is flagged `isTitle`,
+     * so callers can apply `p-name` to titles and never to action sentences.
+     */
+    getHeadline(): { text: string, isTitle: boolean } {
+        const title = this.getTitle()
+        if (title) return { text: title, isTitle: true }
+
+        return { text: this.getActionSentence(), isTitle: false }
+    }
+
+    private getActionSentence(): string {
         switch (this.getType()) {
-            case 'article':
-                return this.getName() ?? 'Untitled Article'
-            case 'reply': {
-                const target = this.getInReplyTo()
-                return target ? `Replied to ${this.abbrevUrl(target)}` : 'Replied to a post'
+            case PostType.REPLY: return 'Replied to a post'
+            case PostType.REPOST: return 'Reposted a link'
+            case PostType.LIKE: return 'Liked a link'
+            case PostType.BOOKMARK: return 'Bookmarked a link'
+            case PostType.RSVP: {
+                const rsvp = this.getRsvp()
+                return rsvp ? `RSVPed ${rsvp}` : 'RSVPed to an event'
             }
-            case 'repost': {
-                const target = this.getRepostOf()
-                return target ? `Reposted ${this.abbrevUrl(target)}` : 'Reposted a post'
+            case PostType.PHOTO: {
+                const count = this.getPhotos().length
+                return count > 1 ? `Shared ${count} photos` : 'Shared a photo'
             }
-            case 'like': {
-                const target = this.getLikeOf()
-                return target ? `Liked ${this.abbrevUrl(target)}` : 'Liked a post'
-            }
-            case 'video': {
+            case PostType.VIDEO: {
                 const count = this.getVideoUrls().length
-                if (count === 0) return 'Posted a video'
-                return `Posted ${count === 1 ? 'a' : count} ${count === 1 ? 'video' : 'videos'}`
+                return count > 1 ? `Shared ${count} videos` : 'Shared a video'
             }
-            case 'photo': {
-                const count = this.getPhotoUrls().length
-                if (count === 0) return 'Posted a photo'
-                const label = count === 1 ? 'photo' : 'photos'
-                return `Posted ${count === 1 ? 'a' : count} ${label}`
+            case PostType.MOOD: {
+                const mood = this.getMood()
+                return mood ? `Feeling ${mood}` : 'Logged a mood'
             }
-            case 'rsvp':
-                return `RSVP for ${this.getRsvpEvent() ?? this.abbrevUrl(this.getInReplyTo() ?? 'an event')}`
-            case 'bookmark': {
-                const target = this.getBookmarkOf()
-                return target ? `Bookmarked ${this.abbrevUrl(target)}` : 'Bookmarked a post'
-            }
-            case 'checkin': {
+            case PostType.CHECKIN: {
                 const checkin = this.getCheckin()
                 return checkin ? `Checked in at ${checkin.name}` : 'Checked in'
             }
-            case 'mood': {
-                const mood = this.getMood()
-                return mood ? `Logged his mood as "${mood}"` : 'Logged his mood'
-            }
-            case 'note': {
-                return 'Posted a note'
-            }
-            default:
-                return this.getName() ?? `Posted a ${this.getType()}`
+            default: return 'Posted a note'
         }
     }
 
-    getMinimalTitle(): string {
-        const type = this.getType()
-        if (type === 'rsvp') {
-            const rsvp = this.getRsvp()
-            const abbrev = this.abbrevUrl(this.getInReplyTo() ?? '')
-            if (rsvp) {
-                return `${rsvp[0].toUpperCase() + rsvp.slice(1)}: ${abbrev}`
-            }
-            return abbrev
-        }
-        if (type === 'mood') {
-            return 'Logged his mood'
-        }
-        return this.getTitle()
+    // --- webmention counts ---
+
+    /** Comments are replies and mentions. */
+    getCommentCount(): number {
+        const counts = this.getWebmentionCounts()
+        return counts.reply + counts.mention
     }
 
-    getTitleClasses(): string[] {
-        if (this.getType() === 'article') {
-            return ['p-name']
-        }
-        return []
+    getReactionCounts(): { like: number, repost: number, bookmark: number, rsvp: number } {
+        const { like, repost, bookmark, rsvp } = this.getWebmentionCounts()
+        return { like, repost, bookmark, rsvp }
     }
 
     // --- trait getters (nullable, never throw) ---
@@ -218,9 +242,21 @@ export default class Mf2Extractor {
     }
 
     getPhotoUrls(): string[] {
-        const photos = this.getProperties().photo
-        if (!photos || photos.length === 0) return []
-        return photos.filter(url => typeof url === 'string' && isValidUrl(url)) as string[]
+        return this.getPhotos().map(photo => photo.url)
+    }
+
+    getPhotos(): { url: string, alt?: string }[] {
+        const photos = this.getProperties().photo ?? []
+        return photos.flatMap(photo => {
+            if (typeof photo === 'string') {
+                return isValidUrl(photo) ? [{ url: photo }] : []
+            }
+            if (photo && typeof photo === 'object' && typeof (photo as any).value === 'string' && isValidUrl((photo as any).value)) {
+                const alt = (photo as any).alt
+                return [{ url: (photo as any).value as string, alt: typeof alt === 'string' ? alt : undefined }]
+            }
+            return []
+        })
     }
 
     getVideoUrls(): string[] {
@@ -256,14 +292,6 @@ export default class Mf2Extractor {
         return typeof v === 'string' && v.length > 0 ? v : null
     }
 
-    getRsvpEvent(): string | null {
-        // Original RsvpMf2Extractor read properties.content for event name
-        const vals = this.getProperties().content
-        if (!vals || vals.length === 0) return null
-        const v = vals[0]
-        return typeof v === 'string' && v.length > 0 ? v : null
-    }
-
     // --- helpers ---
 
     private getValidUrlProp(propName: string): string | null {
@@ -272,12 +300,6 @@ export default class Mf2Extractor {
         const url = vals[0]
         if (typeof url !== 'string' || url.length === 0 || !isValidUrl(url)) return null
         return url
-    }
-
-    private abbrevUrl(url: string): string {
-        const maxLen = 36
-        if (url.length <= maxLen) return url
-        return `${url.slice(0, maxLen)}...`
     }
 
     // keep for backwards compat if any code calls getPost; now returns trait bag
@@ -293,7 +315,6 @@ export default class Mf2Extractor {
             checkin: this.getCheckin(),
             mood: this.getMood(),
             rsvp: this.getRsvp(),
-            event: this.getRsvpEvent(),
         }
     }
 }

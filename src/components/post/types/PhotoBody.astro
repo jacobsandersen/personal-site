@@ -1,0 +1,116 @@
+---
+import { LucideMaximize2, LucideX } from "@lucide/astro";
+import Carousel from "./Carousel.astro";
+
+interface Props {
+  photos: { url: string; alt?: string }[];
+}
+
+const { photos } = Astro.props as Props;
+---
+
+{
+  photos.length > 0 && (
+    <photo-lightbox class="tw:-mx-4 tw:block">
+      {photos.length === 1 ? (
+        <div class="tw:relative">
+          <img src={photos[0].url} alt={photos[0].alt ?? ""} class="u-photo tw:block tw:h-auto tw:w-full" loading="lazy" />
+          <button
+            type="button"
+            data-expand={photos[0].url}
+            data-alt={photos[0].alt ?? ""}
+            aria-label="View full size"
+            class="tw:absolute tw:right-2 tw:top-2 tw:grid tw:size-8 tw:place-items-center tw:rounded-full tw:bg-black/60 tw:text-white tw:hover:bg-black/80"
+          >
+            <LucideMaximize2 class="tw:size-4" aria-hidden="true" />
+          </button>
+        </div>
+      ) : (
+        <Carousel label="Photos" count={photos.length}>
+          {photos.map((photo) => (
+            <div
+              data-slide
+              data-src={photo.url}
+              data-alt={photo.alt ?? ""}
+              class="tw:relative tw:flex tw:aspect-[4/3] tw:w-full tw:shrink-0 tw:snap-center tw:items-center tw:justify-center tw:bg-black/30"
+            >
+              <img src={photo.url} alt={photo.alt ?? ""} class="u-photo tw:max-h-full tw:max-w-full tw:object-contain" loading="lazy" />
+            </div>
+          ))}
+          <button
+            slot="overlay"
+            type="button"
+            data-expand-current
+            aria-label="View full size"
+            class="tw:absolute tw:right-2 tw:top-2 tw:grid tw:size-8 tw:place-items-center tw:rounded-full tw:bg-black/60 tw:text-white tw:hover:bg-black/80"
+          >
+            <LucideMaximize2 class="tw:size-4" aria-hidden="true" />
+          </button>
+        </Carousel>
+      )}
+      <dialog
+        data-dialog
+        aria-label="Photo at full size"
+        class="tw:fixed tw:inset-0 tw:m-0 tw:size-full tw:max-h-none tw:max-w-none tw:bg-black/90 tw:p-0 tw:text-white tw:backdrop:bg-black/60"
+      >
+        <div data-scroller class="tw:flex tw:size-full tw:overflow-auto">
+          <img data-full alt="" class="tw:m-auto tw:max-w-none tw:shrink-0" />
+        </div>
+        <button
+          type="button"
+          data-close
+          aria-label="Close"
+          class="tw:fixed tw:right-3 tw:top-3 tw:grid tw:size-10 tw:place-items-center tw:rounded-full tw:bg-black/70 tw:text-white tw:hover:bg-black"
+        >
+          <LucideX class="tw:size-5" aria-hidden="true" />
+        </button>
+      </dialog>
+    </photo-lightbox>
+  )
+}
+
+<script>
+  // "View full size": shows the photo at its natural pixel size in a modal,
+  // scrollable when larger than the viewport. Esc, the X, or a click outside
+  // the photo closes it.
+  class PhotoLightbox extends HTMLElement {
+    connectedCallback() {
+      const dialog = this.querySelector<HTMLDialogElement>("[data-dialog]")!;
+      const full = this.querySelector<HTMLImageElement>("[data-full]")!;
+      const scroller = this.querySelector<HTMLElement>("[data-scroller]")!;
+
+      this.addEventListener("click", (e) => {
+        const target = e.target as Element;
+        let src: string | undefined;
+        let alt = "";
+        const single = target.closest<HTMLElement>("[data-expand]");
+        if (single) {
+          src = single.dataset.expand;
+          alt = single.dataset.alt ?? "";
+        } else if (target.closest("[data-expand-current]")) {
+          // Carousel: open whichever slide is showing right now.
+          const track = this.querySelector<HTMLElement>("[data-track]")!;
+          const slides = this.querySelectorAll<HTMLElement>("[data-slide]");
+          const slide = slides[Math.round(track.scrollLeft / track.clientWidth)];
+          src = slide?.dataset.src;
+          alt = slide?.dataset.alt ?? "";
+        }
+        if (!src) return;
+        full.src = src;
+        full.alt = alt;
+        scroller.scrollTo(0, 0);
+        document.documentElement.style.overflow = "hidden";
+        dialog.showModal();
+      });
+      this.querySelector("[data-close]")!.addEventListener("click", () => dialog.close());
+      dialog.addEventListener("click", (e) => {
+        if (e.target === dialog || e.target === scroller) dialog.close();
+      });
+      dialog.addEventListener("close", () => {
+        document.documentElement.style.overflow = "";
+        full.removeAttribute("src");
+      });
+    }
+  }
+  if (!customElements.get("photo-lightbox")) customElements.define("photo-lightbox", PhotoLightbox);
+</script>

@@ -1,0 +1,107 @@
+---
+// Swipeable carousel for multi-photo / multi-video posts. Slides go in the
+// default slot as `<div data-slide>` children. The track is plain CSS
+// scroll-snap, so it swipes and scrolls with no JS; the custom element below
+// only adds buttons, dots, a counter and keyboard support.
+import { LucideChevronLeft, LucideChevronRight } from "@lucide/astro";
+
+interface Props {
+  label: string;
+  count: number;
+}
+
+const { label, count } = Astro.props as Props;
+---
+
+<post-carousel class="tw:relative tw:block" role="group" aria-roledescription="carousel" aria-label={label}>
+  <div
+    data-track
+    tabindex="0"
+    class="tw:flex tw:snap-x tw:snap-mandatory tw:overflow-x-auto tw:scroll-smooth tw:motion-reduce:scroll-auto tw:[scrollbar-width:none] tw:[&::-webkit-scrollbar]:hidden"
+  >
+    <slot />
+  </div>
+
+  <!-- Fixed controls that don't move when slides change (e.g. a single expand button). -->
+  <slot name="overlay" />
+
+  <button
+    type="button"
+    data-prev
+    hidden
+    aria-label="Previous"
+    class="tw:absolute tw:left-2 tw:top-1/2 tw:grid tw:size-9 tw:-translate-y-1/2 tw:place-items-center tw:rounded-full tw:bg-black/60 tw:text-white tw:hover:bg-black/80 tw:disabled:invisible"
+  >
+    <LucideChevronLeft class="tw:size-5" aria-hidden="true" />
+  </button>
+  <button
+    type="button"
+    data-next
+    hidden
+    aria-label="Next"
+    class="tw:absolute tw:right-2 tw:top-1/2 tw:grid tw:size-9 tw:-translate-y-1/2 tw:place-items-center tw:rounded-full tw:bg-black/60 tw:text-white tw:hover:bg-black/80 tw:disabled:invisible"
+  >
+    <LucideChevronRight class="tw:size-5" aria-hidden="true" />
+  </button>
+
+    <div data-dots hidden class="tw:relative tw:flex tw:items-center tw:justify-center tw:pt-2">
+    <p data-counter aria-live="polite" class="tw:absolute tw:right-4 tw:text-xs tw:opacity-70"></p>
+    <div class="tw:flex tw:gap-x-1.5">
+    {Array.from({ length: count }, (_, i) => (
+      <button
+        type="button"
+        data-dot={i}
+        aria-label={`Go to item ${i + 1}`}
+        class="tw:h-1.5 tw:w-1.5 tw:rounded-full tw:bg-soft-periwinkle/40 tw:transition-all tw:aria-[current=true]:w-4 tw:aria-[current=true]:bg-soft-periwinkle"
+      />
+    ))}
+    </div>
+  </div>
+</post-carousel>
+
+<script>
+  class PostCarousel extends HTMLElement {
+    connectedCallback() {
+      const track = this.querySelector<HTMLElement>("[data-track]");
+      if (!track) return;
+      const prev = this.querySelector<HTMLButtonElement>("[data-prev]")!;
+      const next = this.querySelector<HTMLButtonElement>("[data-next]")!;
+      const counter = this.querySelector<HTMLElement>("[data-counter]")!;
+      const dots = this.querySelector<HTMLElement>("[data-dots]")!;
+      const dotButtons = [...this.querySelectorAll<HTMLButtonElement>("[data-dot]")];
+      const slides = [...track.querySelectorAll<HTMLElement>("[data-slide]")];
+
+      // Controls are hidden until we know they work.
+      for (const el of [prev, next, dots]) el.hidden = false;
+
+      const index = () => Math.round(track.scrollLeft / track.clientWidth);
+      const goTo = (i: number) =>
+        track.scrollTo({ left: Math.max(0, Math.min(slides.length - 1, i)) * track.clientWidth });
+
+      let current = -1;
+      const sync = () => {
+        const i = Math.max(0, Math.min(slides.length - 1, index()));
+        if (i === current) return;
+        // Stop media on the slide we left.
+        if (current >= 0) slides[current]?.querySelectorAll("video").forEach((v) => v.pause());
+        current = i;
+        prev.disabled = i === 0;
+        next.disabled = i === slides.length - 1;
+        counter.textContent = `${i + 1} / ${slides.length}`;
+        dotButtons.forEach((d, n) => d.setAttribute("aria-current", String(n === i)));
+      };
+
+      prev.addEventListener("click", () => goTo(index() - 1));
+      next.addEventListener("click", () => goTo(index() + 1));
+      dotButtons.forEach((d, n) => d.addEventListener("click", () => goTo(n)));
+      track.addEventListener("scroll", sync, { passive: true });
+      track.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowLeft") (e.preventDefault(), goTo(index() - 1));
+        if (e.key === "ArrowRight") (e.preventDefault(), goTo(index() + 1));
+      });
+      new ResizeObserver(() => goTo(Math.max(0, current))).observe(track);
+      sync();
+    }
+  }
+  if (!customElements.get("post-carousel")) customElements.define("post-carousel", PostCarousel);
+</script>

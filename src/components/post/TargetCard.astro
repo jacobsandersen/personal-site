@@ -1,0 +1,30 @@
+---
+import { LucideExternalLink } from "@lucide/astro";
+
+interface Props {
+  /** Lead-in text, e.g. "In reply to" */
+  label: string;
+  href: string;
+  /** microformats class for the link, e.g. "u-in-reply-to" */
+  linkClass: string;
+  // Reserved for a future fetched reply-context (needs Bastion support).
+  // title?: string; author?: string; excerpt?: string; image?: string;
+}
+
+const { label, href, linkClass } = Astro.props as Props;
+const url = new URL(href);
+const path = url.pathname === "/" ? "" : url.pathname;
+---
+
+<a
+  href={href}
+  target="_blank"
+  rel="noopener"
+  class:list={[linkClass, "tw:flex tw:items-center tw:justify-between tw:gap-x-3 tw:rounded-lg tw:border tw:border-soft-periwinkle/25 tw:bg-black/20 tw:px-3 tw:py-2 tw:no-underline tw:hover:border-soft-periwinkle/60"]}
+>
+  <span class="tw:flex tw:flex-col tw:min-w-0">
+    <span class="tw:text-xs tw:opacity-70">{label}</span>
+    <span class="tw:truncate"><span class="tw:font-bold">{url.host}</span><span class="tw:opacity-70">{path}</span></span>
+  </span>
+  <LucideExternalLink class="tw:size-4 tw:shrink-0 tw:opacity-70" />
+</a>

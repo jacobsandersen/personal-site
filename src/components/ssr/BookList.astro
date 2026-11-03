@@ -8,26 +8,27 @@ interface Props {
   pageBase: string;
   colClass?: string,
   includeLastRead?: boolean,
-  centerPaginator?: boolean
+  centerPaginator?: boolean,
+  showPaginator?: boolean
 }
 
-const { books, pageBase, colClass = "tw:grid-cols-1 tw:sm:grid-cols-2", includeLastRead = false, centerPaginator = false } = Astro.props;
+const { books, pageBase, colClass = "tw:grid-cols-1 tw:sm:grid-cols-2", includeLastRead = false, centerPaginator = true, showPaginator = true } = Astro.props;
 ---
 
 <div class="tw:flex tw:flex-col tw:gap-y-8">
-  <SimplePaginator
+  {showPaginator && <SimplePaginator
     curPage={books?.pagination.current_page ?? 1}
     totalPages={books?.pagination.total_pages ?? 1}
     pageLink={(page) => `${pageBase}/${page}`}
     centered={centerPaginator}
-  />
+  />}
   <ul class:list={["tw:grid", "tw:gap-6", colClass]}>
     {books?.books.map((book) => <BookItem book={book} includeLastRead={includeLastRead} />)}
   </ul>
-  <SimplePaginator
+  {showPaginator && <SimplePaginator
     curPage={books?.pagination.current_page ?? 1}
     totalPages={books?.pagination.total_pages ?? 1}
     pageLink={(page) => `${pageBase}/${page}`}
     centered={centerPaginator}
-  />
+  />}
 </div>

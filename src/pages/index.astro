@@ -1,19 +1,18 @@
 ---
-import LinkCard from "~/components/util/LinkCard.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import { RenderMethod } from "~/types/mf2-rendering";
-import NowReading from "~/components/ssr/NowReading.astro";
-import NowPlaying from "~/components/ssr/NowPlaying.astro";
 import Mf2Extractor from "~/lib/extractor/Mf2Extractor";
-import HFeedRenderer from "~/components/post/hfeed/HFeedRenderer.astro";
-import Bastion from "~/lib/bastion"
+import PaginatedFeed from "~/components/post/hfeed/PaginatedFeed.astro";
+import Bastion, { determinePageInfo } from "~/lib/bastion"
 import {PostMf2Type, PostType} from "~/types/bastion"
-import { env } from "~/lib/env";
+import { getPage, getPageLinkFn } from "~/util/page";
 
 const posts = await Bastion.posts()
   .h(PostMf2Type.ENTRY)
-  .perPage(20)
+  .page(getPage(Astro.url))
+  .perPage(5)
   .query()
+
+const pageInfo = determinePageInfo(posts.pagination)
 
 const { items: moodEntries } = await Bastion.posts()
   .h(PostMf2Type.ENTRY)
@@ -37,20 +36,8 @@ const feedInfo = {
 
 <BaseLayout title="Home">
   <div class="tw:flex tw:flex-col tw:gap-y-6">
-    <section class="h-card tw:pt-4 tw:flex tw:gap-x-4">
-      <div>
-        <h1 class="tw:text-6xl tw:font-brand tw:text-powder-blue tw:mb-4">hi, i'm <a href={env.PUBLIC_URL} class="u-url" rel="me"><span class="p-name"><span class="p-given-name">jacob</span><span class="tw:hidden">&nbsp;</span><span class="p-family-name tw:hidden">andersen</span></span></a></h1>
-        <p class="p-note tw:tracking-wide tw:leading-7">
-          I'm a software engineer, a reader, a traveller, a learner, and more.
-          This is my little corner of the internet &mdash; a little bit of a
-          garden, a workshop, a notebook, and a storage container, all in one.
-          Feel free to take a look around.
-        </p>
-      </div>
-      <img class="u-photo tw:w-36" src="/images/avatar/300x300.webp" alt="robotic avatar image" />
-    </section>
-    <section>
-      <h2 class="tw:text-3xl tw:font-bold tw:mb-3">knick knacks</h2>
+    <!-- <section>
+      <h2 class="tw:text-2xl tw:font-bold tw:mb-3">knick knacks</h2>
       <div class="tw:grid tw:grid-cols-2 tw:gap-4">
         <LinkCard href="/reading" class="tw:flex tw:flex-col tw:gap-y-2">
           <h3 slot="title" class="tw:text-xl">reading</h3>
@@ -77,14 +64,14 @@ const feedInfo = {
           </p>
         </LinkCard>
       </div>
-    </section>
+    </section> -->
     <section>
-      <h2 class="tw:text-3xl tw:font-bold tw:mb-3">lately</h2>
-      <HFeedRenderer
+      <!-- <h2 class="tw:text-3xl tw:font-bold tw:mb-3">lately</h2> -->
+      <PaginatedFeed
         feed={posts}
-        renderMethod={RenderMethod.Minimal}
         feedInfo={feedInfo}
-        class="tw:flex tw:flex-col tw:gap-y-6"
+        pageInfo={pageInfo}
+        pageLink={getPageLinkFn(Astro.url)}
       />
     </section>
   </div>

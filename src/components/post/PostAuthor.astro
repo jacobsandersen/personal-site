@@ -1,0 +1,9 @@
+---
+// Machine-readable authorship only. This is a personal site, so the author is
+// never shown on a post, but parsers still expect a p-author.
+import { env } from "~/lib/env";
+---
+
+<span class="p-author h-card" hidden>
+  <a class="u-url p-name" href={env.PUBLIC_URL} rel="author">Jacob Andersen</a>
+</span>
