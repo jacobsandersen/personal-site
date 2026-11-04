@@ -13,8 +13,13 @@ const { photos } = Astro.props as Props;
   photos.length > 0 && (
     <photo-lightbox class="tw:-mx-4 tw:block">
       {photos.length === 1 ? (
-        <div class="tw:relative">
-          <img src={photos[0].url} alt={photos[0].alt ?? ""} class="u-photo tw:block tw:h-auto tw:w-full" loading="lazy" />
+        <div class="tw:relative tw:flex tw:justify-center tw:bg-black/30">
+          <img
+            src={photos[0].url}
+            alt={photos[0].alt ?? ""}
+            class="u-photo tw:block tw:h-auto tw:max-h-[min(70vh,40rem)] tw:w-auto tw:max-w-full tw:object-contain"
+            loading="lazy"
+          />
           <button
             type="button"
             data-expand={photos[0].url}
