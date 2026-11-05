@@ -2,6 +2,7 @@
 import { env } from "~/lib/env";
 import Link from "../util/Link.astro";
 import NowWidgets from "../sidebar/NowWidgets.astro";
+import Webring from "../sidebar/Webring.astro";
 
 const { pathname } = Astro.url;
 
@@ -75,5 +76,6 @@ const isHome = pathname === "/";
     </ul>
   </nav>
   <NowWidgets class="tw:max-md:hidden tw:md:border-t tw:md:border-dashed tw:md:pt-4 tw:md:pr-6" />
+  <Webring class="tw:max-md:hidden tw:md:border-t tw:md:border-dashed tw:md:pt-4 tw:md:pr-6" />
 </div>
 </aside>

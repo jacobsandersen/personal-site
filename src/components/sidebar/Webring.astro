@@ -1,0 +1,18 @@
+---
+import Link from "../util/Link.astro";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = "" } = Astro.props as Props;
+---
+
+<section aria-label="Webring" class:list={["tw:min-w-0", className]}>
+  <span class="tw:block tw:text-xs tw:font-bold tw:uppercase tw:tracking-wider tw:opacity-70">webring</span>
+  <p class="tw:flex tw:items-center tw:justify-between tw:gap-x-2">
+    <Link href="https://xn--sr8hvo.ws/previous" withUnderline={false} title="Previous site" class="tw:px-1">←</Link>
+    <span class="tw:text-center tw:text-sm">An <Link href="https://xn--sr8hvo.ws">IndieWeb Webring</Link> 🕸💍</span>
+    <Link href="https://xn--sr8hvo.ws/next" withUnderline={false} title="Next site" class="tw:px-1">→</Link>
+  </p>
+</section>
