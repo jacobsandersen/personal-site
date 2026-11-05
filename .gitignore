@@ -30,3 +30,7 @@ drizzle
 
 # sample content entry
 src/content/scribble/sample.json
+
+# claude and trail
+.claude/
+.trail/
