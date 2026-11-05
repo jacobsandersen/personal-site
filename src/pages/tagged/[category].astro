@@ -11,6 +11,8 @@ if (!category) {
   return Astro.redirect("/400")
 }
 
+const categoryUriEncoded = encodeURIComponent(category)
+
 const paginatorData = getPaginatorData(Astro.url)
 const posts = await DefaultBastionClient.posts().h(PostMf2Type.ENTRY).tag(category).page(paginatorData.page).query()
 const pageInfo = determinePageInfo(posts.pagination)
@@ -20,16 +22,16 @@ const title = `Posts tagged with #${category}`;
 
 <BaseLayout title={title}>
     <slot name="additionalHead">
-      <link rel="self" href=`https://jacobandersen.dev/tagged/${category}/`>
+      <link rel="self" href=`https://jacobandersen.dev/tagged/${categoryUriEncoded}/`>
     </slot>
 
     <PageTitle 
       title={title} 
-      crumbs={["Home:/", "Post Tags:/tagged", `#${category}:/tagged/${category}`]} />
+      crumbs={["Home:/", "Post Tags:/tagged", `#${category}:/tagged/${categoryUriEncoded}`]} />
       
     <PaginatedFeed
       feed={posts}
-      feedInfo={{ title, url: `/tagged/${category}`, headerConfig: { level: 2, hidden: true } }}
+      feedInfo={{ title, url: `/tagged/${categoryUriEncoded}`, headerConfig: { level: 2, hidden: true } }}
       pageInfo={pageInfo}
       pageLink={paginatorData.pageLink}
     />
