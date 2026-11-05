@@ -3,12 +3,16 @@ import SiteSidebar from "~/components/structure/SiteSidebar.astro";
 import SiteFooter from "~/components/structure/SiteFooter.astro";
 import "~/styles/global.css";
 import { env } from "~/lib/env";
+import type { FeedDefinition } from "~/lib/feeds";
 
 interface Props {
 	title?: string;
+	/** When set, advertises the h-feed (self) and its Atom twin (alternate) in the head. */
+	feed?: FeedDefinition;
 }
 
-const { title } = Astro.props as Props;
+const { title, feed } = Astro.props as Props;
+const publicUrl = env.PUBLIC_URL.replace(/\/$/, "");
 ---
 
 <!doctype html>
@@ -26,6 +30,8 @@ const { title } = Astro.props as Props;
     <link rel="webmention" href=`${env.BASTION_PUBLIC_URL}/webmention` />
     <link rel="microsub" href=`${env.BASTION_PUBLIC_URL}/microsub` />
     <link rel="hub" href="https://pubsubhubbub.superfeedr.com/">
+		{feed && <link rel="self" href={`${publicUrl}${feed.path}`} />}
+		{feed && <link rel="alternate" type="application/atom+xml" title={feed.title} href={`${publicUrl}${feed.atomPath}`} />}
 		<slot name="additionalHead" />
 		<title>{title ?? "Unnamed Page"} &ndash; Jacob Andersen</title>
 	</head>

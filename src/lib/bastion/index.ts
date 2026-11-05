@@ -73,7 +73,7 @@ export class BastionClient {
   }
 }
 
-class BastionFeedClient {
+export class BastionFeedClient {
   private _hs: PostMf2Type[]
   private _types: PostType[]
   private _tags: string[]

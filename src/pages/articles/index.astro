@@ -1,13 +1,14 @@
 ---
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import PaginatedFeed from "~/components/post/hfeed/PaginatedFeed.astro";
-import Bastion, { determinePageInfo } from "~/lib/bastion"
-import {PostMf2Type, PostType} from "~/types/bastion"
+import { determinePageInfo } from "~/lib/bastion"
+import { typeFeed } from "~/lib/feeds";
+import { PostType } from "~/types/bastion"
 import { getPage, getPageLinkFn } from "~/util/page";
 
-const posts = await Bastion.posts()
-  .h(PostMf2Type.ENTRY)
-  .type(PostType.BOOKMARK)
+const feed = typeFeed(PostType.ARTICLE)
+
+const posts = await feed.build()
   .page(getPage(Astro.url))
   .perPage(10)
   .query()
@@ -15,8 +16,8 @@ const posts = await Bastion.posts()
 const pageInfo = determinePageInfo(posts.pagination)
 
 const feedInfo = {
-  title: "Bookmarks",
-  url: "/",
+  title: feed.title,
+  url: feed.path,
   headerConfig: {
     level: 3,
     hidden: true,
@@ -24,11 +25,7 @@ const feedInfo = {
 };
 ---
 
-<BaseLayout title="Bookmarks">
-  <slot name="additionalHead">
-    <link rel="self" href="https://jacobandersen.dev/bookmarks/">
-  </slot>
-
+<BaseLayout title={feed.title} feed={feed}>
   <div class="tw:flex tw:flex-col tw:gap-y-6">
     <section>
       <PaginatedFeed
