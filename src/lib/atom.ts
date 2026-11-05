@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { env } from "~/lib/env";
-import { createHEntryExtractor } from "~/lib/extractor";
+import { createHEntryExtractor, type Mf2Extractor } from "~/lib/extractor";
 import type { FeedDefinition } from "~/lib/feeds";
 import type { PostDto } from "~/types/bastion";
 
@@ -25,6 +25,48 @@ function toRfc3339(raw: string | undefined): string | null {
   if (!raw) return null
   const parsed = dayjs(raw)
   return parsed.isValid() ? parsed.toISOString() : null
+}
+
+function linkLine(label: string, url: string): string {
+  return `<p>${label} <a href="${escapeXml(url)}">${escapeXml(url)}</a></p>`
+}
+
+/**
+ * Builds the entry body. Many post types keep their substance in properties
+ * (photo, like-of, ...) rather than in `content`, so feed readers would show
+ * only a title. Media and link targets are rendered as plain, class-free HTML
+ * (readers cannot run the site's components). Moods, check-ins and RSVPs are
+ * already fully described by the entry title. Media URLs are stored absolute
+ * (CF R2), so they are used as-is.
+ */
+function renderContent(extractor: Mf2Extractor): { type: "html" | "text", value: string } | null {
+  const parts: string[] = []
+
+  const targets: [string, string | null][] = [
+    ["Replied to", extractor.getInReplyTo()],
+    ["Reposted", extractor.getRepostOf()],
+    ["Liked", extractor.getLikeOf()],
+    ["Bookmarked", extractor.getBookmarkOf()],
+  ]
+  for (const [label, url] of targets) {
+    if (url) parts.push(linkLine(label, url))
+  }
+
+  for (const photo of extractor.getPhotos()) {
+    parts.push(`<p><img src="${escapeXml(photo.url)}" alt="${escapeXml(photo.alt ?? "")}"/></p>`)
+  }
+
+  for (const url of extractor.getVideoUrls()) {
+    parts.push(`<p><video controls="controls" src="${escapeXml(url)}"><a href="${escapeXml(url)}">Watch video</a></video></p>`)
+  }
+
+  const body = extractor.getContent().join("").trim()
+  if (parts.length === 0) {
+    return body ? { type: extractor.isHtml ? "html" : "text", value: body } : null
+  }
+
+  if (body) parts.push(extractor.isHtml ? body : `<p>${escapeXml(body)}</p>`)
+  return { type: "html", value: parts.join("\n") }
 }
 
 function renderEntry(post: PostDto): string | null {
@@ -55,10 +97,9 @@ function renderEntry(post: PostDto): string | null {
   const summary = extractor.getSummary().join(" ").trim()
   if (summary) lines.push(`    <summary type="text">${escapeXml(summary)}</summary>`)
 
-  const content = extractor.getContent().join("").trim()
+  const content = renderContent(extractor)
   if (content) {
-    const type = extractor.isHtml ? "html" : "text"
-    lines.push(`    <content type="${type}">${escapeXml(content)}</content>`)
+    lines.push(`    <content type="${content.type}">${escapeXml(content.value)}</content>`)
   }
 
   lines.push("  </entry>")
