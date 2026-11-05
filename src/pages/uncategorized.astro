@@ -13,6 +13,10 @@ const title = `Uncategorized Posts`
 ---
 
 <BaseLayout title={title}>
+  <slot name="additionalHead">
+    <link rel="self" href="https://jacobandersen.dev/uncategorized/">
+  </slot>
+
   <PageTitle
     title={title}
     subtitle="These posts are uncategorized. You should nag me to give them a home! Hopefully there's nothing here." 

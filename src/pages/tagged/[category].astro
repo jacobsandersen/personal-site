@@ -19,6 +19,10 @@ const title = `Posts tagged with #${category}`;
 ---
 
 <BaseLayout title={title}>
+    <slot name="additionalHead">
+      <link rel="self" href=`https://jacobandersen.dev/tagged/${category}/`>
+    </slot>
+
     <PageTitle 
       title={title} 
       crumbs={["Home:/", "Post Tags:/tagged", `#${category}:/tagged/${category}`]} />

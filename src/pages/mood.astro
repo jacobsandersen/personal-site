@@ -2,15 +2,21 @@
 import PageTitle from "~/components/PageTitle.astro";
 import PaginatedFeed from "~/components/post/hfeed/PaginatedFeed.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import DefaultBastionClient, { determinePageInfo } from "~/lib/bastion";
+import Bastion, { determinePageInfo } from "~/lib/bastion";
 import { PostMf2Type, PostType } from "~/types/bastion";
 import { getPage, getPageLinkFn } from "~/util/page";
 
-const entries = await DefaultBastionClient.posts().h(PostMf2Type.ENTRY).type(PostType.MOOD).page(getPage(Astro.url)).query()
+const entries = await Bastion.posts()
+  .h(PostMf2Type.ENTRY)
+  .type(PostType.MOOD)
+  .page(getPage(Astro.url))
+  .perPage(10)
+  .query()
+
 const pageInfo = determinePageInfo(entries.pagination)
 
 const feedInfo = {
-  title: "Moodlog",
+  title: "Mood Log",
   url: "/mood",
   headerConfig: {
     level: 2,
@@ -19,10 +25,14 @@ const feedInfo = {
 };
 ---
 
-<BaseLayout title="Moodlog">
+<BaseLayout title="Mood Log">
+  <slot name="additionalHead">
+    <link rel="self" href="https://jacobandersen.dev/mood/">
+  </slot>
+
   <PageTitle
     title="My Moodlog"
-    crumbs={["Home:/", "Moodlog:/mood"]} />
+    crumbs={["Home:/", "Mood Log:/mood"]} />
   <PaginatedFeed
     feed={entries}
     feedInfo={feedInfo}

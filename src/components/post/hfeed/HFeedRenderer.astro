@@ -34,9 +34,12 @@ let finalContainerClass = containerClass ? containerClass : "tw:flex tw:flex-col
 <section class:list={["h-feed", className]}>
     {feedInfo && <HeaderElem class:list={["tw:text-2xl", "tw:font-bold", headerClass, { "tw:hidden": headerHidden }]}><Link href={feedInfo.url}>{feedInfo.title}</Link></HeaderElem>}
     <div class:list={finalContainerClass}>
-      {feed.items.map((post) => (
-          <PostRenderer doc={post} renderMethod={RenderMethod.Feed} class={itemClass} />
-      ))}
+      { feed.items.length > 0 
+        ? feed.items.map((post) => (
+            <PostRenderer doc={post} renderMethod={RenderMethod.Feed} class={itemClass} />
+        ))
+        : <p>There's nothing here right now. Keep an eye out for later!</p>
+      }
     </div>
     <slot name="feed-paginator" />
 </section>

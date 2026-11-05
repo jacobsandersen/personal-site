@@ -8,7 +8,7 @@ import { getPage, getPageLinkFn } from "~/util/page";
 const posts = await Bastion.posts()
   .h(PostMf2Type.ENTRY)
   .page(getPage(Astro.url))
-  .perPage(5)
+  .perPage(10)
   .query()
 
 const pageInfo = determinePageInfo(posts.pagination)
@@ -24,6 +24,10 @@ const feedInfo = {
 ---
 
 <BaseLayout title="Home">
+  <slot name="additionalHead">
+    <link rel="self" href="https://jacobandersen.dev/">
+  </slot>
+
   <div class="tw:flex tw:flex-col tw:gap-y-6">
     <section>
       <!-- <h2 class="tw:text-3xl tw:font-bold tw:mb-3">lately</h2> -->
