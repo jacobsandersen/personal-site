@@ -2,37 +2,30 @@
 import PageTitle from "~/components/PageTitle.astro";
 import PaginatedFeed from "~/components/post/hfeed/PaginatedFeed.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import DefaultBastionClient, { determinePageInfo } from "~/lib/bastion";
-import { PostMf2Type } from "~/types/bastion";
+import { determinePageInfo } from "~/lib/bastion";
+import { parseYear, yearFeed } from "~/lib/feeds";
 import { getPaginatorData } from "~/util/page";
 
-const { pathname } = Astro.url;
-
-let { year } = Astro.params;
-let yearNum = Number.parseInt(year!, 10)
-if (Number.isNaN(yearNum)) {
+const year = parseYear(Astro.params.year)
+if (year === null) {
   return Astro.rewrite("/400")
 }
 
-const paginatorData = getPaginatorData(Astro.url)
-const posts = await DefaultBastionClient.posts().h(PostMf2Type.ENTRY).year(yearNum).page(paginatorData.page).query()
-const pageInfo = determinePageInfo(posts.pagination)
+const feed = yearFeed(year)
 
-const title = `Posts from ${year}`;
+const paginatorData = getPaginatorData(Astro.url)
+const posts = await feed.build().page(paginatorData.page).query()
+const pageInfo = determinePageInfo(posts.pagination)
 ---
 
-<BaseLayout title={title}>
-  <slot name="additionalHead">
-    <link rel="self" href=`https://jacobandersen.dev/${year}/`>
-  </slot>
-
+<BaseLayout title={feed.title} feed={feed}>
   <PageTitle
-    title={title}
-    crumbs={["Home:/", `${year}:${pathname}`]} />
+    title={feed.title}
+    crumbs={["Home:/", `${year}:${feed.path}`]} />
     
   <PaginatedFeed 
     feed={posts} 
-    feedInfo={{ title, url: `/${year}`, headerConfig: { level: 2, hidden: true } }} 
+    feedInfo={{ title: feed.title, url: feed.path, headerConfig: { level: 2, hidden: true } }} 
     pageInfo={pageInfo}
     pageLink={paginatorData.pageLink}
   />

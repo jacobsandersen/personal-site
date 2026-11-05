@@ -1,0 +1,26 @@
+---
+import PageTitle from "~/components/PageTitle.astro";
+import PaginatedFeed from "~/components/post/hfeed/PaginatedFeed.astro";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { determinePageInfo } from "~/lib/bastion";
+import { uncategorizedFeed } from "~/lib/feeds";
+import { getPage, getPageLinkFn } from "~/util/page"
+
+const feed = uncategorizedFeed()
+const posts = await feed.build().page(getPage(Astro.url)).query()
+const pageInfo = determinePageInfo(posts.pagination)
+---
+
+<BaseLayout title={feed.title} feed={feed}>
+  <PageTitle
+    title={feed.title}
+    subtitle="These posts are uncategorized. You should nag me to give them a home! Hopefully there's nothing here." 
+    crumbs={["Home:/", `Uncategorized:${feed.path}`]} />
+    
+  <PaginatedFeed 
+    feed={posts} 
+    feedInfo={{ title: feed.title, url: feed.path, headerConfig: { level: 2, hidden: true } }}
+    pageInfo={pageInfo}
+    pageLink={getPageLinkFn(Astro.url)}
+  />
+</BaseLayout>

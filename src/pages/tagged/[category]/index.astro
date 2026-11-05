@@ -1,0 +1,32 @@
+---
+import PageTitle from "~/components/PageTitle.astro";
+import PaginatedFeed from "~/components/post/hfeed/PaginatedFeed.astro";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { determinePageInfo } from "~/lib/bastion";
+import { tagFeed } from "~/lib/feeds";
+import { getPaginatorData } from "~/util/page";
+
+const { category } = Astro.params;
+if (!category) {
+  return Astro.redirect("/400")
+}
+
+const feed = tagFeed(category)
+
+const paginatorData = getPaginatorData(Astro.url)
+const posts = await feed.build().page(paginatorData.page).query()
+const pageInfo = determinePageInfo(posts.pagination)
+---
+
+<BaseLayout title={feed.title} feed={feed}>
+    <PageTitle 
+      title={feed.title} 
+      crumbs={["Home:/", "Post Tags:/tagged", `#${category}:${feed.path}`]} />
+      
+    <PaginatedFeed
+      feed={posts}
+      feedInfo={{ title: feed.title, url: feed.path, headerConfig: { level: 2, hidden: true } }}
+      pageInfo={pageInfo}
+      pageLink={paginatorData.pageLink}
+    />
+</BaseLayout>
