@@ -22,7 +22,7 @@
     "@tailwindcss/vite": "^4.3.3",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
-    "astro": "^7.4.2",
+    "astro": "^7.4.12",
     "dayjs": "^1.11.19",
     "express": "^5.2.1",
     "leaflet": "^1.9.4",
